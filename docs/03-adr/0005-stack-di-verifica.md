@@ -1,6 +1,6 @@
 # ADR-0005 — Stack di verifica
 
-Stato: proposto
+Stato: accettato
 Data: 2026-09-21
 
 ## Contesto
