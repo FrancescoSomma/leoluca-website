@@ -95,6 +95,9 @@ conosce le rotte, i componenti non leggono i JSON da soli: li ricevono.
 
 ### Task 1: ADR-0005 — stack di verifica
 
+**Concluso.** ADR accettato in data 2026-09-21, commit `0eee7cd`. Le dipendenze
+di verifica sono ora installabili dal Task 2.
+
 Nessun pacchetto si installa prima che questo ADR sia accettato da un umano.
 
 **Files:**
@@ -105,7 +108,7 @@ Nessun pacchetto si installa prima che questo ADR sia accettato da un umano.
 - Produces: l'autorizzazione a installare le dipendenze di sviluppo usate da
   tutti i task successivi.
 
-- [ ] **Step 1: Scrivere l'ADR**
+- [x] **Step 1: Scrivere l'ADR**
 
 Usa `docs/03-adr/0000-template.md`. Una sola decisione: quali strumenti
 verificano il progetto. Proposta da argomentare nel documento:
@@ -129,12 +132,12 @@ aggiornare su un progetto toccato tre volte l'anno; Playwright scarica i
 browser, quindi la prima build in CI è lenta; Lighthouse CI su 4G simulata è
 rumoroso e va configurato con soglie che non facciano fallire la build a caso.
 
-- [ ] **Step 2: Fermarsi e chiedere l'accettazione**
+- [x] **Step 2: Fermarsi e chiedere l'accettazione**
 
 Non proseguire. Presentare l'ADR e attendere conferma esplicita. Alla conferma,
 cambiare `Stato: proposto` in `Stato: accettato`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add docs/03-adr/0005-stack-di-verifica.md
