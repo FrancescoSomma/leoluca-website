@@ -24,7 +24,9 @@ Verifica: Vitest, Playwright, axe, Lighthouse CI, Prettier — ADR-0005, Task 1.
 **Decisioni vincolanti:** [ADR-0001](../../03-adr/0001-processo-di-sviluppo.md),
 [ADR-0002](../../03-adr/0002-gestione-contenuti.md),
 [ADR-0003](../../03-adr/0003-generatore-statico-e-hosting.md),
-[ADR-0004](../../03-adr/0004-pannello-e-storage-immagini.md)
+[ADR-0004](../../03-adr/0004-pannello-e-storage-immagini.md),
+[ADR-0005](../../03-adr/0005-stack-di-verifica.md),
+[convenzioni di codice](../../07-convenzioni-codice.md)
 
 ## Global Constraints
 
@@ -52,6 +54,30 @@ Valgono per ogni task. I valori sono copiati dallo spec, non riassunti.
 - Documentazione a 80 colonne, come il resto di `docs/`.
 - `./scripts/verify.sh` deve passare prima di dichiarare concluso un task.
 
+## Chiusura di ogni task
+
+Vale per tutti. È il punto 6 di
+[ADR-0001](../../03-adr/0001-processo-di-sviluppo.md), che la prima stesura di
+questo piano aveva omesso: gli agenti di review esistono nel repository dal
+primo commit e nessun task li chiamava.
+
+1. **Gate.** `./scripts/verify.sh` passa.
+2. **Guardare.** Se il task produce una pagina che si vede, screenshot a 390,
+   768 e 1440 px in `test-results/`, che git ignora. Chi sviluppa qui non ha
+   occhi e un layout rotto non fallisce nessun test: è l'argomento centrale di
+   [ADR-0005](../../03-adr/0005-stack-di-verifica.md), e installare Playwright
+   senza mai guardare nulla lo tradisce.
+3. **Review in contesto pulito**, sul diff del task:
+   - `spec-guardian` — sempre. Cosa manca e cosa è in eccesso rispetto allo
+     spec.
+   - `code-reviewer` — quando il task scrive codice. Verifica le
+     [convenzioni](../../07-convenzioni-codice.md).
+   - `design-reviewer` — solo se esiste un riferimento in `design/ref/`.
+     Finché la direzione visiva non è definita non ha nulla contro cui
+     misurare. È un motivo per definirla presto, non per saltare il passo.
+4. **Esito.** Ogni segnalazione si risolve, oppure si rifiuta con il motivo
+   scritto nel corpo del commit. Nessuna si ignora in silenzio.
+
 ## Vincoli aperti che il piano non risolve
 
 Non bloccano questi task, ma vanno chiusi prima del lancio. Sono tracciati in
@@ -62,7 +88,9 @@ Non bloccano questi task, ma vanno chiusi prima del lancio. Sono tracciati in
 - Liberatorie non confermate: **nessuna foto reale va online** finché non c'è
   risposta. Questi task usano immagini di prova.
 - Indirizzo di destinazione del form non noto: si configura su Netlify, non nel
-  codice.
+  codice. Lo spec lo elenca fra le Impostazioni e il modello del Task 4 non lo
+  prevede: è una deviazione voluta, dichiarata qui perché `spec-guardian` la
+  troverà e deve poter distinguere una scelta da una dimenticanza.
 
 ## File Structure
 
@@ -259,7 +287,13 @@ Expected: build completata senza errori.
 Run: `./scripts/verify.sh`
 Expected: esce 0. Ora esegue davvero gli script, non li salta.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 8: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 9: Commit**
 
 ```bash
 git add -A
@@ -460,7 +494,13 @@ const href = key ? pathFor(key, target) : pathFor('home', target);
 Run: `npm run test`
 Expected: PASS, sei test verdi.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 8: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 9: Commit**
 
 ```bash
 git add src/i18n src/components/SelettoreLingua.astro src/pages tests/unit/routes.test.ts
@@ -480,7 +520,7 @@ git commit -m "feat: mappa rotte bilingue e selettore lingua"
 - Consumes: `Locale` da `src/i18n/routes.ts` (Task 3).
 - Produces:
   - `FotoSchema`, `PaginaSchema`, `FaqSchema`, `ImpostazioniSchema` (zod)
-  - `type Foto = { id: string; file: string; ordine: number; alt_it: string;
+  - `type Foto = { file: string; ordine: number; alt_it: string;
     alt_en: string; in_home: boolean }`
   - `caricaFoto(): Foto[]` — ordinate per `ordine` crescente
   - `caricaFaq(): Faq[]`, `caricaPagine(): Pagina[]`, `caricaImpostazioni(): Impostazioni`
@@ -496,13 +536,13 @@ import { caricaFoto, altPer } from '../../src/content/load';
 
 describe('schema Foto', () => {
   const valida = {
-    id: 'f001', file: 'https://storage.example/f001.jpg',
+    file: 'https://storage.example/f001.jpg',
     ordine: 0, alt_it: 'sposa sulla scalinata',
     alt_en: 'bride on the steps', in_home: true,
   };
 
   it('accetta una foto completa', () => {
-    expect(FotoSchema.parse(valida)).toMatchObject({ id: 'f001', ordine: 0 });
+    expect(FotoSchema.parse(valida)).toMatchObject({ ordine: 0 });
   });
 
   it('rifiuta un testo alternativo italiano vuoto', () => {
@@ -556,7 +596,6 @@ Expected: FAIL, modulo `src/content/schema` inesistente.
 import { z } from 'zod';
 
 export const FotoSchema = z.object({
-  id: z.string().min(1),
   file: z.string().url().startsWith('https://'),
   ordine: z.number().int().nonnegative(),
   alt_it: z.string().min(1),
@@ -579,7 +618,6 @@ export const PaginaSchema = z.object({
 export type Pagina = z.infer<typeof PaginaSchema>;
 
 export const FaqSchema = z.object({
-  id: z.string().min(1),
   ordine: z.number().int().nonnegative(),
   domanda_it: z.string().min(1),
   domanda_en: z.string().min(1),
@@ -600,6 +638,12 @@ export const ImpostazioniSchema = z.object({
 });
 export type Impostazioni = z.infer<typeof ImpostazioniSchema>;
 ```
+
+Nessun campo `id`: lo spec non lo prevede né per le foto né per le FAQ, e
+`ordine` insieme a `file` identifica già una voce. La prima stesura lo
+aggiungeva a entrambe le entità senza che nulla lo richiedesse, ed è
+esattamente la lista "in eccesso" di `spec-guardian`. Se il pannello di
+ADR-0004 dovesse pretenderlo, si aggiorna prima lo spec.
 
 - [ ] **Step 4: Implementare il caricamento**
 
@@ -653,7 +697,13 @@ liberatorie non sono confermate.
 Run: `npm run test`
 Expected: PASS, otto test verdi.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 7: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 8: Commit**
 
 ```bash
 git add src/content tests/unit/content.test.ts package.json package-lock.json
@@ -684,7 +734,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import Foto from '../../src/components/Foto.astro';
 
 const foto = {
-  id: 'f001', file: 'https://storage.example/f001.jpg', ordine: 0,
+  file: 'https://storage.example/f001.jpg', ordine: 0,
   alt_it: 'sposa sulla scalinata', alt_en: 'bride on the steps', in_home: true,
 };
 
@@ -792,7 +842,13 @@ Se `inferSize` fallisce su URL remoti in build, sostituirlo con
 `inferRemoteSize()` da `astro/assets/utils` chiamato nel frontmatter e passare
 `width`/`height` espliciti. Il test su `width`/`height` copre entrambi i casi.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/components/Foto.astro tests/unit/foto-component.test.ts
@@ -944,7 +1000,13 @@ const locale = 'it' as const;
 Run: `npm run build && npm run a11y`
 Expected: PASS su tutte e ventisei le asserzioni.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 7: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 8: Commit**
 
 ```bash
 git add src/layouts src/pages tests/e2e/a11y.spec.ts
@@ -1037,7 +1099,13 @@ const PRIORITARIE = 3;
 Run: `npm run build && npx playwright test tests/e2e/portfolio.spec.ts`
 Expected: PASS, quattro test verdi.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/pages/it/portfolio.astro src/pages/en/portfolio.astro tests/e2e/portfolio.spec.ts
@@ -1204,7 +1272,13 @@ collegamento di ritorno al portfolio.
 Run: `npm run build && npx playwright test tests/e2e/form.spec.ts`
 Expected: PASS, sei test verdi.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 7: Commit**
 
 ```bash
 git add src/components/FormContatto.astro src/pages tests/e2e/form.spec.ts
@@ -1320,7 +1394,13 @@ esplicito al portfolio. Le foto di richiamo non sono prioritarie: l'unica eager
 Run: `npm run build && npm run e2e`
 Expected: PASS su tutta la suite.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 7: Commit**
 
 ```bash
 git add src/components/Hero.astro src/pages tests/e2e/percorso-critico.spec.ts
@@ -1406,15 +1486,32 @@ invii al mese.
 
 Registrare l'esito con uno screenshot. Senza evidenza, il task non è concluso.
 
-- [ ] **Step 5: Eseguire il gate completo**
+- [ ] **Step 5: Scrivere nel runbook ciò che resta acceso a metà**
+
+ADR-0005 lo impone e la prima stesura di questo piano non lo faceva: diceva che
+l'accensione delle asserzioni rimandate «va scritta nel runbook, non lasciata
+alla memoria», e poi non la scriveva da nessuna parte.
+
+In [06-runbook.md](../../06-runbook.md), sotto **Manutenzione**, una
+sottosezione marcata come rivolta a chi mantiene il sito e non a Leo: quali
+asserzioni di `lighthouserc.json` sono spente, con quali valori vanno accese,
+e che l'innesco è l'arrivo delle foto vere.
+
+- [ ] **Step 6: Eseguire il gate completo**
 
 Run: `./scripts/verify.sh`
 Expected: `verify: tutti i controlli superati`, exit 0.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Chiudere il task**
+
+Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
+task produce una pagina che si vede, e i tre agenti di review sul diff. Le
+segnalazioni si risolvono prima del commit, non dopo.
+
+- [ ] **Step 8: Commit**
 
 ```bash
-git add lighthouserc.json netlify.toml
+git add lighthouserc.json netlify.toml docs/06-runbook.md
 git commit -m "feat: gate di performance e configurazione Netlify"
 ```
 
@@ -1426,10 +1523,16 @@ Ognuno richiede un piano proprio, e due sono bloccati.
 
 - **Pagine Chi sono e FAQ.** Non sono sul percorso critico e richiedono i testi
   di Leo. Piano successivo, nessun blocco tecnico.
-- **Direzione visiva e design system.** Bloccato: non esistono né brand, né
-  concept, né i tre riferimenti negativi che [01-discovery.md](../../01-discovery.md)
-  segna come mancanti. Questo piano produce markup corretto e accessibile, non
-  un sito finito da vedere.
+- **Direzione visiva e design system.** Non è bloccata, ha un piano proprio e
+  corre in parallelo a questo. Claude Design produce due o tre direzioni, Leo
+  ne sceglie una, e da lì escono i token CSS, `docs/04-design-system.md`
+  compilato e i riferimenti in `design/ref/`. Il brand mancante non è un
+  prerequisito: è l'output. I tre riferimenti negativi che
+  [01-discovery.md](../../01-discovery.md) aspetta si ottengono dalle due
+  direzioni che Leo scarta, quindi attenderli per poter iniziare è
+  un'attesa circolare. **Deve chiudere prima del Task 6:** i Task 2-5 non
+  toccano la resa visiva, il Task 6 la crea. Questo piano produce markup
+  corretto e accessibile, non un sito finito da vedere.
 - **Pannello di redazione.** Bloccato dalla verifica in
   [ADR-0004](../../03-adr/0004-pannello-e-storage-immagini.md): autenticazione
   da accertare prima di scegliere il prodotto.
