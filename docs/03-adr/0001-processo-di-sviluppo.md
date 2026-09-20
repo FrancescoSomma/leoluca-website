@@ -21,7 +21,7 @@ vivono le decisioni e cosa vale come "fatto", prima di scrivere codice.
 5. "Fatto" richiede evidenza verificabile, prodotta da `./scripts/verify.sh` o
    da screenshot di confronto.
 6. Ogni slice implementativa passa da una review in contesto pulito
-   (`design-reviewer`, `spec-guardian`) prima del merge.
+   (`design-reviewer`, `spec-guardian`, `code-reviewer`) prima del merge.
 
 ## Alternative scartate
 

@@ -22,6 +22,8 @@ servizi prima che l'ADR corrispondente in `docs/03-adr/` sia in stato
 - Budget di performance e accessibilità: vedi `docs/02-spec.md`. Sono vincoli,
   non obiettivi.
 - Nessuna dipendenza nuova senza un ADR accettato.
+- Convenzioni di codice: `docs/07-convenzioni-codice.md`. Valgono per ogni
+  file sorgente. Le verifica `code-reviewer`.
 - "Fatto" richiede evidenza: output del comando, test che passa, o screenshot.
   Mai una dichiarazione senza prova.
 - IMPORTANT: non implementare nulla che non sia in `docs/02-spec.md`. Se serve
