@@ -218,6 +218,42 @@ precisazione, escluderla dal conteggio sarebbe un trucco contabile invece che
 una scelta dichiarata. Il peso della clip è vincolato a parte, nella riga
 dedicata.
 
+## Dispositivi e larghezze
+
+Il sito funziona a **qualunque larghezza da 320 px in su**. Le larghezze qui
+sotto sono quelle che fotografiamo e confrontiamo, non le uniche in cui deve
+reggere: una pagina che funziona a 390 e a 768 e si rompe a 520 è rotta.
+
+| Larghezza | Cosa rappresenta | Come si tratta |
+| --- | --- | --- |
+| 320 px | Il pavimento di WCAG 2.2 AA, criterio 1.4.10 | Si verifica, non si disegna |
+| 390 px | Telefono di riferimento | Budget di performance e screenshot di confronto |
+| 768 px | Tablet in verticale | Screenshot di confronto |
+| 1440 px | Desktop di riferimento | Screenshot di confronto e resa delle fotografie |
+
+Telefono e desktop non hanno la stessa funzione, e vale la pena dirlo perché
+"mobile first" suggerirebbe il contrario.
+
+**Il telefono è il limite.** I budget di performance si misurano su 4G lenta
+mobile: una scelta che li sfora è esclusa lì, prima che altrove.
+
+**Il desktop è dove il lavoro viene giudicato.** L'obiettivo del sito è la
+candidatura ai contest, e una giuria guarda le fotografie su uno schermo
+grande. Nessuno dei due è un ripensamento dell'altro.
+
+Due criteri di WCAG 2.2 AA riguardano direttamente questa sezione. Sono già
+vincolanti per via della riga sull'accessibilità nei budget, e vengono resi
+espliciti qui perché una sigla non si applica da sola.
+
+- **1.4.10 Reflow.** A 320 px il contenuto riflussa in una sola colonna.
+  Nessuno scorrimento orizzontale, tranne dove è intrinseco al contenuto.
+- **2.5.8 Target Size (Minimum).** Ogni bersaglio interattivo misura almeno
+  24×24 px. Riguarda il cambio lingua, la navigazione e i controlli del form.
+
+Nessuno dei due è rilevabile in modo affidabile da axe. Si verificano guardando
+la pagina e navigandola: è una delle ragioni per cui gli screenshot valgono
+come evidenza e le dichiarazioni no.
+
 ## Hero della home
 
 L'hero è il punto in cui il desiderio del cliente e i budget di performance si

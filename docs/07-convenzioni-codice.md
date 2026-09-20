@@ -73,6 +73,13 @@ filesystem e non è riusabile in un'altra pagina.
 - Solo token del design system. Nessun valore letterale per colore, spaziatura,
   tipografia, raggio, ombra o punto di rottura.
 - Gli stili stanno nel componente che li usa.
+- Mobile-first: gli stili base valgono per lo schermo piccolo, e si aggiunge
+  con `min-width`. Nessuna media query `max-width`. Il verso unico rende
+  prevedibile quale regola vince, e allinea il codice al vincolo che comanda,
+  che è il telefono.
+- Nessuna larghezza fissa sugli elementi di contenuto. A 320 px il contenuto
+  riflussa in una colonna sola: lo impone WCAG 2.2 AA 1.4.10, dichiarato in
+  [02-spec.md](02-spec.md) § Dispositivi e larghezze.
 
 ## Commenti
 

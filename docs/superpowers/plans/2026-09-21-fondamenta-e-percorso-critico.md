@@ -63,7 +63,9 @@ primo commit e nessun task li chiamava.
 
 1. **Gate.** `./scripts/verify.sh` passa.
 2. **Guardare.** Se il task produce una pagina che si vede, screenshot a 390,
-   768 e 1440 px in `test-results/`, che git ignora. Chi sviluppa qui non ha
+   768 e 1440 px in `test-results/`, che git ignora. Più un controllo a 320 px
+   che non compaia scorrimento orizzontale: è il pavimento di WCAG 2.2 AA
+   1.4.10 e axe non lo rileva. Chi sviluppa qui non ha
    occhi e un layout rotto non fallisce nessun test: è l'argomento centrale di
    [ADR-0005](../../03-adr/0005-stack-di-verifica.md), e installare Playwright
    senza mai guardare nulla lo tradisce.
