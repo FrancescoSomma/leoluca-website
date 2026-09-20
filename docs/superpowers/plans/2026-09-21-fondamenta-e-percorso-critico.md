@@ -17,7 +17,7 @@ originali remoti su storage a oggetti, ottimizzati in build da Astro tramite
 `image.remotePatterns`. Il form è gestito da Netlify, senza backend.
 
 **Tech Stack:** Astro 7.3.3, TypeScript strict, zod, Netlify (hosting e form).
-Stack di verifica deciso nel Task 1.
+Verifica: Vitest, Playwright, axe, Lighthouse CI, Prettier — ADR-0005, Task 1.
 
 **Spec:** [docs/02-spec.md](../../02-spec.md)
 
@@ -190,7 +190,20 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 3: Aggiungere gli script che `verify.sh` cerca**
+- [ ] **Step 3: Installare le dipendenze di verifica**
+
+Autorizzate da ADR-0005. Non anticipare questo passo se l'ADR non è accettato.
+
+```bash
+npm install -D vitest @playwright/test @axe-core/playwright @lhci/cli prettier
+npx playwright install --with-deps chromium
+```
+
+Prettier va installato anche se nessuno script lo invoca direttamente:
+`scripts/format-changed.sh`, agganciato all'hook `PostToolUse`, lo cerca in
+`node_modules/.bin/prettier` a ogni file scritto e finora non lo trovava.
+
+- [ ] **Step 4: Aggiungere gli script che `verify.sh` cerca**
 
 `scripts/verify.sh` cicla su `lint typecheck build test perf a11y` con
 `--if-present`. Definirli tutti, così il gate non passa per omissione.
@@ -203,9 +216,18 @@ npm pkg set scripts.test="vitest run"
 npm pkg set scripts.e2e="playwright test"
 npm pkg set scripts.perf="lhci autorun"
 npm pkg set scripts.a11y="playwright test tests/e2e/a11y.spec.ts"
+npm pkg set scripts.format="prettier --write ."
 ```
 
-- [ ] **Step 4: Redirect della radice**
+Reporter compatti, non per estetica: lo sviluppo è agentico e l'output verboso
+consuma il contesto di chi sviluppa.
+
+```bash
+npm pkg set scripts.test="vitest run --reporter=dot"
+npm pkg set scripts.e2e="playwright test --reporter=line"
+```
+
+- [ ] **Step 5: Redirect della radice**
 
 ```astro
 ---
@@ -214,7 +236,7 @@ return Astro.redirect('/it/');
 ---
 ```
 
-- [ ] **Step 5: Aggiungere robots.txt**
+- [ ] **Step 6: Aggiungere robots.txt**
 
 Lo spec lo elenca nella sitemap. `sitemap.xml` arriva in un piano successivo,
 quindi qui non va referenziato: un `Sitemap:` che punta al nulla è peggio che
@@ -226,7 +248,7 @@ User-agent: *
 Allow: /
 ```
 
-- [ ] **Step 6: Verificare che la build passi**
+- [ ] **Step 7: Verificare che la build passi**
 
 Run: `npm run build`
 Expected: build completata senza errori.
@@ -234,7 +256,7 @@ Expected: build completata senza errori.
 Run: `./scripts/verify.sh`
 Expected: esce 0. Ora esegue davvero gli script, non li salta.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -1316,6 +1338,10 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 
 - [ ] **Step 1: Scrivere il budget come asserzioni**
 
+ADR-0005 impone di assertare ciò che dipende dal codice e rimandare ciò che
+dipende dalle fotografie. Con contenuti di prova, LCP e peso trasferito
+misurano le immagini finte, non il sito.
+
 ```json
 {
   "ci": {
@@ -1327,19 +1353,26 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
     },
     "assert": {
       "assertions": {
-        "largest-contentful-paint": ["error", { "maxNumericValue": 2000 }],
         "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
-        "total-byte-weight": ["error", { "maxNumericValue": 1258291 }],
-        "categories:accessibility": ["error", { "minScore": 1 }]
+        "categories:accessibility": ["error", { "minScore": 1 }],
+        "resource-summary:script:size": ["error", { "maxNumericValue": 51200 }],
+        "largest-contentful-paint": "off",
+        "total-byte-weight": "off"
       }
     }
   }
 }
 ```
 
-`1258291` è 1.2 MB in byte. Sostituire `preset: desktop` con la
-configurazione mobile 4G quando il sito ha contenuti reali: sui dati di prova
-la misura è priva di significato.
+`51200` è 50 KB in byte, il budget JavaScript dello spec.
+
+Le due asserzioni a `off` **non sono opzionali, sono rimandate**. Vanno accese
+insieme alle foto vere, sostituendo `off` con
+`["error", { "maxNumericValue": 2000 }]` per l'LCP e
+`["error", { "maxNumericValue": 1258291 }]` per il peso, cioè 1.2 MB in byte,
+e passando da `preset: desktop` alla configurazione mobile 4G. Se nessuno lo
+fa, il progetto crede di avere un gate che non misura ciò che conta: per questo
+l'accensione va scritta nel runbook, non lasciata alla memoria.
 
 - [ ] **Step 2: Eseguire e verificare che i budget passino**
 
