@@ -63,7 +63,7 @@ window.FOTO = [
   { id: '1535118194709-8f09f0050330', w: 2730, h: 4096, in_home: false,
     alt: "Sposa sale una scalinata di pietra coperta d'edera, il velo lungo sui gradini",
     fonte: 'Mhb0KT7iVjU' },
-  { id: '1460978812857-470ed1c77af0', w: 6256, h: 3648, in_home: true,
+  { id: '1460978812857-470ed1c77af0', w: 6256, h: 3648, in_home: false,
     alt: "Sposi si baciano sotto il velo sollevato dal vento, in riva al mare",
     fonte: 'FTW8ADj5igs' },
   { id: '1549416878-b9ca95e26903', w: 2000, h: 3000, in_home: true,
@@ -84,7 +84,7 @@ window.FOTO = [
   { id: '1612599542650-3b98fd99f96a', w: 3500, h: 2333, in_home: true,
     alt: "Cortile di una villa con lucine e tavoli apparecchiati, gli sposi entrano tra gli invitati",
     fonte: 'gNg1CWnz6dM' },
-  { id: '1527529482837-4698179dc6ce', w: 6000, h: 4000, in_home: true,
+  { id: '1527529482837-4698179dc6ce', w: 6000, h: 4000, in_home: false,
     alt: "Brindisi a tavola sotto le luci appese, una mano alza il calice verso gli altri",
     fonte: 'ULHxWq8reao' },
   { id: '1523521803700-b3bcaeab0150', w: 5472, h: 3648, in_home: false,
@@ -112,6 +112,9 @@ window.FOTO = [
     alt: "Sposi si baciano tra due file di amici che alzano le stelline accese nella notte",
     fonte: 'R0B0AnOw0Kg' },
 ];
+
+// Ritratto segnaposto per Chi sono. Fuori dal flusso: non ha posizione.
+window.RITRATTO = { id: '1676304917549-5c42b40779a2', w: 4000, h: 6000, in_home: false, alt: "Leo in camicia verde con la macchina fotografica in mano, tra gli alberi", fonte: '39Vd6gbEb60' };
 
 (function () {
   // Vincoli di spec § Pipeline immagini, riprodotti con i parametri del CDN.
