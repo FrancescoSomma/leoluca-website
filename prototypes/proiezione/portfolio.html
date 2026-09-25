@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="it" class="proiezione">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portfolio, Leo Luca Iacoviello</title>
+    <meta name="description" content="Prototipo Proiezione: portfolio." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="stile.css" />
+  </head>
+  <body>
+    <a class="salta" href="#contenuto">Vai al contenuto</a>
+    <header class="testata">
+      <a class="nome" href="index.html">Leo Luca Iacoviello</a>
+      <nav class="menu" aria-label="Principale">
+        <ul>
+          <li><a href="portfolio.html" aria-current="page">Portfolio</a></li>
+          <li><a href="#">Chi sono</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Contatti</a></li>
+          <li><a href="#" hreflang="en" lang="en">English</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="contenuto">
+      <div class="titoli">
+        <h1>Portfolio</h1>
+        <!-- Solo visivo: annunciare ogni cambio di diapositiva sarebbe rumore. -->
+        <p class="contatore" aria-hidden="true"><span id="corrente">1</span> / <span id="totale"></span></p>
+      </div>
+
+      <div id="sequenza"></div>
+
+      <div class="fine">
+        <p>Se il tuo matrimonio assomiglia a queste fotografie, scrivimi.</p>
+        <a href="#">Richiedi un preventivo</a>
+      </div>
+    </main>
+
+    <footer class="piede">
+      <p>Leo Luca Iacoviello, fotografo di matrimoni</p>
+      <p><a href="#">info@leolucaiacoviello.it</a></p>
+    </footer>
+
+    <script src="../comune/foto.js"></script>
+    <script src="pagina.js"></script>
+  </body>
+</html>
