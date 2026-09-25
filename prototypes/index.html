@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tre direzioni visive</title>
+    <meta name="description" content="Prototipi di direzione visiva per il sito di Leo Luca Iacoviello: tre stili a confronto, home e portfolio." />
+    <style>
+      :root {
+        --fondo: #ffffff;
+        --testo: #000000;
+        --secondario: #595959;
+        --filetto: #d9d9d9;
+        --s1: 0.5rem;
+        --s2: 1rem;
+        --s3: 2rem;
+        --s4: 4rem;
+        --margine: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        :root {
+          --margine: 2rem;
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--fondo);
+        color: var(--testo);
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        max-width: 76rem;
+        margin: 0 auto;
+        padding: var(--s3) var(--margine) var(--s4);
+        line-height: 1.5;
+      }
+
+      a {
+        color: inherit;
+        text-underline-offset: 0.2em;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--testo);
+        outline-offset: 3px;
+      }
+
+      h1 {
+        margin: 0 0 var(--s2);
+        font-size: 2rem;
+        line-height: 1.15;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        margin: var(--s3) 0 var(--s1);
+        font-size: 1rem;
+      }
+
+      p,
+      li {
+        max-width: 68ch;
+      }
+
+      .guida {
+        margin: 0 0 var(--s4);
+      }
+
+      .guida p {
+        margin: 0 0 var(--s2);
+      }
+
+      .direzione {
+        display: grid;
+        gap: var(--s2) var(--s3);
+        padding: var(--s3) 0;
+        border-top: 1px solid var(--filetto);
+      }
+
+      @media (min-width: 1024px) {
+        .direzione {
+          grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+          align-items: start;
+        }
+      }
+
+      .direzione img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--filetto);
+      }
+
+      .concetto {
+        margin: var(--s1) 0 var(--s2);
+        font-size: 1.125rem;
+      }
+
+      .apri {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s1) var(--s2);
+        margin: 0 0 var(--s2);
+        padding: 0;
+        list-style: none;
+      }
+
+      .apri a {
+        display: inline-block;
+        padding: 0.375rem 0.875rem;
+        border: 1px solid var(--testo);
+        text-decoration: none;
+      }
+
+      .apri a:hover {
+        background: var(--testo);
+        color: var(--fondo);
+      }
+
+      dl {
+        display: grid;
+        gap: var(--s1) var(--s2);
+        margin: 0;
+      }
+
+      @media (min-width: 560px) {
+        dl {
+          grid-template-columns: 7rem minmax(0, 1fr);
+        }
+      }
+
+      dt {
+        color: var(--secondario);
+      }
+
+      dd {
+        margin: 0;
+      }
+
+      .campioni {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s1) var(--s2);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .campioni li {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .campioni span {
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 1px solid var(--filetto);
+      }
+
+      .comune {
+        padding-top: var(--s3);
+        border-top: 1px solid var(--filetto);
+      }
+
+      .comune ul,
+      .comune ol {
+        padding-left: 1.25rem;
+      }
+
+      .comune li {
+        margin-bottom: var(--s1);
+      }
+
+      .nota {
+        color: var(--secondario);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="guida">
+        <h1>Tre direzioni visive per il sito di Leo</h1>
+        <p>
+          Tre ipotesi su quale sia «la sua faccia», ognuna con home e portfolio. Le tre direzioni differiscono sugli
+          assi che contano: come si scorre il portfolio, la luce della pagina, la voce tipografica.
+        </p>
+        <p>
+          Stesse 36 foto, stesso ordine, stessa clip, stessi testi: cambia solo il design. Le foto sono segnaposto di
+          reportage prese da Unsplash, non di Leo. Giudicale per come trattano la fotografia, non per le fotografie.
+        </p>
+      </div>
+
+      <section class="direzione" aria-labelledby="tavole">
+        <img src="anteprime/tavole.webp" width="1200" height="375" alt="Tavole a 1440 px: home e portfolio" />
+        <div>
+          <h2 id="tavole">A. Tavole</h2>
+          <p class="concetto">
+            Il fotolibro. Ogni foto è una tavola impaginata da un editor, con il suo numero nella sequenza.
+          </p>
+          <ul class="apri">
+            <li><a href="tavole/index.html">Home</a></li>
+            <li><a href="tavole/portfolio.html">Portfolio</a></li>
+          </ul>
+          <dl>
+            <dt>Palette</dt>
+            <dd>
+              <ul class="campioni">
+                <li><span style="background: #e9eae5"></span>carta #E9EAE5</li>
+                <li><span style="background: #262521"></span>inchiostro #262521</li>
+                <li><span style="background: #626159"></span>grafite #626159</li>
+                <li><span style="background: #dcddd7"></span>velina #DCDDD7</li>
+              </ul>
+            </dd>
+            <dt>Caratteri</dt>
+            <dd>Hanken Grotesk, 400 e 500, due sole taglie. Il testo si ritira, parla l'impaginazione.</dd>
+            <dt>Portfolio</dt>
+            <dd>
+              La disposizione dipende da orientamento e posizione: orizzontale grande, media a sinistra o a destra, a
+              pieno campo una ogni quattro, verticale sola alternata, dittico quando due verticali sono consecutive.
+              Molta aria tra una tavola e l'altra.
+            </dd>
+            <dt>A 390 px</dt>
+            <dd>Una colonna con margini alternati. Il dittico resta affiancato.</dd>
+            <dt>A 1440 px</dt>
+            <dd>Griglia a 12 colonne, foto tra 5 e 12 colonne. Le più piccole delle tre.</dd>
+            <dt>Rischio</dt>
+            <dd>
+              Se il ritmo non è curato scade nel tema minimal qualsiasi. L'impaginazione dipende dall'ordine: è un
+              pregio, l'editing di Leo diventa visibile, ma cambiare l'ordine cambia la pagina.
+            </dd>
+            <dt>Spec</dt>
+            <dd>
+              A 390 px il lazy loading nativo di Chrome richiede 6 immagini al primo render invece di 3, perché anticipa
+              di circa 1250 px e le tavole sono basse. Non è specifico di questa direzione: va risolto
+              nell'implementazione.
+            </dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="direzione" aria-labelledby="proiezione">
+        <img src="anteprime/proiezione.webp" width="1200" height="375" alt="Proiezione a 1440 px: home e portfolio" />
+        <div>
+          <h2 id="proiezione">B. Proiezione</h2>
+          <p class="concetto">
+            La sala buia. Diapositive proiettate una alla volta, come le vede una giuria su uno schermo grande.
+          </p>
+          <ul class="apri">
+            <li><a href="proiezione/index.html">Home</a></li>
+            <li><a href="proiezione/portfolio.html">Portfolio</a></li>
+          </ul>
+          <dl>
+            <dt>Palette</dt>
+            <dd>
+              <ul class="campioni">
+                <li><span style="background: #262626"></span>sala #262626</li>
+                <li><span style="background: #e8e8e5"></span>telo #E8E8E5</li>
+                <li><span style="background: #9c9c98"></span>penombra #9C9C98</li>
+              </ul>
+              Grigio neutro da camera di lavoro, non quasi nero: un contorno neutro non falsa il colore delle foto.
+              Nessun accento.
+            </dd>
+            <dt>Caratteri</dt>
+            <dd>Jost, discendente di Futura e lessico dei titoli di testa. Cifre tabulari per il contatore.</dd>
+            <dt>Portfolio</dt>
+            <dd>
+              Una foto per schermo, contenuta alla massima dimensione, scroll snap di prossimità, contatore «12 / 36»
+              fisso in basso. Il contatore è solo visivo: annunciarlo a ogni foto sarebbe rumore.
+            </dd>
+            <dt>A 390 px</dt>
+            <dd>Le verticali riempiono lo schermo, le orizzontali restano piccole, circa 358 × 239 px.</dd>
+            <dt>A 1440 px</dt>
+            <dd>Un'orizzontale arriva a 1344 px di larghezza: la direzione che mostra le foto più grandi.</dd>
+            <dt>Rischio</dt>
+            <dd>
+              Lo snap può infastidire chi scorre veloce. A 150-200 foto sono 150-200 schermi. Il fondo scuro dà a tutto
+              un tono da cinema, anche alle foto luminose.
+            </dd>
+            <dt>Spec</dt>
+            <dd>3 immagini al primo render a 390 e a 1440 px. Conforme.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="direzione" aria-labelledby="manifesto">
+        <img src="anteprime/manifesto.webp" width="1200" height="375" alt="Manifesto a 1440 px: home e portfolio" />
+        <div>
+          <h2 id="manifesto">C. Manifesto</h2>
+          <p class="concetto">
+            La copertina di rivista. Il nome come immagine, il lavoro come parete. Il Bodoni nasce a Parma: identità
+            italiana leggibile da una giuria internazionale.
+          </p>
+          <ul class="apri">
+            <li><a href="manifesto/index.html">Home</a></li>
+            <li><a href="manifesto/portfolio.html">Portfolio</a></li>
+          </ul>
+          <dl>
+            <dt>Palette</dt>
+            <dd>
+              <ul class="campioni">
+                <li><span style="background: #ffffff"></span>bianco #FFFFFF</li>
+                <li><span style="background: #000000"></span>nero #000000</li>
+                <li><span style="background: #5e5e5e"></span>grigio #5E5E5E</li>
+                <li><span style="background: #f2f2f2"></span>velina #F2F2F2</li>
+              </ul>
+            </dd>
+            <dt>Caratteri</dt>
+            <dd>Bodoni Moda con asse ottico, tondo e corsivo, una sola famiglia. Il nome a tutta larghezza.</dd>
+            <dt>Portfolio</dt>
+            <dd>
+              Mosaico a righe giustificate in CSS puro: ogni foto cresce in proporzione al suo rapporto, così le righe
+              hanno tutte la stessa altezza. Righe alte il 42% dello schermo a 1440 px.
+            </dd>
+            <dt>A 390 px</dt>
+            <dd>Nome su due righe. Il mosaico alterna orizzontali sole e coppie di verticali.</dd>
+            <dt>A 1440 px</dt>
+            <dd>Tre foto per riga, vista d'insieme immediata. Home impaginata a coppie grande e piccolo.</dd>
+            <dt>Rischio</dt>
+            <dd>
+              Il nome compete con le foto. Il Bodoni sottile a grandi dimensioni dice moda più che reportage. Il
+              mosaico rimpicciolisce proprio la singola foto che la giuria guarda.
+            </dd>
+            <dt>Spec</dt>
+            <dd>
+              <strong>Viola US-2 per costruzione:</strong> 6 foto nel primo schermo a 1440 px e 10 richieste al primo
+              render (7 a 390), contro un massimo di 3. Per adottarlo si cambia lo spec, oppure il portfolio prende la
+              meccanica di A o di B e il mosaico resta linguaggio della home.
+            </dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="comune" aria-labelledby="comune">
+        <h2 id="comune">Cosa vale per tutte e tre</h2>
+        <h3>Rispettato, e verificato sul DOM</h3>
+        <ul>
+          <li>
+            AVIF con ripiego WebP, nessun JPEG. <code>srcset</code> da 400 a 2400 px, mai oltre 2400 sul lato lungo.
+            <code>sizes</code>, <code>width</code>, <code>height</code>, <code>decoding="async"</code> e alt in
+            italiano su ogni foto.
+          </li>
+          <li>Nel portfolio sono <code>eager</code> solo le prime tre, in home solo il poster.</li>
+          <li>
+            Il poster dell'hero è l'LCP. La clip, 5,9 s, 1,42 MB e senza audio, parte dopo il load. Non si scarica
+            sotto i 768 px né con <code>prefers-reduced-motion</code>.
+          </li>
+          <li>Nessuno scorrimento orizzontale a 320 px. Coppie di colori tutte sopra 4,5:1. Focus visibile.</li>
+        </ul>
+        <h3>Non misurato</h3>
+        <ul>
+          <li>
+            LCP, peso fino all'LCP e JavaScript trasferito. Lighthouse CI non è installato, e installarlo sarebbe una
+            dipendenza: i budget si misurano sull'implementazione vera.
+          </li>
+        </ul>
+        <h3>Provvisorio</h3>
+        <ul>
+          <li>Motto, raccordo e inviti all'azione: segnaposto nel tono di <code>05-content.md</code>, da far scrivere a Leo.</li>
+          <li>Chi sono, FAQ, Contatti ed English non portano da nessuna parte.</li>
+          <li>I font arrivano da Google Fonts via CDN. In produzione vanno ospitati in locale.</li>
+        </ul>
+        <h3>Cosa guardare</h3>
+        <ol>
+          <li>Ogni pagina a 1440 e a 390 px, con gli strumenti per sviluppatori.</li>
+          <li>La stessa foto nelle tre direzioni, per esempio Venezia (19): quanto è grande, quanto spazio ha intorno.</li>
+          <li>Quale delle tre reggerebbe le foto di Leo, non queste.</li>
+        </ol>
+        <p class="nota">
+          Foto: Unsplash, licenza Unsplash, slug di provenienza in <code>comune/foto.js</code>. Clip: Mixkit 5217,
+          licenza Mixkit.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
