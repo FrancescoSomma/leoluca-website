@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Leo Luca Iacoviello, fotografo di matrimoni</title>
+    <meta name="description" content="Prototipo Tavole: home." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="stile.css" />
+  </head>
+  <body>
+    <a class="salta" href="#contenuto">Vai al contenuto</a>
+    <header class="testata">
+      <a class="nome" href="index.html">Leo Luca Iacoviello</a>
+      <nav class="menu" aria-label="Principale">
+        <ul>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="#">Chi sono</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Contatti</a></li>
+          <li><a href="#" hreflang="en" lang="en">English</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="contenuto">
+      <div class="copertina">
+        <picture>
+          <source
+            type="image/avif"
+            srcset="../comune/media/poster-400.avif 400w, ../comune/media/poster-800.avif 800w, ../comune/media/poster-1200.avif 1200w, ../comune/media/poster-1600.avif 1600w, ../comune/media/poster-1920.avif 1920w"
+            sizes="100vw"
+          />
+          <!-- alt vuoto: il motto accanto porta già il significato dell'hero. -->
+          <img
+            src="../comune/media/poster-1200.webp"
+            srcset="../comune/media/poster-400.webp 400w, ../comune/media/poster-800.webp 800w, ../comune/media/poster-1200.webp 1200w, ../comune/media/poster-1600.webp 1600w, ../comune/media/poster-1920.webp 1920w"
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            alt=""
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
+        <video data-clip="../comune/media/hero.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      </div>
+
+      <div class="frontespizio">
+        <h1>Fotografo i matrimoni mentre accadono.</h1>
+      </div>
+
+      <p class="raccordo">Qualche fotografia dagli ultimi matrimoni. Le altre sono nel portfolio.</p>
+
+      <div class="tavole" id="tavole" data-insieme="home"></div>
+
+      <div class="seguito">
+        <a href="portfolio.html">Vedi il portfolio completo</a>
+      </div>
+    </main>
+
+    <footer class="piede">
+      <p>Leo Luca Iacoviello, fotografo di matrimoni</p>
+      <p><a href="#">info@leolucaiacoviello.it</a></p>
+    </footer>
+
+    <script src="../comune/foto.js"></script>
+    <script src="pagina.js"></script>
+    <script src="../comune/hero.js"></script>
+  </body>
+</html>
