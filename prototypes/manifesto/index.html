@@ -4,17 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Leo Luca Iacoviello, fotografo di matrimoni</title>
-    <meta name="description" content="Prototipo Tavole: home." />
+    <meta name="description" content="Prototipo Manifesto: home." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="stile.css" />
   </head>
   <body>
     <a class="salta" href="#contenuto">Vai al contenuto</a>
-    <header class="testata">
-      <a class="nome" href="index.html">Leo Luca Iacoviello</a>
+    <header class="testata testata--home">
       <nav class="menu" aria-label="Principale">
         <ul>
           <li><a href="portfolio.html">Portfolio</a></li>
@@ -27,6 +26,8 @@
     </header>
 
     <main id="contenuto">
+      <h1 class="testata-grande"><span>Leo Luca</span> <span>Iacoviello</span></h1>
+
       <div class="copertina">
         <picture>
           <source
@@ -34,7 +35,7 @@
             srcset="../comune/media/poster-400.avif 400w, ../comune/media/poster-800.avif 800w, ../comune/media/poster-1200.avif 1200w, ../comune/media/poster-1600.avif 1600w, ../comune/media/poster-1920.avif 1920w"
             sizes="(min-width: 768px) 100vw, 222vw"
           />
-          <!-- alt vuoto: il motto accanto porta già il significato dell'hero. -->
+          <!-- alt vuoto: nome e motto accanto portano già il significato dell'hero. -->
           <img
             src="../comune/media/poster-1200.webp"
             srcset="../comune/media/poster-400.webp 400w, ../comune/media/poster-800.webp 800w, ../comune/media/poster-1200.webp 1200w, ../comune/media/poster-1600.webp 1600w, ../comune/media/poster-1920.webp 1920w"
@@ -50,13 +51,12 @@
         <video data-clip="../comune/media/hero.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
       </div>
 
-      <div class="frontespizio">
-        <h1>Fotografo i matrimoni mentre accadono.</h1>
+      <div class="editoriale">
+        <p class="motto">Fotografo i matrimoni mentre accadono.</p>
+        <p class="raccordo">Qualche fotografia dagli ultimi matrimoni. Le altre sono nel portfolio.</p>
       </div>
 
-      <p class="raccordo">Qualche fotografia dagli ultimi matrimoni. Le altre sono nel portfolio.</p>
-
-      <div class="tavole" id="tavole" data-insieme="home"></div>
+      <div class="impaginato" id="impaginato"></div>
 
       <div class="seguito">
         <a href="portfolio.html">Vedi il portfolio completo</a>
