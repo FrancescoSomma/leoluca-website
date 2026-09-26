@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { FotoSchema, PaginaSchema, FaqSchema } from "../../src/content/schema";
-import { caricaFoto, altPer } from "../../src/content/load";
+import { caricaFoto, altPer, seoPer } from "../../src/content/load";
 import type { Foto } from "../../src/content/schema";
 
 describe("schema Foto", () => {
@@ -48,16 +48,63 @@ describe("US-8 testo solo in italiano", () => {
     expect(faq.risposta_en).toBe("");
   });
 
-  it("una Pagina con solo i campi italiani viene accettata, senza ripiego sull'italiano", () => {
+  it("una Pagina con testi italiani e SEO inglese viene accettata, senza ripiego sull'italiano per titolo_en e corpo_en", () => {
     const pagina = PaginaSchema.parse({
       slug: "faq",
       titolo_it: "Domande frequenti",
       seo_title_it: "FAQ",
+      seo_title_en: "FAQ",
       seo_description_it: "Le risposte alle domande più comuni.",
+      seo_description_en: "Answers to the most common questions.",
     });
     expect(pagina.titolo_en).toBe("");
-    expect(pagina.seo_title_en).toBe("");
-    expect(pagina.seo_description_en).toBe("");
+    expect(pagina.corpo_en).toBe("");
+  });
+
+  it("rifiuta seo_title_en vuoto", () => {
+    expect(() =>
+      PaginaSchema.parse({
+        slug: "faq",
+        titolo_it: "Domande frequenti",
+        seo_title_it: "FAQ",
+        seo_description_it: "Le risposte alle domande più comuni.",
+        seo_description_en: "Answers to the most common questions.",
+      }),
+    ).toThrow();
+  });
+
+  it("rifiuta seo_description_en vuoto", () => {
+    expect(() =>
+      PaginaSchema.parse({
+        slug: "faq",
+        titolo_it: "Domande frequenti",
+        seo_title_it: "FAQ",
+        seo_title_en: "FAQ",
+        seo_description_it: "Le risposte alle domande più comuni.",
+      }),
+    ).toThrow();
+  });
+});
+
+describe("seoPer", () => {
+  it("legge i campi italiani per locale 'it'", () => {
+    expect(seoPer("portfolio", "it")).toEqual({
+      title: "[SEGNAPOSTO] Titolo SEO portfolio",
+      description:
+        "[SEGNAPOSTO] Descrizione SEO del portfolio, da sostituire con il testo definitivo.",
+    });
+  });
+
+  it("legge i campi inglesi per locale 'en'", () => {
+    expect(seoPer("portfolio", "en")).toEqual({
+      title: "[PLACEHOLDER] Portfolio SEO title",
+      description:
+        "[PLACEHOLDER] SEO description for the portfolio page, to be replaced with final copy.",
+    });
+  });
+
+  it("lancia per uno slug assente", () => {
+    expect(() => seoPer("inesistente", "it")).toThrow(/inesistente/);
   });
 });
 
