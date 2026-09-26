@@ -28,8 +28,9 @@ export const PaginaSchema = z.object({
 });
 export type Pagina = z.infer<typeof PaginaSchema>;
 
-// Stesso vincolo di PaginaSchema: inglese vuoto = traduzione mancante, non
-// pubblicata in inglese, nessun ripiego sull'italiano (US-8).
+// Stesso vincolo di titolo_en/corpo_en in PaginaSchema (non dei campi SEO,
+// obbligatori solo lì): inglese vuoto = traduzione mancante, non pubblicata
+// in inglese, nessun ripiego sull'italiano (US-8).
 export const FaqSchema = z.object({
   ordine: z.number().int().nonnegative(),
   domanda_it: z.string().min(1),

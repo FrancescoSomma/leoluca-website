@@ -35,8 +35,6 @@ export function caricaPagine(): Pagina[] {
   return PaginaSchema.array().parse(datiPagine);
 }
 
-// slug è una stringa e non un PageKey: questo modulo non conosce le rotte, a
-// parte Locale (convenzioni di dipendenza in docs/07).
 export function seoPer(slug: string, locale: Locale) {
   const pagina = caricaPagine().find((p) => p.slug === slug);
   if (!pagina) throw new Error(`pagine.json: manca la pagina "${slug}"`);
