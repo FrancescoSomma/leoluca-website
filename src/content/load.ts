@@ -1,0 +1,44 @@
+import type { Locale } from "../i18n/routes";
+import {
+  FotoSchema,
+  FaqSchema,
+  PaginaSchema,
+  ImpostazioniSchema,
+  type Foto,
+  type Faq,
+  type Pagina,
+  type Impostazioni,
+} from "./schema";
+// Import statici, non letture da disco: nel bundle di build di Vite un
+// percorso relativo a import.meta.url non punta più ai file sorgente.
+import datiFoto from "./foto.json";
+import datiFaq from "./faq.json";
+import datiPagine from "./pagine.json";
+import datiImpostazioni from "./impostazioni.json";
+
+export function caricaFoto(): Foto[] {
+  const foto = FotoSchema.array().parse(datiFoto);
+  const ordini = foto.map((f) => f.ordine);
+  if (new Set(ordini).size !== ordini.length) {
+    throw new Error("foto.json: due foto hanno lo stesso ordine");
+  }
+  return foto.sort((a, b) => a.ordine - b.ordine);
+}
+
+export function caricaFaq(): Faq[] {
+  return FaqSchema.array()
+    .parse(datiFaq)
+    .sort((a, b) => a.ordine - b.ordine);
+}
+
+export function caricaPagine(): Pagina[] {
+  return PaginaSchema.array().parse(datiPagine);
+}
+
+export function caricaImpostazioni(): Impostazioni {
+  return ImpostazioniSchema.parse(datiImpostazioni);
+}
+
+export function altPer(foto: Foto, locale: Locale): string {
+  return locale === "it" ? foto.alt_it : foto.alt_en;
+}

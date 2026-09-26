@@ -1,0 +1,37 @@
+[
+  {
+    "file": "https://images.unsplash.com/photo-1532454781337-fc3edff34f91",
+    "ordine": 0,
+    "alt_it": "Sposa di spalle davanti alla finestra, lo strascico del velo steso sul pavimento della stanza",
+    "alt_en": "Bride seen from behind at the window, her veil trailing across the floor",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1632920665156-c84f643fcb37",
+    "ordine": 1,
+    "alt_it": "Un'amica allaccia i bottoni sulla schiena della sposa, i capelli ricci raccolti sotto il velo",
+    "alt_en": "A friend fastens the buttons on the bride's dress, her curls gathered beneath the veil",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1722805740076-7c51a8669afc",
+    "ordine": 2,
+    "alt_it": "Sposa di profilo a occhi chiusi, il velo sulle spalle, in controluce accanto alla finestra",
+    "alt_en": "Bride in profile with closed eyes, veil over her shoulders, backlit beside the window",
+    "in_home": false
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1679599441191-aa411b7ac27d",
+    "ordine": 3,
+    "alt_it": "Sposa in vestaglia bianca sorride tra le damigelle voltate di spalle, davanti a una vetrata",
+    "alt_en": "Bride in a white robe smiles among bridesmaids turned away, in front of a large window",
+    "in_home": false
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1708743978241-a447efb1ee02",
+    "ordine": 4,
+    "alt_it": "Una donna inginocchiata allaccia la scarpa alla sposa seduta in un salotto luminoso",
+    "alt_en": "A woman kneels to fasten the bride's shoe as she sits in a bright living room",
+    "in_home": false
+  }
+]

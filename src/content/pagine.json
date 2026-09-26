@@ -1,0 +1,68 @@
+[
+  {
+    "slug": "home",
+    "titolo_it": "[SEGNAPOSTO] Home",
+    "titolo_en": "[PLACEHOLDER] Home",
+    "seo_title_it": "[SEGNAPOSTO] Titolo SEO home",
+    "seo_title_en": "[PLACEHOLDER] Home SEO title",
+    "seo_description_it": "[SEGNAPOSTO] Descrizione SEO della home, da sostituire con il testo definitivo.",
+    "seo_description_en": "[PLACEHOLDER] SEO description for the home page, to be replaced with final copy.",
+    "corpo_it": "[SEGNAPOSTO] Corpo della home in italiano.",
+    "corpo_en": "[PLACEHOLDER] Home page body in English."
+  },
+  {
+    "slug": "portfolio",
+    "titolo_it": "[SEGNAPOSTO] Portfolio",
+    "titolo_en": "[PLACEHOLDER] Portfolio",
+    "seo_title_it": "[SEGNAPOSTO] Titolo SEO portfolio",
+    "seo_title_en": "[PLACEHOLDER] Portfolio SEO title",
+    "seo_description_it": "[SEGNAPOSTO] Descrizione SEO del portfolio, da sostituire con il testo definitivo.",
+    "seo_description_en": "[PLACEHOLDER] SEO description for the portfolio page, to be replaced with final copy.",
+    "corpo_it": "[SEGNAPOSTO] Corpo del portfolio in italiano.",
+    "corpo_en": "[PLACEHOLDER] Portfolio page body in English."
+  },
+  {
+    "slug": "about",
+    "titolo_it": "[SEGNAPOSTO] Chi sono",
+    "titolo_en": "[PLACEHOLDER] About",
+    "seo_title_it": "[SEGNAPOSTO] Titolo SEO chi sono",
+    "seo_title_en": "[PLACEHOLDER] About SEO title",
+    "seo_description_it": "[SEGNAPOSTO] Descrizione SEO di chi sono, da sostituire con il testo definitivo.",
+    "seo_description_en": "[PLACEHOLDER] SEO description for the about page, to be replaced with final copy.",
+    "corpo_it": "[SEGNAPOSTO] Corpo di chi sono in italiano.",
+    "corpo_en": "[PLACEHOLDER] About page body in English."
+  },
+  {
+    "slug": "faq",
+    "titolo_it": "[SEGNAPOSTO] FAQ",
+    "titolo_en": "[PLACEHOLDER] FAQ",
+    "seo_title_it": "[SEGNAPOSTO] Titolo SEO FAQ",
+    "seo_title_en": "[PLACEHOLDER] FAQ SEO title",
+    "seo_description_it": "[SEGNAPOSTO] Descrizione SEO delle FAQ, da sostituire con il testo definitivo.",
+    "seo_description_en": "[PLACEHOLDER] SEO description for the FAQ page, to be replaced with final copy.",
+    "corpo_it": "[SEGNAPOSTO] Corpo delle FAQ in italiano.",
+    "corpo_en": "[PLACEHOLDER] FAQ page body in English."
+  },
+  {
+    "slug": "contact",
+    "titolo_it": "[SEGNAPOSTO] Contatti",
+    "titolo_en": "[PLACEHOLDER] Contact",
+    "seo_title_it": "[SEGNAPOSTO] Titolo SEO contatti",
+    "seo_title_en": "[PLACEHOLDER] Contact SEO title",
+    "seo_description_it": "[SEGNAPOSTO] Descrizione SEO dei contatti, da sostituire con il testo definitivo.",
+    "seo_description_en": "[PLACEHOLDER] SEO description for the contact page, to be replaced with final copy.",
+    "corpo_it": "[SEGNAPOSTO] Corpo dei contatti in italiano.",
+    "corpo_en": "[PLACEHOLDER] Contact page body in English."
+  },
+  {
+    "slug": "thanks",
+    "titolo_it": "[SEGNAPOSTO] Grazie",
+    "titolo_en": "[PLACEHOLDER] Thank you",
+    "seo_title_it": "[SEGNAPOSTO] Titolo SEO grazie",
+    "seo_title_en": "[PLACEHOLDER] Thank you SEO title",
+    "seo_description_it": "[SEGNAPOSTO] Descrizione SEO della conferma invio, da sostituire con il testo definitivo.",
+    "seo_description_en": "[PLACEHOLDER] SEO description for the thank-you page, to be replaced with final copy.",
+    "corpo_it": "[SEGNAPOSTO] Corpo della conferma invio in italiano.",
+    "corpo_en": "[PLACEHOLDER] Thank-you page body in English."
+  }
+]
