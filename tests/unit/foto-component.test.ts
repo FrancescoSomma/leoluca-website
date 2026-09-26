@@ -2,9 +2,9 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import Foto from "../../src/components/Foto.astro";
 
-// Ritratto 4480×6720 (US-2, R25): con `inferSize` + `widths` fino a 2400,
-// Astro genera un derivato "2400w" alto 3600 px. Serve un fixture con questa
-// forma per far fallire il test sul lato lungo contro il componente sbagliato.
+// Ritratto 4480×6720 (US-2): con `inferSize` + `widths` fino a 2400, Astro
+// genera un derivato "2400w" alto 3600 px. Serve un fixture con questa forma
+// per far fallire il test sul lato lungo contro il componente sbagliato.
 const foto = {
   file: "https://images.unsplash.com/photo-1532454781337-fc3edff34f91",
   ordine: 0,
@@ -90,6 +90,11 @@ describe("componente Foto", () => {
       ...foto,
       file: foto.file.replace("https://", "http://"),
     };
+    // Errore atteso, non un toThrow() generico: è l'unica guardia sulla
+    // scelta di inferRemoteSize da `astro:assets` invece che da
+    // `astro/assets/utils` (vedi Foto.astro). Un proxy che blocca la porta
+    // 80, o un redirect http→https, farebbe fallire questa richiesta per un
+    // motivo diverso e il test passerebbe comunque, per il motivo sbagliato.
     await expect(
       container.renderToString(Foto, {
         props: {
@@ -99,6 +104,6 @@ describe("componente Foto", () => {
           sizes: "100vw",
         },
       }),
-    ).rejects.toThrow();
+    ).rejects.toThrow(/not allowed by your image configuration/);
   });
 });
