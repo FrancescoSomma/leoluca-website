@@ -47,11 +47,18 @@ for (const percorso of ["/it/portfolio/", "/en/portfolio/"]) {
   });
 }
 
-test("solo le prime tre immagini sono eager", async ({ page }) => {
-  await page.goto("/it/portfolio/");
-  const eager = page.locator('img[loading="eager"]');
-  await expect(eager).toHaveCount(3);
-});
+for (const percorso of ["/it/portfolio/", "/en/portfolio/"]) {
+  test(`${percorso} solo le prime tre immagini del flusso sono eager, nell'ordine`, async ({
+    page,
+  }) => {
+    await page.goto(percorso);
+    const loading = await page
+      .locator("img")
+      .evaluateAll((imgs) => imgs.map((i) => i.getAttribute("loading")));
+    expect(loading.slice(0, 3)).toEqual(["eager", "eager", "eager"]);
+    expect(loading.slice(3)).toEqual(loading.slice(3).map(() => "lazy"));
+  });
+}
 
 test("ogni immagine ha un testo alternativo non vuoto", async ({ page }) => {
   await page.goto("/it/portfolio/");
@@ -93,7 +100,14 @@ test("l'ordine del flusso inglese segue il campo ordine", async ({ page }) => {
 // pagina costruita (npm run build, poi preview) devono essere derivati sotto
 // /_astro/. Il test del container di Foto.astro non basta: verifica il
 // contratto del componente, non l'output reale dopo la build.
-test("ogni src e ogni candidato di srcset viene dai derivati /_astro/", async ({
+//
+// Solo il prefisso /_astro/ non basta: passerebbe anche un originale
+// ricopiato lì sotto con estensione .jpg, o un ripiego .png se
+// fallbackFormat="webp" sparisse da Foto.astro. Si verifica anche
+// l'estensione, avif o webp, gli unici due formati ammessi dallo spec.
+const DERIVATO = /^\/_astro\/[^?#]+\.(avif|webp)$/;
+
+test("ogni src e ogni candidato di srcset viene dai derivati /_astro/ in avif o webp", async ({
   page,
 }) => {
   await page.goto("/it/portfolio/");
@@ -105,12 +119,12 @@ test("ogni src e ogni candidato di srcset viene dai derivati /_astro/", async ({
   );
   expect(elementi.length).toBeGreaterThan(0);
   for (const { src, srcset } of elementi) {
-    if (src) expect(src.startsWith("/_astro/")).toBe(true);
+    if (src) expect(src).toMatch(DERIVATO);
     if (srcset) {
       const candidati = srcset.split(",").map((c) => c.trim().split(/\s+/)[0]);
       expect(candidati.length).toBeGreaterThan(0);
       for (const candidato of candidati) {
-        expect(candidato.startsWith("/_astro/")).toBe(true);
+        expect(candidato).toMatch(DERIVATO);
       }
     }
   }

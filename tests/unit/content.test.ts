@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { FotoSchema, PaginaSchema, FaqSchema } from "../../src/content/schema";
-import { caricaFoto, altPer, seoPer } from "../../src/content/load";
+import {
+  caricaFoto,
+  caricaPagine,
+  altPer,
+  seoPer,
+} from "../../src/content/load";
 import type { Foto } from "../../src/content/schema";
 
 describe("schema Foto", () => {
@@ -61,7 +66,7 @@ describe("US-8 testo solo in italiano", () => {
     expect(pagina.corpo_en).toBe("");
   });
 
-  it("rifiuta seo_title_en vuoto", () => {
+  it("rifiuta seo_title_en mancante", () => {
     expect(() =>
       PaginaSchema.parse({
         slug: "faq",
@@ -73,7 +78,22 @@ describe("US-8 testo solo in italiano", () => {
     ).toThrow();
   });
 
-  it("rifiuta seo_description_en vuoto", () => {
+  it("rifiuta seo_title_en esplicitamente vuoto", () => {
+    // Un CMS che svuota un campo scrive "", non lo omette: senza questo
+    // caso il test sopra non copre la cancellazione da pannello (US-7/8).
+    expect(() =>
+      PaginaSchema.parse({
+        slug: "faq",
+        titolo_it: "Domande frequenti",
+        seo_title_it: "FAQ",
+        seo_title_en: "",
+        seo_description_it: "Le risposte alle domande più comuni.",
+        seo_description_en: "Answers to the most common questions.",
+      }),
+    ).toThrow();
+  });
+
+  it("rifiuta seo_description_en mancante", () => {
     expect(() =>
       PaginaSchema.parse({
         slug: "faq",
@@ -84,22 +104,39 @@ describe("US-8 testo solo in italiano", () => {
       }),
     ).toThrow();
   });
+
+  it("rifiuta seo_description_en esplicitamente vuoto", () => {
+    expect(() =>
+      PaginaSchema.parse({
+        slug: "faq",
+        titolo_it: "Domande frequenti",
+        seo_title_it: "FAQ",
+        seo_title_en: "FAQ",
+        seo_description_it: "Le risposte alle domande più comuni.",
+        seo_description_en: "",
+      }),
+    ).toThrow();
+  });
 });
 
 describe("seoPer", () => {
+  // Come altPer sotto: si legge il valore atteso da pagine.json invece di
+  // fissare il segnaposto, così il test non si rompe quando 05-content
+  // sostituisce i testi definitivi.
+  const pagina = caricaPagine().find((p) => p.slug === "portfolio");
+  if (!pagina) throw new Error('pagine.json: manca la pagina "portfolio"');
+
   it("legge i campi italiani per locale 'it'", () => {
     expect(seoPer("portfolio", "it")).toEqual({
-      title: "[SEGNAPOSTO] Titolo SEO portfolio",
-      description:
-        "[SEGNAPOSTO] Descrizione SEO del portfolio, da sostituire con il testo definitivo.",
+      title: pagina.seo_title_it,
+      description: pagina.seo_description_it,
     });
   });
 
   it("legge i campi inglesi per locale 'en'", () => {
     expect(seoPer("portfolio", "en")).toEqual({
-      title: "[PLACEHOLDER] Portfolio SEO title",
-      description:
-        "[PLACEHOLDER] SEO description for the portfolio page, to be replaced with final copy.",
+      title: pagina.seo_title_en,
+      description: pagina.seo_description_en,
     });
   });
 
