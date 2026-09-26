@@ -127,6 +127,7 @@ legge.
 | 2026-09-26 | 7, 8, 9 | Titolo SEO inglese vuoto: da decidere prima dello Step 3 | Vedi il Task 7 |
 | 2026-09-26 | tutti | Global Constraints: si scartano le larghezze il cui lato lungo supera 2400 px | Spec § Pipeline immagini e US-2 non reggevano insieme su una foto verticale; `Foto.astro` fa già così. Decisione di Francesco |
 | 2026-09-26 | tutti | Global Constraints: il ripiego WebP resta imposto, cambia il perché (PNG, non JPEG) | In Astro 7.3.3 `defaultFallbackFormat` è `png`; il formato dell'originale vale solo per un import ESM locale. Decisione di Francesco |
+| 2026-09-26 | 7, 8, 9 | `seo_title_en` e `seo_description_en` obbligatori nello schema; `seoPer` in `load.ts`; una frase in spec § Pagina | Li scrive lo sviluppo, non Leo, e un `title` vuoto viola WCAG 2.4.2. Decisione di Francesco, vedi il Task 7 |
 
 ## Global Constraints
 
@@ -1209,9 +1210,40 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 > e US-6 vuole comunque la controparte di ogni pagina: cosa fa la pagina
 > inglese in quel caso non lo dice né lo spec né il piano.
 
+> **Modifica (2026-09-26, decisione di Francesco).** Chiude il punto qui
+> sopra. `seo_title_en` e `seo_description_en` diventano obbligatori nello
+> schema, `min(1)` come i campi italiani e come `alt_en`: li scrive lo
+> sviluppo, non Leo (05-content), e una pagina senza `title` viola WCAG 2.4.2.
+> Se mancano la build fallisce e Netlify tiene online l'ultima deploy
+> riuscita; il pannello li marcherà obbligatori. US-8 resta valido per i testi
+> di Leo: `titolo_en` e `corpo_en` possono restare vuoti. Spec § Pagina lo
+> dice da questa data. Scartati: un ripiego su una stringa inglese fissa, che
+> lascerebbe silenziosa la traduzione mancante, e il non pubblicare la pagina
+> inglese, contro US-6.
+>
+> Lo schema lo cambia solo questo task. In `content.test.ts` il test US-8
+> della Pagina passa con i campi SEO inglesi e con `titolo_en` e `corpo_en`
+> vuoti, e un test nuovo rifiuta i campi SEO inglesi vuoti. Le pagine leggono
+> `title` e `description` da `seoPer`, in `load.ts` subito dopo
+> `caricaPagine()`, con un test per lingua e uno per lo slug assente:
+>
+> ```ts
+> export function seoPer(slug: string, locale: Locale) {
+>   const pagina = caricaPagine().find((p) => p.slug === slug);
+>   if (!pagina) throw new Error(`pagine.json: manca la pagina "${slug}"`);
+>   return locale === "it"
+>     ? { title: pagina.seo_title_it, description: pagina.seo_description_it }
+>     : { title: pagina.seo_title_en, description: pagina.seo_description_en };
+> }
+> ```
+>
+> `slug` è una stringa e non un `PageKey`: `load.ts` non conosce le rotte, a
+> parte `Locale` (convenzioni). I Task 8 e 9 la usano così com'è.
+
 **Files:**
-- Modify: `src/pages/it/portfolio.astro`, `src/pages/en/portfolio.astro`
-- Test: `tests/e2e/portfolio.spec.ts`
+- Modify: `src/pages/it/portfolio.astro`, `src/pages/en/portfolio.astro`,
+  `src/content/schema.ts`, `src/content/load.ts`
+- Test: `tests/e2e/portfolio.spec.ts`, `tests/unit/content.test.ts`
 
 **Interfaces:**
 - Consumes: `caricaFoto` (Task 4), `Foto.astro` (Task 5), `Base.astro` (Task 6).
@@ -1329,6 +1361,16 @@ git commit -m "feat: portfolio come flusso unico ordinato"
 >   (`seo_title_*`, `seo_description_*`), non scritti nella pagina: lo spec §
 >   SEO li vuole "dal modello contenuti". Gli slug di `pagine.json`
 >   coincidono con le chiavi di `PAGE_KEYS`.
+
+> **Modifica (2026-09-26, decisione di Francesco).** Titolo SEO inglese vuoto:
+> deciso nel Task 7, ultimo blocco Modifica. `seo_title_en` e
+> `seo_description_en` sono obbligatori nello schema, quindi il `title`
+> inglese non è mai vuoto e la pagina non gestisce il caso. `title` e
+> `description` si leggono con `seoPer("contact", locale)` e
+> `seoPer("thanks", locale)` di `load.ts`. Se il Task 7 non è ancora fuso,
+> `seoPer` si copia dal Task 7 identica, nello stesso punto di `load.ts`: due
+> aggiunte uguali si fondono senza conflitto. Schema e test dello schema li
+> cambia solo il Task 7.
 
 **Files:**
 - Create: `src/components/FormContatto.astro`
@@ -1537,6 +1579,11 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 > rapporto invertito ritaglia ogni ritratto in orizzontale, ed è l'errore più
 > probabile durante l'estrazione. Per la home, `title` e `description` vengono
 > da `caricaPagine()` come nel Task 7.
+
+> **Modifica (2026-09-26, decisione di Francesco).** Titolo SEO inglese vuoto:
+> deciso nel Task 7, ultimo blocco Modifica. I campi SEO inglesi sono
+> obbligatori nello schema, e la home legge `title` e `description` con
+> `seoPer("home", locale)` di `load.ts`, che a questo punto esiste già.
 
 **Files:**
 - Create: `src/components/Hero.astro`

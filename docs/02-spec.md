@@ -54,6 +54,11 @@ contenuto, non decorazione. Non li scrive il cliente: vedi
 | `seo_description_it`, `seo_description_en` | testo, ≤ 155 caratteri |
 | `corpo_it`, `corpo_en` | testo lungo |
 
+`seo_title_*` e `seo_description_*` sono obbligatori in entrambe le lingue:
+li scrive lo sviluppo, non Leo ([05-content.md](05-content.md)), come i testi
+alternativi delle foto, e una pagina senza `title` viola WCAG 2.4.2. La regola
+che segue vale per i testi che scrive Leo.
+
 Un contenuto privo di versione inglese non viene pubblicato nella sezione
 inglese, e il pannello lo segnala. Nessun ripiego automatico sull'italiano: il
 sito deve reggere davanti a una giuria internazionale.
