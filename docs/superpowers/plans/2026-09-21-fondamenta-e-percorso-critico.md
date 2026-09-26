@@ -130,6 +130,7 @@ legge.
 | 2026-09-26 | 7, 8, 9 | `seo_title_en` e `seo_description_en` obbligatori nello schema; `seoPer` in `load.ts`; una frase in spec § Pagina | Li scrive lo sviluppo, non Leo, e un `title` vuoto viola WCAG 2.4.2. Decisione di Francesco, vedi il Task 7 |
 | 2026-09-26 | 8, 9 | h1 di Contatti e Conferma da `ui.ts`; corpo da `corpoPer(slug, locale)` in fondo a `load.ts`, non reso se vuoto nella lingua | Il corpo è testo di Leo (05-content): US-8, nessun ripiego. Decisione di Francesco durante il Task 8, vedi il Task 9 |
 | 2026-09-26 | 7, 9 | Regola di reflow in `Foto.astro` (e nel poster di Hero); US-2 conta le immagini prioritarie, non le richieste | Senza CSS `scrollWidth` 2408 a 320 px; con il reflow Chrome richiede 5 foto su 5 sotto i 1440 px. Decisione di Francesco, vedi il Task 7 |
+| 2026-09-26 | 10 | `lighthouserc.json` su tutte le pagine pubbliche; LCP e peso solo su home e portfolio | Spec § Budget: CLS su tutte le pagine, JavaScript per pagina. Dalla review del Task 8, vedi il Task 10 |
 
 ## Global Constraints
 
@@ -1790,6 +1791,15 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 > verso `/it/` non scatta, perché `dist/index.html` esiste: oggi reindirizza
 > quella pagina. Allo Step 4, sulla deploy preview, verificare che
 > `/en/inesistente/` risponda 404 con la pagina inglese.
+
+> **Modifica (2026-09-26, dalla review del Task 8).** Lo spec misura il CLS su
+> tutte le pagine e il JavaScript per pagina, ma `lighthouserc.json` raccoglie
+> solo `/it/` e `/it/portfolio/`: dieci pagine pubbliche su dodici non passano
+> dal gate, compreso il form del Task 8, il primo con uno script vero. Allo
+> Step 1 `collect.url` elenca tutte le pagine pubbliche della sitemap, nelle
+> due lingue. CLS, accessibilità e peso degli script valgono per tutte. LCP e
+> peso trasferito, quando si accendono, valgono solo per home e portfolio, come
+> dice lo spec: `assertMatrix`, con un `matchingUrlPattern` per ciascun gruppo.
 
 **Files:**
 - Modify: `lighthouserc.json` (esiste dal Task 2)
