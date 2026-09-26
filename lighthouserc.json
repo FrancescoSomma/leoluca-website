@@ -2,7 +2,10 @@
   "ci": {
     "collect": {
       "staticDistDir": "./dist",
-      "url": ["http://localhost/it/index.html"],
+      "url": [
+        "http://localhost/it/index.html",
+        "http://localhost/it/portfolio/index.html"
+      ],
       "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",

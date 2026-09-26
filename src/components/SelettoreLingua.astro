@@ -1,0 +1,15 @@
+---
+import { pathFor, otherLocale, keyForPath, type Locale } from '../i18n/routes';
+import { t } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const key = keyForPath(Astro.url.pathname);
+const target = otherLocale(locale);
+const href = key ? pathFor(key, target) : pathFor('home', target);
+---
+
+<a href={href} hreflang={target} lang={target}>{t(locale, 'lang.switch')}</a>

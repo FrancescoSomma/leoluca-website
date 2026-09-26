@@ -12,7 +12,7 @@
     "astro": "astro",
     "lint": "astro check",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run tests/unit --reporter=dot --passWithNoTests",
+    "test": "vitest run tests/unit --reporter=dot",
     "e2e": "playwright test --reporter=line",
     "perf": "lhci autorun",
     "a11y": "playwright test tests/e2e/a11y.spec.ts",
