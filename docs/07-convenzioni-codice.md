@@ -62,6 +62,12 @@ filesystem e non è riusabile in un'altra pagina.
   `tests/unit/`. Il markup è un contratto e si verifica come tale.
 - Comportamento nel browser, navigazione, focus, accessibilità: Playwright, in
   `tests/e2e/`.
+- Un difetto di markup corretto si fissa anche con il container, in
+  `tests/unit/`, pure quando un test Playwright lo coglie già. Il test nel
+  browser dice che la pagina non va; quello sul markup dice quale componente
+  ha rotto il contratto, e lo dice in un secondo invece che dopo una build.
+  Esempio: i link del nav di `Base.astro`, che `compressHTML` rendeva
+  attaccati togliendo gli spazi del sorgente.
 - Il test si scrive prima e lo si vede fallire. Un test mai fallito non prova
   nulla: prova solo di essere stato scritto.
 - Si asserisce il vincolo dello spec, non il dettaglio di implementazione. "Non
