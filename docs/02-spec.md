@@ -121,12 +121,22 @@ farmi un'idea complessiva del lavoro.
 - Il portfolio è un'unica sequenza ordinata. Nessuna categoria, nessun filtro,
   nessuna paginazione visibile.
 - L'ordine è quello definito nel contenuto ed è identico a ogni caricamento.
-- Al primo render vengono richieste al massimo 3 immagini. Le altre si caricano
-  avvicinandosi al viewport.
+- Al primo render al massimo 3 immagini sono prioritarie (`loading="eager"`).
+  Le altre usano il caricamento pigro del browser, che decide quanto
+  anticipare. Il peso di ciò che parte prima dell'LCP resta vincolato dal
+  budget.
 - Ogni immagine dichiara `width` e `height`.
 - Ogni immagine ha un testo alternativo non vuoto, nella lingua della pagina.
 - La sorgente massima servita è 2400 px sul lato lungo. L'originale non è
   raggiungibile dal markup.
+
+**Modifica rispetto alla bozza iniziale.** Il criterio era "al primo render
+vengono richieste al massimo 3 immagini". Il lazy loading nativo di Chrome
+anticipa di 1250-2500 px: con foto a piena larghezza, a 320, 390 e 768 px ha
+richiesto 5 foto su 5, circa 21 KB in più a 390 px con le foto di prova.
+Governarlo richiederebbe un `IntersectionObserver`, uno script sulla pagina
+e un componente immagine senza `<Picture>`: un costo sproporzionato, perché
+il peso fino all'LCP resta comunque vincolato dal budget.
 
 ### US-3 — Sapere chi è
 

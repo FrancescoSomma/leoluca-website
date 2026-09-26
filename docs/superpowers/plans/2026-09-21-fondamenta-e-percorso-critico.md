@@ -129,6 +129,7 @@ legge.
 | 2026-09-26 | tutti | Global Constraints: il ripiego WebP resta imposto, cambia il perché (PNG, non JPEG) | In Astro 7.3.3 `defaultFallbackFormat` è `png`; il formato dell'originale vale solo per un import ESM locale. Decisione di Francesco |
 | 2026-09-26 | 7, 8, 9 | `seo_title_en` e `seo_description_en` obbligatori nello schema; `seoPer` in `load.ts`; una frase in spec § Pagina | Li scrive lo sviluppo, non Leo, e un `title` vuoto viola WCAG 2.4.2. Decisione di Francesco, vedi il Task 7 |
 | 2026-09-26 | 8, 9 | h1 di Contatti e Conferma da `ui.ts`; corpo da `corpoPer(slug, locale)` in fondo a `load.ts`, non reso se vuoto nella lingua | Il corpo è testo di Leo (05-content): US-8, nessun ripiego. Decisione di Francesco durante il Task 8, vedi il Task 9 |
+| 2026-09-26 | 7, 9 | Regola di reflow in `Foto.astro` (e nel poster di Hero); US-2 conta le immagini prioritarie, non le richieste | Senza CSS `scrollWidth` 2408 a 320 px; con il reflow Chrome richiede 5 foto su 5 sotto i 1440 px. Decisione di Francesco, vedi il Task 7 |
 
 ## Global Constraints
 
@@ -1241,9 +1242,27 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 > `slug` è una stringa e non un `PageKey`: `load.ts` non conosce le rotte, a
 > parte `Locale` (convenzioni). I Task 8 e 9 la usano così com'è.
 
+> **Modifica (2026-09-26, decisione di Francesco durante il Task 7).** Senza
+> CSS ogni `<img>` si rende alla larghezza dei propri attributi, 1600 o
+> 2400 px CSS: a 320 px `scrollWidth` era 2408, contro 1.4.10, e il test
+> delle richieste passava (3 a 390 e a 1440 px) solo per questo. Con
+> `img { max-width: 100%; height: auto }` le richieste al primo render sono
+> 5 su 5 a 320, 390 e 768 px, 3 a 1440. Deciso:
+>
+> - `Foto.astro` porta quella sola regola, con un commento su 1.4.10: è il
+>   pavimento dello spec, non stile, come l'eccezione dello skip link in
+>   `Base.astro`. Deve raggiungere l'`<img>` che rende `<Picture>`, che è un
+>   altro componente. Un test e2e verifica che a 320 px il portfolio non
+>   scorra in orizzontale, nelle due lingue.
+> - US-2 è emendato: al massimo 3 immagini prioritarie, le altre in lazy
+>   nativo. Il test che contava le richieste si toglie; resta quello sulle 3
+>   eager, e il peso fino all'LCP lo misura Lighthouse nel Task 10.
+> - Scartato `IntersectionObserver`: `Foto.astro` senza `<Picture>`, uno
+>   script e un ripiego `<noscript>`, per governare circa 21 KB a 390 px.
+
 **Files:**
 - Modify: `src/pages/it/portfolio.astro`, `src/pages/en/portfolio.astro`,
-  `src/content/schema.ts`, `src/content/load.ts`
+  `src/content/schema.ts`, `src/content/load.ts`, `src/components/Foto.astro`
 - Test: `tests/e2e/portfolio.spec.ts`, `tests/unit/content.test.ts`
 
 **Interfaces:**
@@ -1592,6 +1611,14 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 > traduzione manca. In quel caso la home non rende il paragrafo: US-8, nessun
 > ripiego sull'italiano. `titolo_*` non si usa per l'h1, che nell'hero è il
 > motto delle Impostazioni.
+
+> **Modifica (2026-09-26, decisione di Francesco durante il Task 7).** Dal
+> Task 7 `Foto.astro` porta `img { max-width: 100%; height: auto }`, per
+> 1.4.10: senza, un'immagine si rende larga 1600 o 2400 px CSS e a 320 px la
+> pagina scorre in orizzontale. Le foto di richiamo la ereditano. Il poster
+> di `Hero.astro` usa `<Picture>` direttamente e ha lo stesso problema: gli
+> serve la stessa regola, con lo stesso test a 320 px sulla home. US-2 conta
+> le immagini prioritarie, non le richieste: vedi il Task 7.
 
 **Files:**
 - Create: `src/components/Hero.astro`
