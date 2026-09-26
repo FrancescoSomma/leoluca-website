@@ -110,6 +110,8 @@ legge.
 | 2026-09-26 | 5 | Foto di prova raggiungibile, controllo JPEG rafforzato | Vedi il Task 5 |
 | 2026-09-26 | 5 | Dimensioni con `inferRemoteSize` di `astro:assets` e larghezze filtrate sul lato lungo, al posto di `inferSize`; test sul lato lungo e sull'originale assente dal markup | Con `inferSize` un remoto verticale riceveva un derivato 2400×3600 e un `src` alla risoluzione dell'originale: il test del piano guardava solo i descrittori `w` |
 | 2026-09-26 | 9 | Il poster segue lo stesso limite di `Foto.astro`, con calcolo e larghezze in un modulo condiviso | Vedi il Task 9 |
+| 2026-09-26 | 7, 8, 9 | `title` e `description` da `caricaPagine()` | Spec § SEO: "dal modello contenuti"; il piano li scriveva a mano. Review finale della linea A |
+| 2026-09-26 | 7 | Test su build: `src` e `srcset` solo sotto `/_astro/` | Il container del Task 5 vede gli URL di sviluppo, che portano l'originale codificato. Review finale della linea A |
 | 2026-09-26 | 6 | Solo struttura, nessuno stile | Decisione di Francesco: lo stile ha un piano proprio |
 | 2026-09-26 | 7 | Test sulle richieste di immagini reali al primo render | Vedi il Task 7 |
 | 2026-09-26 | 9 | Poster nella pipeline, `min-width: 768px`, foto di richiamo da estendere | Vedi il Task 9 |
@@ -1170,6 +1172,20 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 > portare a un umano, con le due strade possibili, un caricamento pigro
 > governato da `IntersectionObserver` oppure un emendamento a US-2.
 
+> **Modifica (2026-09-26, dalla review finale della linea A).** Due
+> correzioni.
+>
+> - `title` e `description` vengono da `caricaPagine()`, per slug e lingua
+>   (`seo_title_*`, `seo_description_*`), non scritti nella pagina: lo spec §
+>   SEO li vuole "dal modello contenuti". Gli slug di `pagine.json`
+>   coincidono con le chiavi di `PAGE_KEYS`. Il blocco dello Step 3 li scrive
+>   a mano.
+> - Allo Step 1 si aggiunge un test sulla pagina costruita: ogni `src` e ogni
+>   candidato di `srcset` delle foto comincia con `/_astro/`. Copre "nessun
+>   originale raggiungibile dal markup" e "nessun JPEG" sull'output reale. Il
+>   test del container del Task 5 non basta: in sviluppo gli URL sono
+>   `/_image?href=…` e portano l'originale codificato.
+
 **Files:**
 - Modify: `src/pages/it/portfolio.astro`, `src/pages/en/portfolio.astro`
 - Test: `tests/e2e/portfolio.spec.ts`
@@ -1282,6 +1298,14 @@ git commit -m "feat: portfolio come flusso unico ordinato"
 >   resta escluso fino al piano di stile. Se axe segnala `target-size` sui
 >   controlli del form, non si allenta il test e non si aggiunge CSS: è una
 >   decisione da portare a un umano.
+
+> **Modifica (2026-09-26, dalla review finale della linea A).** Vale per
+> contatti e conferma.
+>
+> - `title` e `description` vengono da `caricaPagine()`, per slug e lingua
+>   (`seo_title_*`, `seo_description_*`), non scritti nella pagina: lo spec §
+>   SEO li vuole "dal modello contenuti". Gli slug di `pagine.json`
+>   coincidono con le chiavi di `PAGE_KEYS`.
 
 **Files:**
 - Create: `src/components/FormContatto.astro`
@@ -1485,6 +1509,11 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 > lato lungo ≤ 2400 e passa `width`/`height` espliciti al posto di
 > `inferSize`. Hero fa lo stesso: il calcolo e `LARGHEZZE` escono da
 > `Foto.astro` in un modulo condiviso, che Hero è il secondo a usare.
+> Con il calcolo si sposta anche il test a valori fissi di
+> `foto-component.test.ts` (il ritratto 4480×6720 dichiara 1600×2400): un
+> rapporto invertito ritaglia ogni ritratto in orizzontale, ed è l'errore più
+> probabile durante l'estrazione. Per la home, `title` e `description` vengono
+> da `caricaPagine()` come nel Task 7.
 
 **Files:**
 - Create: `src/components/Hero.astro`
