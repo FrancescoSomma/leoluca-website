@@ -40,7 +40,7 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 3 Rotte e lingua | fuso | — | 2 | `feat/fondamenta` | PC 1 |
 | 4 Modello contenuti | in corso | A | 3 | `feat/contenuti-immagini` | PC 1 |
 | 5 Componente Foto | libero | A | 4 | `feat/contenuti-immagini` | — |
-| 6 Layout base | libero | B | 3 | `feat/layout-form` | — |
+| 6 Layout base | in corso | B | 3 | `feat/layout-form` | PC 2 |
 | 8 Form e conferma | libero | B | 6 | `feat/layout-form` | — |
 | 7 Portfolio | bloccato | — | 5 e 6 fusi | da aprire | — |
 | 9 Home ed e2e | bloccato | — | 7 e 8 fusi | da aprire | — |
