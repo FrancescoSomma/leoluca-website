@@ -106,6 +106,7 @@ legge.
 | 2026-09-26 | tutti | Review per task con `spec-guardian` e `code-reviewer` | CLAUDE.md e ADR-0001 punto 6; il reviewer generico di SDD resta per la review finale |
 | 2026-09-26 | tutti | Un branch per linea, esecuzione su due macchine | Parallelismo, § Stato di avanzamento |
 | 2026-09-26 | 4 | `astro/zod`, JSON importati staticamente, foto di prova Unsplash | Vedi il Task 4 |
+| 2026-09-26 | 4 | Campi inglesi di Pagina e FAQ `.default("")` al posto di `min(1)` | US-8: un testo solo in italiano si salva e non si pubblica in inglese; con `min(1)` fermava la build. Filtrare spetta alle pagine (§ Cosa questo piano non copre) |
 | 2026-09-26 | 5 | Foto di prova raggiungibile, controllo JPEG rafforzato | Vedi il Task 5 |
 | 2026-09-26 | 6 | Solo struttura, nessuno stile | Decisione di Francesco: lo stile ha un piano proprio |
 | 2026-09-26 | 7 | Test sulle richieste di immagini reali al primo render | Vedi il Task 7 |
@@ -1712,7 +1713,9 @@ git commit -m "feat: gate di performance e configurazione Netlify"
 Ognuno richiede un piano proprio, e due sono bloccati.
 
 - **Pagine Chi sono e FAQ.** Non sono sul percorso critico e richiedono i testi
-  di Leo. Piano successivo, nessun blocco tecnico.
+  di Leo. Piano successivo, nessun blocco tecnico. Dal Task 4 i campi inglesi
+  di Pagina e FAQ possono essere stringhe vuote: la pagina inglese omette la
+  voce, senza ripiego sull'italiano (US-8), e il pannello lo segnala.
 - **Direzione visiva, design system e stile.** Non blocca questo piano, che
   produce markup corretto e accessibile, non un sito finito da vedere: il
   Task 6 costruisce solo la struttura. Le direzioni si esplorano con
