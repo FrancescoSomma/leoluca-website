@@ -274,7 +274,8 @@ Nessun originale viene mai servito al browser.
 - Gli originali (circa 10 MB l'uno, 1-2 GB complessivi) risiedono sullo storage
   esterno e non entrano nel repository.
 - La build produce derivati in AVIF e WebP alle larghezze 400, 800, 1200, 1600
-  e 2400 px.
+  e 2400 px. Si scarta ogni larghezza a cui il lato lungo supererebbe i
+  2400 px di US-2: una foto verticale 2:3 si ferma a 1600 × 2400.
 - Ogni `img` dichiara `srcset`, `sizes`, `width`, `height` e `decoding="async"`.
 - `loading="lazy"` su tutte le immagini tranne le prime tre del flusso e il
   poster dell'hero.

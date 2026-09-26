@@ -125,6 +125,7 @@ legge.
 | 2026-09-26 | 6 | Link alla home come primo del nav; skip link a fuoco nel flusso con `.skip:not(:focus)` | Review finale della linea B, approvate da Francesco: nessuna pagina portava alla home (WCAG 2.4.5), lo skip link a fuoco copriva il nav |
 | 2026-09-26 | tutti | Screenshot dello stato a fuoco in § Chiusura di ogni task | Lo skip link sovrapposto era invisibile negli screenshot a riposo. Approvato da Francesco |
 | 2026-09-26 | 7, 8, 9 | Titolo SEO inglese vuoto: da decidere prima dello Step 3 | Vedi il Task 7 |
+| 2026-09-26 | tutti | Global Constraints: si scartano le larghezze il cui lato lungo supera 2400 px | Spec § Pipeline immagini e US-2 non reggevano insieme su una foto verticale; `Foto.astro` fa già così. Decisione di Francesco |
 
 ## Global Constraints
 
@@ -136,7 +137,9 @@ Valgono per ogni task. I valori sono copiati dallo spec, non riassunti.
 - Clip hero ≤ **6 s**, ≤ **1.5 MB**, senza traccia audio.
 - JavaScript trasferito ≤ **50 KB compressi per pagina**, pagine pubbliche.
 - **WCAG 2.2 AA** su tutte le pagine. axe senza violazioni.
-- Derivati immagine: **AVIF e WebP**, larghezze **400, 800, 1200, 1600, 2400**.
+- Derivati immagine: **AVIF e WebP**, larghezze **400, 800, 1200, 1600, 2400**,
+  scartate quelle a cui il lato lungo supererebbe **2400 px**: un 2:3 si ferma
+  a 1600 × 2400.
 - Il formato di ripiego va imposto a **WebP** esplicitamente: il default di
   `<Picture>` è il formato dell'originale, cioè JPEG. Nessun JPEG servito.
 - `loading="lazy"` ovunque tranne **le prime tre** immagini del flusso e il
