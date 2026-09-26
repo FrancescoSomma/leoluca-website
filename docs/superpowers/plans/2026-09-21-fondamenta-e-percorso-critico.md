@@ -845,7 +845,7 @@ git commit -m "feat: modello contenuti validato con zod"
 - Produces: componente `<Foto foto={...} locale={...} priorita={boolean} sizes={string} />`
   che rende un `<picture>` conforme ai Global Constraints.
 
-- [ ] **Step 1: Scrivere il test che fallisce**
+- [x] **Step 1: Scrivere il test che fallisce**
 
 Il test rende il componente con il container di Astro e verifica il markup.
 
@@ -912,12 +912,12 @@ describe('componente Foto', () => {
 });
 ```
 
-- [ ] **Step 2: Eseguire il test e verificare che fallisca**
+- [x] **Step 2: Eseguire il test e verificare che fallisca**
 
 Run: `npm run test`
 Expected: FAIL, componente inesistente.
 
-- [ ] **Step 3: Implementare il componente**
+- [x] **Step 3: Implementare il componente**
 
 ```astro
 ---
@@ -955,7 +955,7 @@ const LARGHEZZE = [400, 800, 1200, 1600, 2400];
 />
 ```
 
-- [ ] **Step 4: Eseguire i test**
+- [x] **Step 4: Eseguire i test**
 
 Run: `npm run test`
 Expected: PASS, otto test verdi.
@@ -964,13 +964,13 @@ Se `inferSize` fallisce su URL remoti in build, sostituirlo con
 `inferRemoteSize()` da `astro/assets/utils` chiamato nel frontmatter e passare
 `width`/`height` espliciti. Il test su `width`/`height` copre entrambi i casi.
 
-- [ ] **Step 5: Chiudere il task**
+- [x] **Step 5: Chiudere il task**
 
 Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
 task produce una pagina che si vede, e i tre agenti di review sul diff. Le
 segnalazioni si risolvono prima del commit, non dopo.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/components/Foto.astro tests/unit/foto-component.test.ts
