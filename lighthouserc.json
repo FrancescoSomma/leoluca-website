@@ -1,0 +1,22 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./dist",
+      "url": ["http://localhost/it/index.html"],
+      "numberOfRuns": 3,
+      "settings": {
+        "preset": "desktop",
+        "throttlingMethod": "simulate"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "categories:accessibility": ["error", { "minScore": 1 }],
+        "resource-summary:script:size": ["error", { "maxNumericValue": 51200 }],
+        "largest-contentful-paint": "off",
+        "total-byte-weight": "off"
+      }
+    }
+  }
+}

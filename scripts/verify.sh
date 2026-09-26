@@ -26,8 +26,17 @@ if [ ! -f package.json ]; then
   exit 0
 fi
 
-# Aggiungi qui gli script man mano che esistono. --if-present passa se mancano.
-for step in lint typecheck build test perf a11y; do
+# In hook mode lo Stop hook ha 180s: niente build, e2e o Lighthouse, che lo
+# sforerebbero. L'uso manuale gira la catena intera, build prima di tutto
+# ciò che dipende da dist/.
+if [ "$HOOK_MODE" -eq 1 ]; then
+  STEPS="lint typecheck test"
+else
+  STEPS="lint typecheck build test e2e perf a11y"
+fi
+
+# --if-present passa se lo script manca.
+for step in $STEPS; do
   npm run "$step" --if-present --silent || fail "npm run $step è fallito"
 done
 

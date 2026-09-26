@@ -1,0 +1,33 @@
+{
+  "name": "leoluca-website",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint": "astro check",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run tests/unit --reporter=dot --passWithNoTests",
+    "e2e": "playwright test --reporter=line",
+    "perf": "lhci autorun",
+    "a11y": "playwright test tests/e2e/a11y.spec.ts",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "astro": "7.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.13.0",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.63.0",
+    "prettier": "^3.9.9",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.2"
+  }
+}
