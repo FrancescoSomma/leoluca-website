@@ -44,6 +44,14 @@ for (const key of PAGE_KEYS) {
         throw new Error("href mancante per link[rel=canonical]");
       expect(new URL(canonicalHref).pathname).toBe(pathFor(key, locale));
     });
+
+    test(`${percorso} il nav porta alla home`, async ({ page }) => {
+      await page.goto(percorso);
+      const homeLink = page
+        .getByRole("navigation")
+        .getByRole("link", { name: "Leo Luca Iacoviello" });
+      await expect(homeLink).toHaveAttribute("href", pathFor("home", locale));
+    });
   }
 }
 
@@ -62,6 +70,14 @@ for (const { percorso, locale } of PAGINE_404) {
   test(`${percorso} dichiara lang="${locale}"`, async ({ page }) => {
     await page.goto(percorso);
     await expect(page.locator("html")).toHaveAttribute("lang", locale);
+  });
+
+  test(`${percorso} il nav porta alla home`, async ({ page }) => {
+    await page.goto(percorso);
+    const homeLink = page
+      .getByRole("navigation")
+      .getByRole("link", { name: "Leo Luca Iacoviello" });
+    await expect(homeLink).toHaveAttribute("href", pathFor("home", locale));
   });
 }
 

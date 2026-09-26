@@ -46,6 +46,7 @@ const canonical = new URL(pathFor(pageKey, locale), Astro.site);
             non distinguibili a vista né come target separati.
           */
         }
+        <a href={pathFor('home', locale)}>Leo Luca Iacoviello</a>{' '}
         <a href={pathFor('portfolio', locale)}>{t(locale, 'nav.portfolio')}</a>{' '}
         <a href={pathFor('about', locale)}>{t(locale, 'nav.about')}</a>{' '}
         <a href={pathFor('faq', locale)}>{t(locale, 'nav.faq')}</a>{' '}

@@ -94,4 +94,28 @@ describe("layout Base", () => {
     // né come target separati (US-6, WCAG 2.2 AA 2.5.8).
     expect(nav[1]).not.toContain("</a><a");
   });
+
+  it("il primo collegamento del nav porta alla home della lingua corrente", async () => {
+    const htmlIt = await container.renderToString(Base, {
+      props: {
+        locale: "it",
+        pageKey: "about",
+        title: "Chi sono — Leo Luca Iacoviello",
+        description: "Descrizione di prova.",
+      },
+      slots: { default: "<p>Contenuto</p>" },
+    });
+    expect(htmlIt).toMatch(/<a href="\/it\/"[^>]*>Leo Luca Iacoviello<\/a>/);
+
+    const htmlEn = await container.renderToString(Base, {
+      props: {
+        locale: "en",
+        pageKey: "about",
+        title: "About — Leo Luca Iacoviello",
+        description: "Test description.",
+      },
+      slots: { default: "<p>Content</p>" },
+    });
+    expect(htmlEn).toMatch(/<a href="\/en\/"[^>]*>Leo Luca Iacoviello<\/a>/);
+  });
 });
