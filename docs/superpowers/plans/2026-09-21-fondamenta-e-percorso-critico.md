@@ -131,11 +131,9 @@ di verifica sono ora installabili dal Task 2.
 Nessun pacchetto si installa prima che questo ADR sia accettato da un umano.
 
 **Files:**
-
 - Create: `docs/03-adr/0005-stack-di-verifica.md`
 
 **Interfaces:**
-
 - Consumes: niente.
 - Produces: l'autorizzazione a installare le dipendenze di sviluppo usate da
   tutti i task successivi.
@@ -145,13 +143,13 @@ Nessun pacchetto si installa prima che questo ADR sia accettato da un umano.
 Usa `docs/03-adr/0000-template.md`. Una sola decisione: quali strumenti
 verificano il progetto. Proposta da argomentare nel documento:
 
-| Ruolo                    | Strumento                       |
-| ------------------------ | ------------------------------- |
-| Test unitari             | Vitest                          |
-| Test end-to-end          | Playwright                      |
-| Budget di performance    | Lighthouse CI                   |
+| Ruolo | Strumento |
+| --- | --- |
+| Test unitari | Vitest |
+| Test end-to-end | Playwright |
+| Budget di performance | Lighthouse CI |
 | Accessibilità automatica | axe, via `@axe-core/playwright` |
-| Tipi                     | `astro check` e `tsc --noEmit`  |
+| Tipi | `astro check` e `tsc --noEmit` |
 
 Alternative da scartare con il motivo reale, non a posteriori: Jest (più lento
 e senza supporto ESM nativo di pari qualità), Cypress (più pesante di
@@ -181,13 +179,11 @@ git commit -m "docs: ADR-0005 stack di verifica"
 ### Task 2: Scaffold Astro e gate di verifica attivo
 
 **Files:**
-
 - Create: `package.json`, `astro.config.mjs`, `tsconfig.json`, `.nvmrc`
 - Create: `src/pages/index.astro`
 - Modify: `.gitignore` (aggiungere `.netlify/`, `test-results/`, `playwright-report/`)
 
 **Interfaces:**
-
 - Consumes: ADR-0005 accettato (Task 1).
 - Produces: `npm run build`, `npm run typecheck`, `npm run test`, `npm run e2e`,
   `npm run perf`, `npm run a11y`, `npm run lint`. `./scripts/verify.sh` smette
@@ -206,14 +202,14 @@ npx astro --version   # deve stampare 7.3.3
 
 ```js
 // astro.config.mjs
-import { defineConfig } from "astro/config";
+import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   // Dominio provvisorio: Leo non ha ancora scelto tra i due che possiede.
-  site: "https://leolucaiacoviello.it",
+  site: 'https://leolucaiacoviello.it',
   i18n: {
-    defaultLocale: "it",
-    locales: ["it", "en"],
+    defaultLocale: 'it',
+    locales: ['it', 'en'],
     routing: {
       prefixDefaultLocale: true,
       redirectToDefaultLocale: true,
@@ -222,7 +218,7 @@ export default defineConfig({
   image: {
     // Gli originali vivono su storage a oggetti (ADR-0004). Il pattern va
     // ristretto all'host reale quando lo storage è scelto.
-    remotePatterns: [{ protocol: "https" }],
+    remotePatterns: [{ protocol: 'https' }],
   },
 });
 ```
@@ -311,13 +307,11 @@ git commit -m "feat: scaffold Astro 7.3.3 con routing i18n"
 ### Task 3: Mappa delle rotte e cambio lingua
 
 **Files:**
-
 - Create: `src/i18n/routes.ts`, `src/i18n/ui.ts`
 - Create: `src/components/SelettoreLingua.astro`
 - Test: `tests/unit/routes.test.ts`
 
 **Interfaces:**
-
 - Consumes: configurazione i18n (Task 2).
 - Produces:
   - `type Locale = 'it' | 'en'`
@@ -332,18 +326,12 @@ git commit -m "feat: scaffold Astro 7.3.3 con routing i18n"
 
 ```ts
 // tests/unit/routes.test.ts
-import { describe, it, expect } from "vitest";
-import { readdirSync, existsSync } from "node:fs";
-import {
-  ROUTES,
-  pathFor,
-  otherLocale,
-  keyForPath,
-  LOCALES,
-} from "../../src/i18n/routes";
+import { describe, it, expect } from 'vitest';
+import { readdirSync, existsSync } from 'node:fs';
+import { ROUTES, pathFor, otherLocale, keyForPath, LOCALES } from '../../src/i18n/routes';
 
-describe("mappa delle rotte", () => {
-  it("copre entrambe le lingue per ogni pagina", () => {
+describe('mappa delle rotte', () => {
+  it('copre entrambe le lingue per ogni pagina', () => {
     for (const [key, byLocale] of Object.entries(ROUTES)) {
       for (const locale of LOCALES) {
         expect(byLocale[locale], `${key}.${locale}`).toMatch(/^\/(it|en)\//);
@@ -351,7 +339,7 @@ describe("mappa delle rotte", () => {
     }
   });
 
-  it("ogni percorso inizia con il prefisso della propria lingua", () => {
+  it('ogni percorso inizia con il prefisso della propria lingua', () => {
     for (const byLocale of Object.values(ROUTES)) {
       for (const locale of LOCALES) {
         expect(byLocale[locale].startsWith(`/${locale}/`)).toBe(true);
@@ -359,27 +347,27 @@ describe("mappa delle rotte", () => {
     }
   });
 
-  it("gli slug italiani e inglesi sono diversi dove lo spec lo richiede", () => {
-    expect(pathFor("about", "it")).toBe("/it/chi-sono/");
-    expect(pathFor("about", "en")).toBe("/en/about/");
-    expect(pathFor("thanks", "it")).toBe("/it/grazie/");
-    expect(pathFor("thanks", "en")).toBe("/en/thank-you/");
+  it('gli slug italiani e inglesi sono diversi dove lo spec lo richiede', () => {
+    expect(pathFor('about', 'it')).toBe('/it/chi-sono/');
+    expect(pathFor('about', 'en')).toBe('/en/about/');
+    expect(pathFor('thanks', 'it')).toBe('/it/grazie/');
+    expect(pathFor('thanks', 'en')).toBe('/en/thank-you/');
   });
 
-  it("otherLocale inverte la lingua", () => {
-    expect(otherLocale("it")).toBe("en");
-    expect(otherLocale("en")).toBe("it");
+  it('otherLocale inverte la lingua', () => {
+    expect(otherLocale('it')).toBe('en');
+    expect(otherLocale('en')).toBe('it');
   });
 
-  it("keyForPath ritrova la pagina da un percorso", () => {
-    expect(keyForPath("/en/about/")).toBe("about");
-    expect(keyForPath("/it/sconosciuto/")).toBeUndefined();
+  it('keyForPath ritrova la pagina da un percorso', () => {
+    expect(keyForPath('/en/about/')).toBe('about');
+    expect(keyForPath('/it/sconosciuto/')).toBeUndefined();
   });
 
-  it("per ogni rotta esiste un file di pagina", () => {
+  it('per ogni rotta esiste un file di pagina', () => {
     for (const byLocale of Object.values(ROUTES)) {
       for (const locale of LOCALES) {
-        const slug = byLocale[locale].split("/").filter(Boolean)[1];
+        const slug = byLocale[locale].split('/').filter(Boolean)[1];
         const file = slug
           ? `src/pages/${locale}/${slug}.astro`
           : `src/pages/${locale}/index.astro`;
@@ -399,19 +387,19 @@ Expected: FAIL, `Cannot find module '../../src/i18n/routes'`.
 
 ```ts
 // src/i18n/routes.ts
-export const LOCALES = ["it", "en"] as const;
+export const LOCALES = ['it', 'en'] as const;
 export type Locale = (typeof LOCALES)[number];
 
 export type PageKey =
-  "home" | "portfolio" | "about" | "faq" | "contact" | "thanks";
+  | 'home' | 'portfolio' | 'about' | 'faq' | 'contact' | 'thanks';
 
 export const ROUTES: Record<PageKey, Record<Locale, string>> = {
-  home: { it: "/it/", en: "/en/" },
-  portfolio: { it: "/it/portfolio/", en: "/en/portfolio/" },
-  about: { it: "/it/chi-sono/", en: "/en/about/" },
-  faq: { it: "/it/faq/", en: "/en/faq/" },
-  contact: { it: "/it/contatti/", en: "/en/contact/" },
-  thanks: { it: "/it/grazie/", en: "/en/thank-you/" },
+  home:      { it: '/it/',           en: '/en/' },
+  portfolio: { it: '/it/portfolio/', en: '/en/portfolio/' },
+  about:     { it: '/it/chi-sono/',  en: '/en/about/' },
+  faq:       { it: '/it/faq/',       en: '/en/faq/' },
+  contact:   { it: '/it/contatti/',  en: '/en/contact/' },
+  thanks:    { it: '/it/grazie/',    en: '/en/thank-you/' },
 };
 
 export function pathFor(key: PageKey, locale: Locale): string {
@@ -419,11 +407,11 @@ export function pathFor(key: PageKey, locale: Locale): string {
 }
 
 export function otherLocale(locale: Locale): Locale {
-  return locale === "it" ? "en" : "it";
+  return locale === 'it' ? 'en' : 'it';
 }
 
 export function keyForPath(path: string): PageKey | undefined {
-  const normalised = path.endsWith("/") ? path : `${path}/`;
+  const normalised = path.endsWith('/') ? path : `${path}/`;
   return (Object.keys(ROUTES) as PageKey[]).find((key) =>
     LOCALES.some((locale) => ROUTES[key][locale] === normalised),
   );
@@ -434,34 +422,34 @@ export function keyForPath(path: string): PageKey | undefined {
 
 ```ts
 // src/i18n/ui.ts
-import type { Locale } from "./routes";
+import type { Locale } from './routes';
 
 const UI = {
   it: {
-    "nav.portfolio": "Portfolio",
-    "nav.about": "Chi sono",
-    "nav.faq": "FAQ",
-    "nav.contact": "Contatti",
-    "lang.switch": "English",
-    "skip.content": "Vai al contenuto",
-    "form.send": "Invia richiesta",
-    "form.error.required": "Questo campo è obbligatorio",
-    "form.error.email": "Inserisci un indirizzo email valido",
+    'nav.portfolio': 'Portfolio',
+    'nav.about': 'Chi sono',
+    'nav.faq': 'FAQ',
+    'nav.contact': 'Contatti',
+    'lang.switch': 'English',
+    'skip.content': 'Vai al contenuto',
+    'form.send': 'Invia richiesta',
+    'form.error.required': 'Questo campo è obbligatorio',
+    'form.error.email': 'Inserisci un indirizzo email valido',
   },
   en: {
-    "nav.portfolio": "Portfolio",
-    "nav.about": "About",
-    "nav.faq": "FAQ",
-    "nav.contact": "Contact",
-    "lang.switch": "Italiano",
-    "skip.content": "Skip to content",
-    "form.send": "Send request",
-    "form.error.required": "This field is required",
-    "form.error.email": "Enter a valid email address",
+    'nav.portfolio': 'Portfolio',
+    'nav.about': 'About',
+    'nav.faq': 'FAQ',
+    'nav.contact': 'Contact',
+    'lang.switch': 'Italiano',
+    'skip.content': 'Skip to content',
+    'form.send': 'Send request',
+    'form.error.required': 'This field is required',
+    'form.error.email': 'Enter a valid email address',
   },
 } as const;
 
-export type UiKey = keyof (typeof UI)["it"];
+export type UiKey = keyof (typeof UI)['it'];
 
 export function t(locale: Locale, key: UiKey): string {
   return UI[locale][key];
@@ -526,18 +514,16 @@ git commit -m "feat: mappa rotte bilingue e selettore lingua"
 ### Task 4: Modello dei contenuti validato
 
 **Files:**
-
 - Create: `src/content/schema.ts`, `src/content/load.ts`
 - Create: `src/content/foto.json`, `pagine.json`, `faq.json`, `impostazioni.json`
 - Test: `tests/unit/content.test.ts`
 
 **Interfaces:**
-
 - Consumes: `Locale` da `src/i18n/routes.ts` (Task 3).
 - Produces:
   - `FotoSchema`, `PaginaSchema`, `FaqSchema`, `ImpostazioniSchema` (zod)
   - `type Foto = { file: string; ordine: number; alt_it: string;
-alt_en: string; in_home: boolean }`
+    alt_en: string; in_home: boolean }`
   - `caricaFoto(): Foto[]` — ordinate per `ordine` crescente
   - `caricaFaq(): Faq[]`, `caricaPagine(): Pagina[]`, `caricaImpostazioni(): Impostazioni`
   - `altPer(foto: Foto, locale: Locale): string`
@@ -546,60 +532,56 @@ alt_en: string; in_home: boolean }`
 
 ```ts
 // tests/unit/content.test.ts
-import { describe, it, expect } from "vitest";
-import { FotoSchema } from "../../src/content/schema";
-import { caricaFoto, altPer } from "../../src/content/load";
+import { describe, it, expect } from 'vitest';
+import { FotoSchema } from '../../src/content/schema';
+import { caricaFoto, altPer } from '../../src/content/load';
 
-describe("schema Foto", () => {
+describe('schema Foto', () => {
   const valida = {
-    file: "https://storage.example/f001.jpg",
-    ordine: 0,
-    alt_it: "sposa sulla scalinata",
-    alt_en: "bride on the steps",
-    in_home: true,
+    file: 'https://storage.example/f001.jpg',
+    ordine: 0, alt_it: 'sposa sulla scalinata',
+    alt_en: 'bride on the steps', in_home: true,
   };
 
-  it("accetta una foto completa", () => {
+  it('accetta una foto completa', () => {
     expect(FotoSchema.parse(valida)).toMatchObject({ ordine: 0 });
   });
 
-  it("rifiuta un testo alternativo italiano vuoto", () => {
-    expect(() => FotoSchema.parse({ ...valida, alt_it: "" })).toThrow();
+  it('rifiuta un testo alternativo italiano vuoto', () => {
+    expect(() => FotoSchema.parse({ ...valida, alt_it: '' })).toThrow();
   });
 
-  it("rifiuta un testo alternativo inglese mancante", () => {
+  it('rifiuta un testo alternativo inglese mancante', () => {
     const { alt_en, ...senzaEn } = valida;
     expect(() => FotoSchema.parse(senzaEn)).toThrow();
   });
 
-  it("rifiuta un file che non è un URL remoto", () => {
-    expect(() =>
-      FotoSchema.parse({ ...valida, file: "./locale.jpg" }),
-    ).toThrow();
+  it('rifiuta un file che non è un URL remoto', () => {
+    expect(() => FotoSchema.parse({ ...valida, file: './locale.jpg' })).toThrow();
   });
 
-  it("in_home vale false se assente", () => {
+  it('in_home vale false se assente', () => {
     const { in_home, ...senzaHome } = valida;
     expect(FotoSchema.parse(senzaHome).in_home).toBe(false);
   });
 });
 
-describe("caricamento", () => {
-  it("restituisce le foto ordinate per ordine crescente", () => {
+describe('caricamento', () => {
+  it('restituisce le foto ordinate per ordine crescente', () => {
     const foto = caricaFoto();
     const ordini = foto.map((f) => f.ordine);
     expect(ordini).toEqual([...ordini].sort((a, b) => a - b));
   });
 
-  it("non ammette due foto con lo stesso ordine", () => {
+  it('non ammette due foto con lo stesso ordine', () => {
     const ordini = caricaFoto().map((f) => f.ordine);
     expect(new Set(ordini).size).toBe(ordini.length);
   });
 
-  it("altPer sceglie la lingua giusta", () => {
+  it('altPer sceglie la lingua giusta', () => {
     const foto = caricaFoto()[0];
-    expect(altPer(foto, "it")).toBe(foto.alt_it);
-    expect(altPer(foto, "en")).toBe(foto.alt_en);
+    expect(altPer(foto, 'it')).toBe(foto.alt_it);
+    expect(altPer(foto, 'en')).toBe(foto.alt_en);
   });
 });
 ```
@@ -613,10 +595,10 @@ Expected: FAIL, modulo `src/content/schema` inesistente.
 
 ```ts
 // src/content/schema.ts
-import { z } from "zod";
+import { z } from 'zod';
 
 export const FotoSchema = z.object({
-  file: z.string().url().startsWith("https://"),
+  file: z.string().url().startsWith('https://'),
   ordine: z.number().int().nonnegative(),
   alt_it: z.string().min(1),
   alt_en: z.string().min(1),
@@ -632,8 +614,8 @@ export const PaginaSchema = z.object({
   seo_title_en: z.string().min(1).max(60),
   seo_description_it: z.string().min(1).max(155),
   seo_description_en: z.string().min(1).max(155),
-  corpo_it: z.string().default(""),
-  corpo_en: z.string().default(""),
+  corpo_it: z.string().default(''),
+  corpo_en: z.string().default(''),
 });
 export type Pagina = z.infer<typeof PaginaSchema>;
 
@@ -654,9 +636,7 @@ export const ImpostazioniSchema = z.object({
   email: z.string().email(),
   telefono: z.string().optional(),
   area: z.string().min(1),
-  social: z
-    .array(z.object({ nome: z.string(), url: z.string().url() }))
-    .default([]),
+  social: z.array(z.object({ nome: z.string(), url: z.string().url() })).default([]),
 });
 export type Impostazioni = z.infer<typeof ImpostazioniSchema>;
 ```
@@ -671,50 +651,40 @@ ADR-0004 dovesse pretenderlo, si aggiorna prima lo spec.
 
 ```ts
 // src/content/load.ts
-import { readFileSync } from "node:fs";
-import type { Locale } from "../i18n/routes";
+import { readFileSync } from 'node:fs';
+import type { Locale } from '../i18n/routes';
 import {
-  FotoSchema,
-  FaqSchema,
-  PaginaSchema,
-  ImpostazioniSchema,
-  type Foto,
-  type Faq,
-  type Pagina,
-  type Impostazioni,
-} from "./schema";
+  FotoSchema, FaqSchema, PaginaSchema, ImpostazioniSchema,
+  type Foto, type Faq, type Pagina, type Impostazioni,
+} from './schema';
 
 function leggi(nome: string): unknown {
-  return JSON.parse(
-    readFileSync(new URL(`./${nome}.json`, import.meta.url), "utf-8"),
-  );
+  return JSON.parse(readFileSync(new URL(`./${nome}.json`, import.meta.url), 'utf-8'));
 }
 
 export function caricaFoto(): Foto[] {
-  const foto = FotoSchema.array().parse(leggi("foto"));
+  const foto = FotoSchema.array().parse(leggi('foto'));
   const ordini = foto.map((f) => f.ordine);
   if (new Set(ordini).size !== ordini.length) {
-    throw new Error("foto.json: due foto hanno lo stesso ordine");
+    throw new Error('foto.json: due foto hanno lo stesso ordine');
   }
   return foto.sort((a, b) => a.ordine - b.ordine);
 }
 
 export function caricaFaq(): Faq[] {
-  return FaqSchema.array()
-    .parse(leggi("faq"))
-    .sort((a, b) => a.ordine - b.ordine);
+  return FaqSchema.array().parse(leggi('faq')).sort((a, b) => a.ordine - b.ordine);
 }
 
 export function caricaPagine(): Pagina[] {
-  return PaginaSchema.array().parse(leggi("pagine"));
+  return PaginaSchema.array().parse(leggi('pagine'));
 }
 
 export function caricaImpostazioni(): Impostazioni {
-  return ImpostazioniSchema.parse(leggi("impostazioni"));
+  return ImpostazioniSchema.parse(leggi('impostazioni'));
 }
 
 export function altPer(foto: Foto, locale: Locale): string {
-  return locale === "it" ? foto.alt_it : foto.alt_en;
+  return locale === 'it' ? foto.alt_it : foto.alt_en;
 }
 ```
 
@@ -747,12 +717,10 @@ git commit -m "feat: modello contenuti validato con zod"
 ### Task 5: Componente immagine conforme alla pipeline
 
 **Files:**
-
 - Create: `src/components/Foto.astro`
 - Test: `tests/unit/foto-component.test.ts`
 
 **Interfaces:**
-
 - Consumes: `Foto`, `altPer` (Task 4), `Locale` (Task 3).
 - Produces: componente `<Foto foto={...} locale={...} priorita={boolean} sizes={string} />`
   che rende un `<picture>` conforme ai Global Constraints.
@@ -763,16 +731,13 @@ Il test rende il componente con il container di Astro e verifica il markup.
 
 ```ts
 // tests/unit/foto-component.test.ts
-import { describe, it, expect, beforeAll } from "vitest";
-import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import Foto from "../../src/components/Foto.astro";
+import { describe, it, expect, beforeAll } from 'vitest';
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import Foto from '../../src/components/Foto.astro';
 
 const foto = {
-  file: "https://storage.example/f001.jpg",
-  ordine: 0,
-  alt_it: "sposa sulla scalinata",
-  alt_en: "bride on the steps",
-  in_home: true,
+  file: 'https://storage.example/f001.jpg', ordine: 0,
+  alt_it: 'sposa sulla scalinata', alt_en: 'bride on the steps', in_home: true,
 };
 
 let html: string;
@@ -781,46 +746,46 @@ let htmlPrioritaria: string;
 beforeAll(async () => {
   const container = await AstroContainer.create();
   html = await container.renderToString(Foto, {
-    props: { foto, locale: "it", priorita: false, sizes: "100vw" },
+    props: { foto, locale: 'it', priorita: false, sizes: '100vw' },
   });
   htmlPrioritaria = await container.renderToString(Foto, {
-    props: { foto, locale: "it", priorita: true, sizes: "100vw" },
+    props: { foto, locale: 'it', priorita: true, sizes: '100vw' },
   });
 });
 
-describe("componente Foto", () => {
-  it("emette sorgenti AVIF e WebP", () => {
+describe('componente Foto', () => {
+  it('emette sorgenti AVIF e WebP', () => {
     expect(html).toContain('type="image/avif"');
     expect(html).toContain('type="image/webp"');
   });
 
-  it("non serve mai JPEG", () => {
+  it('non serve mai JPEG', () => {
     expect(html).not.toMatch(/\.jpe?g["\s]/);
   });
 
-  it("dichiara width e height per tenere il CLS", () => {
+  it('dichiara width e height per tenere il CLS', () => {
     expect(html).toMatch(/width="\d+"/);
     expect(html).toMatch(/height="\d+"/);
   });
 
-  it("usa il testo alternativo della lingua richiesta", () => {
+  it('usa il testo alternativo della lingua richiesta', () => {
     expect(html).toContain('alt="sposa sulla scalinata"');
   });
 
-  it("è lazy quando non è prioritaria", () => {
+  it('è lazy quando non è prioritaria', () => {
     expect(html).toContain('loading="lazy"');
   });
 
-  it("è eager quando è prioritaria", () => {
+  it('è eager quando è prioritaria', () => {
     expect(htmlPrioritaria).toContain('loading="eager"');
     expect(htmlPrioritaria).not.toContain('loading="lazy"');
   });
 
-  it("decodifica in modo asincrono", () => {
+  it('decodifica in modo asincrono', () => {
     expect(html).toContain('decoding="async"');
   });
 
-  it("non supera i 2400 px di lato lungo", () => {
+  it('non supera i 2400 px di lato lungo', () => {
     const larghezze = [...html.matchAll(/(\d+)w/g)].map((m) => Number(m[1]));
     expect(Math.max(...larghezze)).toBeLessThanOrEqual(2400);
   });
@@ -897,25 +862,23 @@ git commit -m "feat: componente immagine conforme alla pipeline"
 ### Task 6: Layout base accessibile
 
 **Files:**
-
 - Create: `src/layouts/Base.astro`
 - Modify: i dodici file in `src/pages/it/` e `src/pages/en/` per usarlo
 - Test: `tests/e2e/a11y.spec.ts`
 
 **Interfaces:**
-
 - Consumes: `pathFor`, `otherLocale`, `keyForPath`, `t` (Task 3).
 - Produces: `<Base locale={Locale} pageKey={PageKey} title={string}
-description={string}>` con `<html lang>`, `hreflang` reciproco più
+  description={string}>` con `<html lang>`, `hreflang` reciproco più
   `x-default`, skip link, e `<slot />` dentro `<main id="contenuto">`.
 
 - [ ] **Step 1: Scrivere il test di accessibilità che fallisce**
 
 ```ts
 // tests/e2e/a11y.spec.ts
-import { test, expect } from "@playwright/test";
-import AxeBuilder from "@axe-core/playwright";
-import { ROUTES, LOCALES } from "../../src/i18n/routes";
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import { ROUTES, LOCALES } from '../../src/i18n/routes';
 
 const percorsi = Object.values(ROUTES).flatMap((byLocale) =>
   LOCALES.map((locale) => byLocale[locale]),
@@ -925,39 +888,31 @@ for (const percorso of percorsi) {
   test(`${percorso} non ha violazioni axe`, async ({ page }) => {
     await page.goto(percorso);
     const esito = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
       .analyze();
     expect(esito.violations).toEqual([]);
   });
 
   test(`${percorso} dichiara lang e hreflang`, async ({ page }) => {
     await page.goto(percorso);
-    const locale = percorso.split("/")[1];
-    await expect(page.locator("html")).toHaveAttribute("lang", locale);
-    await expect(
-      page.locator('link[rel="alternate"][hreflang="it"]'),
-    ).toHaveCount(1);
-    await expect(
-      page.locator('link[rel="alternate"][hreflang="en"]'),
-    ).toHaveCount(1);
-    await expect(
-      page.locator('link[rel="alternate"][hreflang="x-default"]'),
-    ).toHaveCount(1);
+    const locale = percorso.split('/')[1];
+    await expect(page.locator('html')).toHaveAttribute('lang', locale);
+    await expect(page.locator('link[rel="alternate"][hreflang="it"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveCount(1);
   });
 }
 
-test("il cambio lingua resta sulla stessa pagina", async ({ page }) => {
-  await page.goto("/it/chi-sono/");
-  await page.getByRole("link", { name: "English" }).click();
+test('il cambio lingua resta sulla stessa pagina', async ({ page }) => {
+  await page.goto('/it/chi-sono/');
+  await page.getByRole('link', { name: 'English' }).click();
   await expect(page).toHaveURL(/\/en\/about\/$/);
 });
 
-test("lo skip link porta al contenuto da tastiera", async ({ page }) => {
-  await page.goto("/it/");
-  await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("link", { name: "Vai al contenuto" }),
-  ).toBeFocused();
+test('lo skip link porta al contenuto da tastiera', async ({ page }) => {
+  await page.goto('/it/');
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'Vai al contenuto' })).toBeFocused();
 });
 ```
 
@@ -1065,12 +1020,10 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 ### Task 7: Portfolio, flusso unico
 
 **Files:**
-
 - Modify: `src/pages/it/portfolio.astro`, `src/pages/en/portfolio.astro`
 - Test: `tests/e2e/portfolio.spec.ts`
 
 **Interfaces:**
-
 - Consumes: `caricaFoto` (Task 4), `Foto.astro` (Task 5), `Base.astro` (Task 6).
 - Produces: la pagina che il percorso critico attraversa.
 
@@ -1078,37 +1031,33 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 
 ```ts
 // tests/e2e/portfolio.spec.ts
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-test("il portfolio è una sequenza unica senza filtri", async ({ page }) => {
-  await page.goto("/it/portfolio/");
-  await expect(page.getByRole("img")).not.toHaveCount(0);
-  await expect(
-    page.getByRole("button", { name: /filtr|categor/i }),
-  ).toHaveCount(0);
+test('il portfolio è una sequenza unica senza filtri', async ({ page }) => {
+  await page.goto('/it/portfolio/');
+  await expect(page.getByRole('img')).not.toHaveCount(0);
+  await expect(page.getByRole('button', { name: /filtr|categor/i })).toHaveCount(0);
 });
 
-test("solo le prime tre immagini sono eager", async ({ page }) => {
-  await page.goto("/it/portfolio/");
+test('solo le prime tre immagini sono eager', async ({ page }) => {
+  await page.goto('/it/portfolio/');
   const eager = page.locator('img[loading="eager"]');
   await expect(eager).toHaveCount(3);
 });
 
-test("ogni immagine ha un testo alternativo non vuoto", async ({ page }) => {
-  await page.goto("/it/portfolio/");
-  for (const alt of await page
-    .locator("img")
-    .evaluateAll((imgs) => imgs.map((i) => i.getAttribute("alt")))) {
+test('ogni immagine ha un testo alternativo non vuoto', async ({ page }) => {
+  await page.goto('/it/portfolio/');
+  for (const alt of await page.locator('img').evaluateAll(
+    (imgs) => imgs.map((i) => i.getAttribute('alt')),
+  )) {
     expect(alt?.trim()).toBeTruthy();
   }
 });
 
 test("l'ordine è stabile tra due caricamenti", async ({ page }) => {
   const leggi = async () => {
-    await page.goto("/it/portfolio/");
-    return page
-      .locator("img")
-      .evaluateAll((imgs) => imgs.map((i) => i.getAttribute("alt")));
+    await page.goto('/it/portfolio/');
+    return page.locator('img').evaluateAll((imgs) => imgs.map((i) => i.getAttribute('alt')));
   };
   expect(await leggi()).toEqual(await leggi());
 });
@@ -1170,14 +1119,12 @@ git commit -m "feat: portfolio come flusso unico ordinato"
 ### Task 8: Form di contatto e pagina di conferma
 
 **Files:**
-
 - Create: `src/components/FormContatto.astro`
 - Modify: `src/pages/it/contatti.astro`, `src/pages/en/contact.astro`,
   `src/pages/it/grazie.astro`, `src/pages/en/thank-you.astro`
 - Test: `tests/e2e/form.spec.ts`
 
 **Interfaces:**
-
 - Consumes: `Base.astro` (Task 6), `t` (Task 3).
 - Produces: il form dei dieci campi di US-5, con recapito gestito da Netlify.
 
@@ -1191,83 +1138,59 @@ Task 10.
 
 ```ts
 // tests/e2e/form.spec.ts
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-const OBBLIGATORI = [
-  "nome",
-  "email",
-  "data_evento",
-  "location",
-  "fascia_budget",
-];
-const FACOLTATIVI = [
-  "telefono",
-  "tipo_cerimonia",
-  "momento",
-  "wedding_planner",
-  "messaggio",
-];
+const OBBLIGATORI = ['nome', 'email', 'data_evento', 'location', 'fascia_budget'];
+const FACOLTATIVI = ['telefono', 'tipo_cerimonia', 'momento', 'wedding_planner', 'messaggio'];
 
-test("espone tutti i campi previsti dallo spec", async ({ page }) => {
-  await page.goto("/it/contatti/");
+test('espone tutti i campi previsti dallo spec', async ({ page }) => {
+  await page.goto('/it/contatti/');
   for (const nome of [...OBBLIGATORI, ...FACOLTATIVI]) {
     await expect(page.locator(`[name="${nome}"]`)).toHaveCount(1);
   }
 });
 
-test("ogni campo ha una label associata, nessun placeholder al suo posto", async ({
-  page,
-}) => {
-  await page.goto("/it/contatti/");
+test('ogni campo ha una label associata, nessun placeholder al suo posto', async ({ page }) => {
+  await page.goto('/it/contatti/');
   for (const nome of OBBLIGATORI) {
     const campo = page.locator(`[name="${nome}"]`);
-    const id = await campo.getAttribute("id");
+    const id = await campo.getAttribute('id');
     expect(id).toBeTruthy();
     await expect(page.locator(`label[for="${id}"]`)).toHaveCount(1);
   }
 });
 
-test("il nome della wedding planner compare solo se c’è una wedding planner", async ({
-  page,
-}) => {
-  await page.goto("/it/contatti/");
+test('il nome della wedding planner compare solo se c’è una wedding planner', async ({ page }) => {
+  await page.goto('/it/contatti/');
   await expect(page.locator('[name="wedding_planner_nome"]')).toBeHidden();
   await page.locator('[name="wedding_planner"]').check();
   await expect(page.locator('[name="wedding_planner_nome"]')).toBeVisible();
 });
 
-test("un errore è annunciato e sposta il focus sul primo campo non valido", async ({
-  page,
-}) => {
-  await page.goto("/it/contatti/");
-  await page.getByRole("button", { name: "Invia richiesta" }).click();
+test('un errore è annunciato e sposta il focus sul primo campo non valido', async ({ page }) => {
+  await page.goto('/it/contatti/');
+  await page.getByRole('button', { name: 'Invia richiesta' }).click();
   const nome = page.locator('[name="nome"]');
   await expect(nome).toBeFocused();
-  await expect(nome).toHaveAttribute("aria-invalid", "true");
-  const descritto = await nome.getAttribute("aria-describedby");
+  await expect(nome).toHaveAttribute('aria-invalid', 'true');
+  const descritto = await nome.getAttribute('aria-describedby');
   await expect(page.locator(`#${descritto}`)).toHaveText(/obbligatorio/i);
 });
 
-test("il form è percorribile solo da tastiera", async ({ page }) => {
-  await page.goto("/it/contatti/");
+test('il form è percorribile solo da tastiera', async ({ page }) => {
+  await page.goto('/it/contatti/');
   await page.locator('[name="nome"]').focus();
-  for (let i = 0; i < 12; i += 1) await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("button", { name: "Invia richiesta" }),
-  ).toBeFocused();
+  for (let i = 0; i < 12; i += 1) await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Invia richiesta' })).toBeFocused();
 });
 
-test("è configurato per il recapito Netlify senza CAPTCHA visibile", async ({
-  page,
-}) => {
-  await page.goto("/it/contatti/");
+test('è configurato per il recapito Netlify senza CAPTCHA visibile', async ({ page }) => {
+  await page.goto('/it/contatti/');
   const form = page.locator('form[data-netlify="true"]');
   await expect(form).toHaveCount(1);
-  await expect(form).toHaveAttribute("action", "/it/grazie/");
+  await expect(form).toHaveAttribute('action', '/it/grazie/');
   await expect(page.locator('input[name="bot-field"]')).toBeHidden();
-  await expect(
-    page.locator('.g-recaptcha, iframe[src*="recaptcha"]'),
-  ).toHaveCount(0);
+  await expect(page.locator('.g-recaptcha, iframe[src*="recaptcha"]')).toHaveCount(0);
 });
 ```
 
@@ -1369,13 +1292,11 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 ### Task 9: Home e test end-to-end del percorso critico
 
 **Files:**
-
 - Create: `src/components/Hero.astro`
 - Modify: `src/pages/it/index.astro`, `src/pages/en/index.astro`
 - Test: `tests/e2e/percorso-critico.spec.ts`
 
 **Interfaces:**
-
 - Consumes: tutto quanto precede.
 - Produces: il test che lo spec rende obbligatorio. Se fallisce, si blocca il
   rilascio.
@@ -1384,51 +1305,43 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 
 ```ts
 // tests/e2e/percorso-critico.spec.ts
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-test("arrivo, portfolio, richiesta, conferma — da tastiera", async ({
-  page,
-}) => {
-  await page.goto("/it/");
-  await expect(page.locator("main img").first()).toBeVisible();
+test('arrivo, portfolio, richiesta, conferma — da tastiera', async ({ page }) => {
+  await page.goto('/it/');
+  await expect(page.locator('main img').first()).toBeVisible();
 
-  await page.getByRole("link", { name: "Portfolio" }).first().click();
+  await page.getByRole('link', { name: 'Portfolio' }).first().click();
   await expect(page).toHaveURL(/\/it\/portfolio\/$/);
 
-  await page.getByRole("link", { name: "Contatti" }).click();
+  await page.getByRole('link', { name: 'Contatti' }).click();
   await expect(page).toHaveURL(/\/it\/contatti\/$/);
 
-  await page.locator('[name="nome"]').fill("Anna Rossi");
-  await page.locator('[name="email"]').fill("anna@example.com");
-  await page.locator('[name="data_evento"]').fill("2027-06-12");
-  await page.locator('[name="location"]').fill("Villa Reale, Monza");
+  await page.locator('[name="nome"]').fill('Anna Rossi');
+  await page.locator('[name="email"]').fill('anna@example.com');
+  await page.locator('[name="data_evento"]').fill('2027-06-12');
+  await page.locator('[name="location"]').fill('Villa Reale, Monza');
   await page.locator('[name="fascia_budget"]').selectOption({ index: 2 });
 
   // In locale Netlify non intercetta la POST: si verifica che il form sia
   // valido e diretto alla conferma. Il recapito reale è nel Task 10.
   const form = page.locator('form[name="contatto"]');
-  await expect(form).toHaveAttribute("action", "/it/grazie/");
-  expect(await form.evaluate((f: HTMLFormElement) => f.checkValidity())).toBe(
-    true,
-  );
+  await expect(form).toHaveAttribute('action', '/it/grazie/');
+  expect(await form.evaluate((f: HTMLFormElement) => f.checkValidity())).toBe(true);
 
-  await page.goto("/it/grazie/");
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await page.goto('/it/grazie/');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
-test("l'elemento più grande della home è una fotografia, non del testo", async ({
-  page,
-}) => {
-  await page.goto("/it/");
-  const primo = page.locator("main img").first();
-  await expect(primo).toHaveAttribute("loading", "eager");
+test("l'elemento più grande della home è una fotografia, non del testo", async ({ page }) => {
+  await page.goto('/it/');
+  const primo = page.locator('main img').first();
+  await expect(primo).toHaveAttribute('loading', 'eager');
 });
 
-test("la home mostra fra dieci e quindici foto di richiamo", async ({
-  page,
-}) => {
-  await page.goto("/it/");
-  const conteggio = await page.locator(".richiamo img").count();
+test('la home mostra fra dieci e quindici foto di richiamo', async ({ page }) => {
+  await page.goto('/it/');
+  const conteggio = await page.locator('.richiamo img').count();
   expect(conteggio).toBeGreaterThanOrEqual(10);
   expect(conteggio).toBeLessThanOrEqual(15);
 });
@@ -1501,12 +1414,10 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 ### Task 10: Gate di performance e verifica del recapito
 
 **Files:**
-
 - Create: `lighthouserc.json`, `netlify.toml`
 - Test: la configurazione stessa è il test.
 
 **Interfaces:**
-
 - Consumes: il sito costruito (Task 2-9).
 - Produces: `npm run perf` che fallisce se i budget dello spec sono superati.
 
@@ -1521,10 +1432,7 @@ misurano le immagini finte, non il sito.
   "ci": {
     "collect": {
       "staticDistDir": "./dist",
-      "url": [
-        "http://localhost/it/index.html",
-        "http://localhost/it/portfolio/index.html"
-      ],
+      "url": ["http://localhost/it/index.html", "http://localhost/it/portfolio/index.html"],
       "numberOfRuns": 3,
       "settings": { "preset": "desktop", "throttlingMethod": "simulate" }
     },
