@@ -1,0 +1,65 @@
+---
+import { Picture, inferRemoteSize } from "astro:assets";
+import { altPer } from "../content/load";
+// Il tipo si chiama Foto come questo componente: lo rinomino per non confondere
+// chi legge.
+import type { Foto as DatoFoto } from "../content/schema";
+import type { Locale } from "../i18n/routes";
+
+interface Props {
+  foto: DatoFoto;
+  locale: Locale;
+  /** true solo per il poster dell'hero e le prime tre del flusso. */
+  priorita?: boolean;
+  sizes: string;
+}
+
+const { foto, locale, priorita = false, sizes } = Astro.props;
+
+// Larghezze, formati e lato lungo massimo sono vincoli di spec (US-2), non
+// preferenze: non parametrizzarli.
+const LARGHEZZE = [400, 800, 1200, 1600, 2400];
+const LATO_LUNGO_MASSIMO = 2400;
+
+// Niente `inferSize`: su un'immagine remota mette nell'`<img>` un derivato
+// grande quanto l'originale (node_modules/astro/components/Picture.astro,
+// blocco inferSize), e `getSrcSet` non taglia le larghezze per le immagini
+// remote (node_modules/astro/dist/assets/services/service.js): un ritratto
+// stretto supererebbe i 2400 px di lato lungo anche nel derivato "2400w". Si
+// legge la dimensione a mano con `inferRemoteSize` da `astro:assets` (non da
+// `astro/assets/utils`): quella versione è già legata a `image.remotePatterns`
+// e rifiuta un URL fuori pattern, l'altra no.
+const { width: larghezzaOriginale, height: altezzaOriginale } =
+  await inferRemoteSize(foto.file);
+
+// Stessa formula di arrotondamento di `getSrcSet` per l'altezza di un
+// derivato, qui usata per scartare le larghezze il cui lato lungo
+// supererebbe il limite.
+function altezzaPer(larghezza: number): number {
+  return Math.round((larghezza * altezzaOriginale) / larghezzaOriginale);
+}
+function latoLungo(larghezza: number): number {
+  return Math.max(larghezza, altezzaPer(larghezza));
+}
+
+const larghezze = LARGHEZZE.filter(
+  (larghezza) => latoLungo(larghezza) <= LATO_LUNGO_MASSIMO,
+);
+// Se anche la più piccola superasse il limite (rapporto oltre 1:6, estraneo
+// alla fotografia di matrimonio) si tiene comunque quella, invece di un
+// `widths` vuoto.
+const larghezzaMassima = larghezze.at(-1) ?? LARGHEZZE[0];
+const altezzaMassima = altezzaPer(larghezzaMassima);
+---
+<Picture
+  src={foto.file}
+  width={larghezzaMassima}
+  height={altezzaMassima}
+  formats={["avif", "webp"]}
+  fallbackFormat="webp"
+  widths={larghezze}
+  sizes={sizes}
+  alt={altPer(foto, locale)}
+  loading={priorita ? "eager" : "lazy"}
+  decoding="async"
+/>
