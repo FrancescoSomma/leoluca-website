@@ -1,6 +1,11 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { PAGE_KEYS, LOCALES, pathFor } from "../../src/i18n/routes";
+import {
+  PAGE_KEYS,
+  LOCALES,
+  pathFor,
+  otherLocale,
+} from "../../src/i18n/routes";
 import { t } from "../../src/i18n/ui";
 
 const TAG_WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
@@ -53,6 +58,18 @@ for (const key of PAGE_KEYS) {
         .getByRole("link", { name: "Leo Luca Iacoviello" });
       await expect(homeLink).toHaveAttribute("href", pathFor("home", locale));
     });
+
+    test(`${percorso} il selettore lingua punta alla controparte`, async ({
+      page,
+    }) => {
+      await page.goto(percorso);
+      const selettore = page.locator("nav a[hreflang]");
+      await expect(selettore).toHaveCount(1);
+      await expect(selettore).toHaveAttribute(
+        "href",
+        pathFor(key, otherLocale(locale)),
+      );
+    });
   }
 }
 
@@ -80,6 +97,18 @@ for (const { percorso, locale } of PAGINE_404) {
       .getByRole("link", { name: "Leo Luca Iacoviello" });
     await expect(homeLink).toHaveAttribute("href", pathFor("home", locale));
   });
+
+  test(`${percorso} il selettore lingua punta alla home dell'altra lingua`, async ({
+    page,
+  }) => {
+    await page.goto(percorso);
+    const selettore = page.locator("nav a[hreflang]");
+    await expect(selettore).toHaveCount(1);
+    await expect(selettore).toHaveAttribute(
+      "href",
+      pathFor("home", otherLocale(locale)),
+    );
+  });
 }
 
 test("il cambio lingua resta sulla stessa pagina", async ({ page }) => {
@@ -100,6 +129,7 @@ for (const locale of LOCALES) {
       await page.setViewportSize({ width, height: 800 });
       const link = page.getByRole("navigation").getByRole("link");
       const count = await link.count();
+      expect(count).toBeGreaterThan(1);
 
       const riquadri = [];
       for (let i = 0; i < count; i++) {
