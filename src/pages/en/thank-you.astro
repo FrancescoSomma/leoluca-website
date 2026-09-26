@@ -1,13 +1,14 @@
 ---
+import Base from '../../layouts/Base.astro';
+
 const locale = 'en' as const;
 ---
 
-<html lang={locale}>
-  <head>
-    <meta charset="utf-8" />
-    <title>Thank You</title>
-  </head>
-  <body>
-    <h1>Thank You</h1>
-  </body>
-</html>
+<Base
+  locale={locale}
+  pageKey="thanks"
+  title="Thank You — Leo Luca Iacoviello"
+  description="Your request has been sent: Leo will get back to you soon."
+>
+  <h1>Thank You</h1>
+</Base>

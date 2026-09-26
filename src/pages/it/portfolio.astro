@@ -1,13 +1,14 @@
 ---
+import Base from '../../layouts/Base.astro';
+
 const locale = 'it' as const;
 ---
 
-<html lang={locale}>
-  <head>
-    <meta charset="utf-8" />
-    <title>Portfolio</title>
-  </head>
-  <body>
-    <h1>Portfolio</h1>
-  </body>
-</html>
+<Base
+  locale={locale}
+  pageKey="portfolio"
+  title="Portfolio — Leo Luca Iacoviello"
+  description="La selezione fotografica completa dei matrimoni raccontati da Leo."
+>
+  <h1>Portfolio</h1>
+</Base>
