@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { FotoSchema } from "../../src/content/schema";
+import { FotoSchema, PaginaSchema, FaqSchema } from "../../src/content/schema";
 import { caricaFoto, altPer } from "../../src/content/load";
 
 describe("schema Foto", () => {
@@ -33,6 +33,30 @@ describe("schema Foto", () => {
   it("in_home vale false se assente", () => {
     const { in_home, ...senzaHome } = valida;
     expect(FotoSchema.parse(senzaHome).in_home).toBe(false);
+  });
+});
+
+describe("US-8 testo solo in italiano", () => {
+  it("una FAQ con solo i campi italiani viene accettata, senza ripiego sull'italiano", () => {
+    const faq = FaqSchema.parse({
+      ordine: 0,
+      domanda_it: "Quanto dura il servizio?",
+      risposta_it: "Copro l'intera giornata, dal preparativi al ricevimento.",
+    });
+    expect(faq.domanda_en).toBe("");
+    expect(faq.risposta_en).toBe("");
+  });
+
+  it("una Pagina con solo i campi italiani viene accettata, senza ripiego sull'italiano", () => {
+    const pagina = PaginaSchema.parse({
+      slug: "faq",
+      titolo_it: "Domande frequenti",
+      seo_title_it: "FAQ",
+      seo_description_it: "Le risposte alle domande più comuni.",
+    });
+    expect(pagina.titolo_en).toBe("");
+    expect(pagina.seo_title_en).toBe("");
+    expect(pagina.seo_description_en).toBe("");
   });
 });
 
