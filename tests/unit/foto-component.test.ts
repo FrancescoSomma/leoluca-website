@@ -61,12 +61,14 @@ describe("componente Foto", () => {
 
   it("non supera i 2400 px di lato lungo", () => {
     // US-2: il vincolo è sul lato lungo del derivato, non sulla larghezza
-    // dichiarata nello srcset. Su questo fixture (ritratto) il lato lungo è
-    // l'altezza: si ricalcola da ogni descrittore "Nw" con il rapporto
-    // dell'immagine, letto dagli attributi width/height dell'<img>.
+    // dichiarata nello srcset. Il fixture è un ritratto fisso 4480×6720
+    // (rapporto 2:3): il lato lungo è l'altezza, e per questo rapporto la
+    // coppia width/height attesa è fissa. Un'asserzione solo sul massimo tra
+    // i due lati passerebbe anche se il rapporto fosse invertito (crop
+    // orizzontale di un ritratto): si fissano i valori.
     const imgWidth = Number(html.match(/width="(\d+)"/)?.[1]);
     const imgHeight = Number(html.match(/height="(\d+)"/)?.[1]);
-    expect(Math.max(imgWidth, imgHeight)).toBeLessThanOrEqual(2400);
+    expect([imgWidth, imgHeight]).toEqual([1600, 2400]);
 
     const larghezze = [...html.matchAll(/(\d+)w/g)].map((m) => Number(m[1]));
     expect(larghezze.length).toBeGreaterThan(0);
