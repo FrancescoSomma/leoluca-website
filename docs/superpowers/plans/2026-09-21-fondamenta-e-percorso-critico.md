@@ -38,7 +38,7 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 1 ADR-0005 | fuso | — | — | `main` | — |
 | 2 Scaffold e gate | fuso | — | 1 | `feat/fondamenta` | PC 1 |
 | 3 Rotte e lingua | fuso | — | 2 | `feat/fondamenta` | PC 1 |
-| 4 Modello contenuti | in corso | A | 3 | `feat/contenuti-immagini` | PC 1 |
+| 4 Modello contenuti | concluso | A | 3 | `feat/contenuti-immagini` | PC 1 |
 | 5 Componente Foto | libero | A | 4 | `feat/contenuti-immagini` | — |
 | 6 Layout base | in corso | B | 3 | `feat/layout-form` | PC 2 |
 | 8 Form e conferma | libero | B | 6 | `feat/layout-form` | — |
