@@ -1,0 +1,23 @@
+[
+  {
+    "ordine": 0,
+    "domanda_it": "[SEGNAPOSTO] Prima domanda frequente?",
+    "domanda_en": "[PLACEHOLDER] First frequent question?",
+    "risposta_it": "[SEGNAPOSTO] Risposta alla prima domanda, da sostituire con il testo definitivo.",
+    "risposta_en": "[PLACEHOLDER] Answer to the first question, to be replaced with final copy."
+  },
+  {
+    "ordine": 1,
+    "domanda_it": "[SEGNAPOSTO] Seconda domanda frequente?",
+    "domanda_en": "[PLACEHOLDER] Second frequent question?",
+    "risposta_it": "[SEGNAPOSTO] Risposta alla seconda domanda, da sostituire con il testo definitivo.",
+    "risposta_en": "[PLACEHOLDER] Answer to the second question, to be replaced with final copy."
+  },
+  {
+    "ordine": 2,
+    "domanda_it": "[SEGNAPOSTO] Terza domanda frequente?",
+    "domanda_en": "[PLACEHOLDER] Third frequent question?",
+    "risposta_it": "[SEGNAPOSTO] Risposta alla terza domanda, da sostituire con il testo definitivo.",
+    "risposta_en": "[PLACEHOLDER] Answer to the third question, to be replaced with final copy."
+  }
+]
