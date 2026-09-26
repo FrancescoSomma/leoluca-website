@@ -73,4 +73,25 @@ describe("layout Base", () => {
       /<main id="contenuto"[^>]*>[\s\S]*<h1>Segnaposto<\/h1>[\s\S]*<\/main>/,
     );
   });
+
+  it("non attacca i collegamenti del nav fra loro (compressHTML)", async () => {
+    const html = await container.renderToString(Base, {
+      props: {
+        locale: "it",
+        pageKey: "home",
+        title: "Leo Luca Iacoviello",
+        description: "Descrizione di prova.",
+      },
+      slots: { default: "<h1>Segnaposto</h1>" },
+      request: new Request("http://localhost/it/"),
+    });
+
+    const nav = html.match(/<nav[^>]*>([\s\S]*?)<\/nav>/);
+    if (nav === null) throw new Error("<nav> mancante nell'HTML reso");
+
+    // compressHTML toglie gli spazi fra i tag: senza {' '} espliciti in
+    // Base.astro i collegamenti si toccherebbero, non distinguibili a vista
+    // né come target separati (US-6, WCAG 2.2 AA 2.5.8).
+    expect(nav[1]).not.toContain("</a><a");
+  });
 });
