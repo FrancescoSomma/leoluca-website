@@ -11,9 +11,9 @@ oggetti con il prodotto ancora da scegliere (ADR-0004), Vitest, Playwright,
 axe, Lighthouse CI e Prettier (ADR-0005). Nient'altro entra senza un ADR
 accettato in `docs/03-adr/`.
 
-Codice: scaffold Astro attivo (Task 2 di
+Codice: scaffold Astro, rotte bilingue e selettore lingua (Task 2 e 3 di
 `docs/superpowers/plans/2026-09-21-fondamenta-e-percorso-critico.md`
-concluso). Si prosegue dal Task 3.
+conclusi, branch `feat/fondamenta`). Si prosegue dal Task 4.
 
 Direzione visiva: non definita. Nessun token, `design/ref/` è vuoto. Finché
 resta così le pagine si scrivono con markup nudo, `design-reviewer` non ha un
