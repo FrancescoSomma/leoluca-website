@@ -2,6 +2,7 @@ import type { Locale } from "./routes";
 
 const UI = {
   it: {
+    "nav.label": "Principale",
     "nav.portfolio": "Portfolio",
     "nav.about": "Chi sono",
     "nav.faq": "FAQ",
@@ -13,6 +14,7 @@ const UI = {
     "form.error.email": "Inserisci un indirizzo email valido",
   },
   en: {
+    "nav.label": "Main",
     "nav.portfolio": "Portfolio",
     "nav.about": "About",
     "nav.faq": "FAQ",

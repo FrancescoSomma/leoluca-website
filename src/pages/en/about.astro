@@ -1,13 +1,14 @@
 ---
+import Base from '../../layouts/Base.astro';
+
 const locale = 'en' as const;
 ---
 
-<html lang={locale}>
-  <head>
-    <meta charset="utf-8" />
-    <title>About</title>
-  </head>
-  <body>
-    <h1>About</h1>
-  </body>
-</html>
+<Base
+  locale={locale}
+  pageKey="about"
+  title="About — Leo Luca Iacoviello"
+  description="Who Leo Luca Iacoviello is and how he works on the wedding day."
+>
+  <h1>About</h1>
+</Base>

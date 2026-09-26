@@ -1,0 +1,75 @@
+---
+import { LOCALES, pathFor, type Locale, type PageKey } from '../i18n/routes';
+import { t } from '../i18n/ui';
+import SelettoreLingua from '../components/SelettoreLingua.astro';
+
+interface Props {
+  locale: Locale;
+  pageKey: PageKey;
+  title: string;
+  description: string;
+}
+const { locale, pageKey, title, description } = Astro.props;
+const canonical = new URL(pathFor(pageKey, locale), Astro.site);
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {
+      LOCALES.map((l) => (
+        <link rel="alternate" hreflang={l} href={new URL(pathFor(pageKey, l), Astro.site)} />
+      ))
+    }
+    {
+      /*
+        Un gruppo hreflang dev'essere reciproco: x-default fisso sulla home
+        metterebbe /it/ nel gruppo di ogni pagina. "/it/" nello spec (§ SEO)
+        si legge come la sezione italiana, quindi punta alla controparte
+        italiana della pagina corrente.
+      */
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL(pathFor(pageKey, 'it'), Astro.site)} />
+  </head>
+  <body>
+    <a class="skip" href="#contenuto">{t(locale, 'skip.content')}</a>
+    <header>
+      <nav aria-label={t(locale, 'nav.label')}>
+        {
+          /*
+            compressHTML (Astro, predefinito) toglie gli spazi fra i tag:
+            senza questi {" "} espliciti i collegamenti si toccherebbero,
+            non distinguibili a vista né come target separati.
+          */
+        }
+        <a href={pathFor('portfolio', locale)}>{t(locale, 'nav.portfolio')}</a>{' '}
+        <a href={pathFor('about', locale)}>{t(locale, 'nav.about')}</a>{' '}
+        <a href={pathFor('faq', locale)}>{t(locale, 'nav.faq')}</a>{' '}
+        <a href={pathFor('contact', locale)}>{t(locale, 'nav.contact')}</a>{' '}
+        <SelettoreLingua locale={locale} />
+      </nav>
+    </header>
+    <main id="contenuto"><slot /></main>
+  </body>
+</html>
+
+<style>
+  /*
+   * Nascosto finché non riceve il focus: la direzione visiva non è
+   * decisa, questo è l'unico CSS che il task ammette (vedi il piano,
+   * Task 6: docs/superpowers/plans/2026-09-21-fondamenta-e-percorso-critico.md).
+   */
+  .skip {
+    position: absolute;
+    left: -9999px;
+  }
+  .skip:focus {
+    left: 0;
+    top: 0;
+  }
+</style>

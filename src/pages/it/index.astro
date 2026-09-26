@@ -1,12 +1,14 @@
 ---
+import Base from '../../layouts/Base.astro';
+
+const locale = 'it' as const;
 ---
 
-<html lang="it">
-  <head>
-    <meta charset="utf-8" />
-    <title>Leo Luca Iacoviello</title>
-  </head>
-  <body>
-    <h1>Leo Luca Iacoviello</h1>
-  </body>
-</html>
+<Base
+  locale={locale}
+  pageKey="home"
+  title="Leo Luca Iacoviello"
+  description="Fotografo di matrimoni in Italia: stile, portfolio e contatti."
+>
+  <h1>Leo Luca Iacoviello</h1>
+</Base>
