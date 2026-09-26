@@ -285,7 +285,11 @@ Nessun originale viene mai servito al browser.
 ## SEO
 
 - `title` e `meta description` per pagina e per lingua, dal modello contenuti.
-- `hreflang` reciproco tra le due lingue, più `x-default` verso `/it/`.
+- `hreflang` reciproco tra le due lingue, più `x-default` verso la versione
+  italiana della stessa pagina: per la home `/it/`, per le FAQ `/it/faq/`.
+  Non verso la home da ogni pagina: un gruppo hreflang dev'essere
+  reciproco, e la home non dichiara le altre pagine come proprie
+  alternative.
 - `sitemap.xml` con entrambe le lingue.
 - Dati strutturati: `LocalBusiness` sulla home, `ImageObject` sulle foto del
   portfolio.
