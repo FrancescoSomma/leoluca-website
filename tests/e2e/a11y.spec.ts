@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { PAGE_KEYS, LOCALES, pathFor } from "../../src/i18n/routes";
+import { t } from "../../src/i18n/ui";
 
 const TAG_WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
@@ -120,12 +121,37 @@ for (const locale of LOCALES) {
   });
 }
 
-test("lo skip link porta al contenuto da tastiera", async ({ page }) => {
-  await page.goto("/it/");
-  await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("link", { name: "Vai al contenuto" }),
-  ).toBeFocused();
-  await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/#contenuto$/);
-});
+for (const locale of LOCALES) {
+  const percorso = pathFor("home", locale);
+
+  test(`${percorso} lo skip link porta al contenuto da tastiera`, async ({
+    page,
+  }) => {
+    await page.goto(percorso);
+    await page.keyboard.press("Tab");
+    const skipLink = page.getByRole("link", {
+      name: t(locale, "skip.content"),
+    });
+    await expect(skipLink).toBeFocused();
+
+    const skipBox = await skipLink.boundingBox();
+    if (skipBox === null) throw new Error("riquadro mancante per lo skip link");
+    const navLinks = page.getByRole("navigation").getByRole("link");
+    const numeroLinkNav = await navLinks.count();
+    for (let i = 0; i < numeroLinkNav; i++) {
+      const navBox = await navLinks.nth(i).boundingBox();
+      if (navBox === null)
+        throw new Error(`riquadro mancante per il link nav ${i}`);
+      const siSovrappongono =
+        skipBox.x < navBox.x + navBox.width &&
+        skipBox.x + skipBox.width > navBox.x &&
+        skipBox.y < navBox.y + navBox.height &&
+        skipBox.y + skipBox.height > navBox.y;
+      expect(siSovrappongono).toBe(false);
+    }
+
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/#contenuto$/);
+    await expect(page.locator("main:target")).toHaveCount(1);
+  });
+}

@@ -60,16 +60,14 @@ const canonical = new URL(pathFor(pageKey, locale), Astro.site);
 
 <style>
   /*
-   * Nascosto finché non riceve il focus: la direzione visiva non è
-   * decisa, questo è l'unico CSS che il task ammette (vedi il piano,
-   * Task 6: docs/superpowers/plans/2026-09-21-fondamenta-e-percorso-critico.md).
+   * Nascosto finché non riceve il focus; a fuoco rientra nel flusso
+   * normale (sopra il nav, dov'è nel markup) invece di restare in
+   * position: absolute e coprirlo. Questo è l'unico CSS che il task
+   * ammette (vedi il piano, Task 6:
+   * docs/superpowers/plans/2026-09-21-fondamenta-e-percorso-critico.md).
    */
-  .skip {
+  .skip:not(:focus) {
     position: absolute;
     left: -9999px;
-  }
-  .skip:focus {
-    left: 0;
-    top: 0;
   }
 </style>
