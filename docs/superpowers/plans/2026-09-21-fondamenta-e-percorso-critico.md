@@ -126,6 +126,7 @@ legge.
 | 2026-09-26 | tutti | Screenshot dello stato a fuoco in § Chiusura di ogni task | Lo skip link sovrapposto era invisibile negli screenshot a riposo. Approvato da Francesco |
 | 2026-09-26 | 7, 8, 9 | Titolo SEO inglese vuoto: da decidere prima dello Step 3 | Vedi il Task 7 |
 | 2026-09-26 | tutti | Global Constraints: si scartano le larghezze il cui lato lungo supera 2400 px | Spec § Pipeline immagini e US-2 non reggevano insieme su una foto verticale; `Foto.astro` fa già così. Decisione di Francesco |
+| 2026-09-26 | tutti | Global Constraints: il ripiego WebP resta imposto, cambia il perché (PNG, non JPEG) | In Astro 7.3.3 `defaultFallbackFormat` è `png`; il formato dell'originale vale solo per un import ESM locale. Decisione di Francesco |
 
 ## Global Constraints
 
@@ -140,8 +141,9 @@ Valgono per ogni task. I valori sono copiati dallo spec, non riassunti.
 - Derivati immagine: **AVIF e WebP**, larghezze **400, 800, 1200, 1600, 2400**,
   scartate quelle a cui il lato lungo supererebbe **2400 px**: un 2:3 si ferma
   a 1600 × 2400.
-- Il formato di ripiego va imposto a **WebP** esplicitamente: il default di
-  `<Picture>` è il formato dell'originale, cioè JPEG. Nessun JPEG servito.
+- Il formato di ripiego va imposto a **WebP** esplicitamente: su un `src`
+  remoto il default di `<Picture>` è PNG; il formato dell'originale vale solo
+  per un import ESM locale. Nessun JPEG servito.
 - `loading="lazy"` ovunque tranne **le prime tre** immagini del flusso e il
   poster dell'hero.
 - Lato lungo massimo servito: **2400 px**. Nessun originale raggiungibile dal

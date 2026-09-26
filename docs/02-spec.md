@@ -280,8 +280,8 @@ Nessun originale viene mai servito al browser.
 - `loading="lazy"` su tutte le immagini tranne le prime tre del flusso e il
   poster dell'hero.
 - Il formato di ripiego è WebP, e va imposto esplicitamente: per impostazione
-  predefinita il generatore usa come ripiego il formato dell'originale, che
-  qui sarebbe JPEG. Nessun JPEG servito.
+  predefinita il generatore ripiega su PNG per gli originali remoti, che sono
+  il nostro caso, e PNG è pesante per una fotografia. Nessun JPEG servito.
 
 ## SEO
 
