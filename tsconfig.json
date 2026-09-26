@@ -1,8 +1,5 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "tests/unit"],
-  "compilerOptions": {
-    "skipLibCheck": true
-  }
+  "exclude": ["dist"]
 }
