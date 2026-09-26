@@ -11,21 +11,24 @@ oggetti con il prodotto ancora da scegliere (ADR-0004), Vitest, Playwright,
 axe, Lighthouse CI e Prettier (ADR-0005). Nient'altro entra senza un ADR
 accettato in `docs/03-adr/`.
 
-Codice: scaffold Astro, rotte bilingue e selettore lingua (Task 2 e 3 di
-`docs/superpowers/plans/2026-09-21-fondamenta-e-percorso-critico.md`
-conclusi, branch `feat/fondamenta`). Si prosegue dal Task 4.
+Avanzamento: il piano in esecuzione è
+`docs/superpowers/plans/2026-09-21-fondamenta-e-percorso-critico.md`, su due
+macchine in parallelo. Lo stato vive solo nella sua tabella § Stato di
+avanzamento, non qui. Prima di iniziare: `git switch feat/fondamenta && git
+pull`, poi leggi lì cosa è libero e segui il protocollo di presa in carico.
 
 Direzione visiva: non definita. Nessun token, `design/ref/` è vuoto. Finché
 resta così le pagine si scrivono con markup nudo, `design-reviewer` non ha un
 riferimento e la skill `/verifica-visiva` non può girare. Il binario del
-design corre in parallelo e deve chiudere prima del Task 6.
+design corre in parallelo e deve chiudere prima del piano di stile: il piano
+corrente produce solo markup accessibile.
 
 ## Comandi
 
 - `./scripts/verify.sh` — gate unico di verifica. Eseguilo prima di dichiarare
-  concluso un task. Ora esegue la catena intera (`lint typecheck build test
-e2e perf a11y`); in modalità `--hook` esegue solo `lint typecheck test`,
-  perché lo Stop hook ha un timeout di 180 s.
+  concluso un task. Esegue la catena intera: `lint typecheck build test e2e
+  perf a11y`. In modalità `--hook` esegue solo `lint typecheck test`, perché
+  lo Stop hook ha un timeout di 180 s.
 
 ## Regole
 
@@ -48,6 +51,10 @@ e2e perf a11y`); in modalità `--hook` esegue solo `lint typecheck test`,
 - Modifica su più file o approccio incerto: plan mode prima di editare. Fix
   puntuale descrivibile in una frase: procedi diretto.
 - Un branch per slice verticale, commit atomici, conventional commits.
+- Più macchine sullo stesso piano: protocollo in § Stato di avanzamento del
+  piano. Una decisione che cambia un task futuro si scrive nel piano, dentro
+  quel task: il ledger in `.superpowers/` e la memoria di Claude sono locali
+  alla macchina, e l'altra non li vede.
 - Prima di ogni merge, review in contesto pulito sul diff: `spec-guardian`
   sempre, `code-reviewer` se c'è codice, `design-reviewer` quando esiste un
   riferimento in `design/ref/` (ADR-0001 punto 6). Ogni segnalazione si

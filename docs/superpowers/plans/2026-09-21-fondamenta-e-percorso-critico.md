@@ -28,6 +28,90 @@ Verifica: Vitest, Playwright, axe, Lighthouse CI, Prettier — ADR-0005, Task 1.
 [ADR-0005](../../03-adr/0005-stack-di-verifica.md),
 [convenzioni di codice](../../07-convenzioni-codice.md)
 
+## Stato di avanzamento
+
+Unica fonte dello stato del piano, che si esegue su due macchine in parallelo.
+Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
+
+| Task | Stato | Linea | Dipende da | Branch | Preso da |
+| --- | --- | --- | --- | --- | --- |
+| 1 ADR-0005 | fuso | — | — | `main` | — |
+| 2 Scaffold e gate | fuso | — | 1 | `feat/fondamenta` | PC 1 |
+| 3 Rotte e lingua | fuso | — | 2 | `feat/fondamenta` | PC 1 |
+| 4 Modello contenuti | libero | A | 3 | `feat/contenuti-immagini` | — |
+| 5 Componente Foto | libero | A | 4 | `feat/contenuti-immagini` | — |
+| 6 Layout base | libero | B | 3 | `feat/layout-form` | — |
+| 8 Form e conferma | libero | B | 6 | `feat/layout-form` | — |
+| 7 Portfolio | bloccato | — | 5 e 6 fusi | da aprire | — |
+| 9 Home ed e2e | bloccato | — | 7 e 8 fusi | da aprire | — |
+| 10 Gate e Netlify | bloccato | — | 9 | da aprire | — |
+
+Stati: `libero` nessuno ci lavora; `in corso` preso da una macchina;
+`concluso` review passata e commit sul branch della linea; `fuso` dentro
+`feat/fondamenta`; `bloccato` dipendenze non ancora fuse.
+
+Macchine: **PC 1** è il Mac su cui sono stati eseguiti i Task 2 e 3, e tiene
+la linea A. **PC 2** è la seconda macchina, e tiene la linea B. I Task 7, 9 e
+10 li prende chi si libera per primo, dopo la fusione di entrambe le linee.
+
+Binari fuori piano, per chi resta fermo: la direzione visiva, che richiede la
+scelta di Francesco e di Leo (§ Cosa questo piano non copre), e la verifica di
+ADR-0004, come prova usa e getta fuori dal repository.
+
+### Protocollo
+
+1. `git switch feat/fondamenta && git pull`.
+2. Prendi il primo task `libero` della tua linea. Dentro la stessa linea si
+   parte quando il task precedente è `concluso`; se la dipendenza è di
+   un'altra linea, deve essere `fuso`.
+3. Presa in carico, su `feat/fondamenta`: riga a `in corso`, "Preso da" con
+   la tua macchina, commit `docs: prende in carico il Task N`, `git push`. Se
+   il push viene rifiutato, l'altra macchina ha scritto prima:
+   `git pull --rebase`, rileggi la riga e, se non è più libera, scegli un
+   altro task.
+4. Lavora sul branch della linea: crealo da `feat/fondamenta` se non esiste,
+   altrimenti riprendilo. Le checkbox dei passi si spuntano lì.
+5. Chiudi il task come da § Chiusura di ogni task. Con
+   `superpowers:subagent-driven-development` la review per task la fanno
+   `spec-guardian` e `code-reviewer`, non il reviewer generico della skill,
+   che resta per la review finale della linea. Poi, su `feat/fondamenta`:
+   riga a `concluso`, commit, push.
+6. A linea finita, PR dal branch della linea verso `feat/fondamenta`. Se un
+   task dell'altra linea aspetta un tuo task già `concluso`, apri la PR
+   subito. La fusione la approva un umano; dopo la fusione le righe passano a
+   `fuso`, e quelle che ne dipendevano a `libero`.
+7. Una decisione che cambia un task futuro si scrive dentro quel task, in un
+   blocco `> **Modifica (AAAA-MM-GG).**`, più una riga nel registro qui
+   sotto. Il ledger di superpowers in `.superpowers/` e la memoria di Claude
+   restano sulla macchina che li ha scritti: ciò che non è in questo file,
+   l'altra macchina non lo sa.
+
+## Modifiche in corso d'opera
+
+Registro delle deviazioni dal testo originale. Quelle che riguardano un task
+ancora da fare sono scritte anche dentro il task, dove l'implementatore le
+legge.
+
+| Data | Task | Modifica | Perché |
+| --- | --- | --- | --- |
+| 2026-09-26 | 2 | `verify.sh` esegue anche `e2e`; con `--hook` solo `lint typecheck test` | L'e2e del percorso critico blocca il rilascio; il gate completo sfora i 180 s dello Stop hook |
+| 2026-09-26 | 2 | `playwright.config.ts` con webServer su `astro preview` e `ASTRO_PREVIEW_BACKGROUND=1` | Senza baseURL nessun e2e gira; Astro manda `preview` in background se rileva un agente |
+| 2026-09-26 | 2 | `lighthouserc.json` anticipato dal Task 10, senza upload | Lo script `perf` esiste dal Task 2; senza configurazione lhci pubblica i report |
+| 2026-09-26 | 2 | Pagina `/it/` segnaposto, test del redirect di `/`, `a11y.spec.ts` su `/it/` | `e2e` e `a11y` girano davvero dal primo task invece di passare per omissione |
+| 2026-09-26 | 2 | `typescript` 6.0.3 e `@astrojs/check` | Sono `tsc` e `astro check` di ADR-0005; 6.0.3 per il range di `@astrojs/check` |
+| 2026-09-26 | 3 | `.prettierignore` con `*.md` | L'hook di Prettier riformattava i documenti interi, codice incollato compreso |
+| 2026-09-26 | 3 | `PageKey` derivato da `PAGE_KEYS as const`, nessun cast | Convenzioni: nessun `as` fuori da `as const` e `querySelector` |
+| 2026-09-26 | 3 | Test di `SelettoreLingua` con il container, `vitest.config.ts` con `getViteConfig` | Convenzioni: il markup di un componente è un contratto |
+| 2026-09-26 | 3 | `src/astro-moduli.d.ts` | `tsc` non legge i `.astro`: senza, i test uscivano dal controllo dei tipi |
+| 2026-09-26 | tutti | Review per task con `spec-guardian` e `code-reviewer` | CLAUDE.md e ADR-0001 punto 6; il reviewer generico di SDD resta per la review finale |
+| 2026-09-26 | tutti | Un branch per linea, esecuzione su due macchine | Parallelismo, § Stato di avanzamento |
+| 2026-09-26 | 4 | `astro/zod`, JSON importati staticamente, foto di prova Unsplash | Vedi il Task 4 |
+| 2026-09-26 | 5 | Foto di prova raggiungibile, controllo JPEG rafforzato | Vedi il Task 5 |
+| 2026-09-26 | 6 | Solo struttura, nessuno stile | Decisione di Francesco: lo stile ha un piano proprio |
+| 2026-09-26 | 7 | Test sulle richieste di immagini reali al primo render | Vedi il Task 7 |
+| 2026-09-26 | 9 | Poster nella pipeline, `min-width: 768px`, foto di richiamo da estendere | Vedi il Task 9 |
+| 2026-09-26 | 10 | `lighthouserc.json` esiste già; `a11y` doppio nel gate | Vedi il Task 10 |
+
 ## Global Constraints
 
 Valgono per ogni task. I valori sono copiati dallo spec, non riassunti.
@@ -50,7 +134,8 @@ Valgono per ogni task. I valori sono copiati dallo spec, non riassunti.
   Nessun ripiego automatico sull'italiano.
 - **Nessuna dipendenza nuova senza un ADR accettato.** Vale anche per le
   dipendenze di sviluppo.
-- Commit atomici, conventional commits, un branch per task.
+- Commit atomici, conventional commits, un branch per linea di lavoro (§
+  Stato di avanzamento).
 - Documentazione a 80 colonne, come il resto di `docs/`.
 - `./scripts/verify.sh` deve passare prima di dichiarare concluso un task.
 
@@ -513,6 +598,20 @@ git commit -m "feat: mappa rotte bilingue e selettore lingua"
 
 ### Task 4: Modello dei contenuti validato
 
+> **Modifica (2026-09-26).** Tre correzioni, già riportate nei blocchi qui
+> sotto.
+> - `zod` si importa da `astro/zod`: è la stessa libreria (zod 4) inclusa in
+>   Astro 7.3.3, mentre il pacchetto `zod` diretto sarebbe una dipendenza non
+>   coperta da ADR.
+> - `load.ts` importa i JSON staticamente. `readFileSync(new URL(…,
+>   import.meta.url))` non regge nel bundle di build di Vite: il percorso non
+>   punta più a `src/content/`, e la build si romperebbe al Task 7, il primo a
+>   chiamare `caricaFoto()` da una pagina.
+> - Le foto di prova sono gli originali Unsplash già usati dai prototipi
+>   (Step 5).
+>
+> `vitest.config.ts` esiste già dal Task 3.
+
 **Files:**
 - Create: `src/content/schema.ts`, `src/content/load.ts`
 - Create: `src/content/foto.json`, `pagine.json`, `faq.json`, `impostazioni.json`
@@ -595,7 +694,7 @@ Expected: FAIL, modulo `src/content/schema` inesistente.
 
 ```ts
 // src/content/schema.ts
-import { z } from 'zod';
+import { z } from 'astro/zod';
 
 export const FotoSchema = z.object({
   file: z.string().url().startsWith('https://'),
@@ -651,19 +750,20 @@ ADR-0004 dovesse pretenderlo, si aggiorna prima lo spec.
 
 ```ts
 // src/content/load.ts
-import { readFileSync } from 'node:fs';
 import type { Locale } from '../i18n/routes';
 import {
   FotoSchema, FaqSchema, PaginaSchema, ImpostazioniSchema,
   type Foto, type Faq, type Pagina, type Impostazioni,
 } from './schema';
-
-function leggi(nome: string): unknown {
-  return JSON.parse(readFileSync(new URL(`./${nome}.json`, import.meta.url), 'utf-8'));
-}
+// Import statici, non letture da disco: nel bundle di build di Vite un
+// percorso relativo a import.meta.url non punta più ai file sorgente.
+import datiFoto from './foto.json';
+import datiFaq from './faq.json';
+import datiPagine from './pagine.json';
+import datiImpostazioni from './impostazioni.json';
 
 export function caricaFoto(): Foto[] {
-  const foto = FotoSchema.array().parse(leggi('foto'));
+  const foto = FotoSchema.array().parse(datiFoto);
   const ordini = foto.map((f) => f.ordine);
   if (new Set(ordini).size !== ordini.length) {
     throw new Error('foto.json: due foto hanno lo stesso ordine');
@@ -672,15 +772,15 @@ export function caricaFoto(): Foto[] {
 }
 
 export function caricaFaq(): Faq[] {
-  return FaqSchema.array().parse(leggi('faq')).sort((a, b) => a.ordine - b.ordine);
+  return FaqSchema.array().parse(datiFaq).sort((a, b) => a.ordine - b.ordine);
 }
 
 export function caricaPagine(): Pagina[] {
-  return PaginaSchema.array().parse(leggi('pagine'));
+  return PaginaSchema.array().parse(datiPagine);
 }
 
 export function caricaImpostazioni(): Impostazioni {
-  return ImpostazioniSchema.parse(leggi('impostazioni'));
+  return ImpostazioniSchema.parse(datiImpostazioni);
 }
 
 export function altPer(foto: Foto, locale: Locale): string {
@@ -693,6 +793,16 @@ export function altPer(foto: Foto, locale: Locale): string {
 `foto.json` con almeno cinque voci che puntano a immagini di prova remote,
 `ordine` da 0 a 4, le prime due con `in_home: true`. Non usare foto di Leo: le
 liberatorie non sono confermate.
+
+Le foto sono le prime cinque di `prototypes/comune/foto.js` sul branch
+`prototypes` (`git show prototypes:prototypes/comune/foto.js`). `file` è
+l'originale, `https://images.unsplash.com/photo-<id>` senza parametri: pesa
+alcuni MB, come gli originali veri. `alt_it` è il campo `alt` di lì; `alt_en`
+dice la stessa cosa in inglese, non parola per parola
+([05-content.md](../../05-content.md) § Immagini).
+
+`pagine.json`, `faq.json` e `impostazioni.json` con valori segnaposto che
+passano lo schema. Email su `example.com`, nessun contatto reale.
 
 - [ ] **Step 6: Eseguire i test**
 
@@ -708,13 +818,23 @@ segnalazioni si risolvono prima del commit, non dopo.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add src/content tests/unit/content.test.ts package.json package-lock.json
+git add src/content tests/unit/content.test.ts
 git commit -m "feat: modello contenuti validato con zod"
 ```
 
 ---
 
 ### Task 5: Componente immagine conforme alla pipeline
+
+> **Modifica (2026-09-26).** Due correzioni, già riportate nel test qui sotto.
+> - La foto del test punta a un originale Unsplash raggiungibile invece che a
+>   `storage.example`, che non esiste: `inferSize` scarica l'immagine per
+>   leggerne le dimensioni, quindi il test richiede la rete.
+> - "Non serve mai JPEG" cerca anche il parametro `f=jpg` degli URL di
+>   `/_image` e il tipo `image/jpeg`: con un originale senza estensione la sola
+>   regex sull'estensione non troverebbe nulla, e passerebbe comunque.
+>
+> `vitest.config.ts` con `getViteConfig` esiste già dal Task 3.
 
 **Files:**
 - Create: `src/components/Foto.astro`
@@ -736,7 +856,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import Foto from '../../src/components/Foto.astro';
 
 const foto = {
-  file: 'https://storage.example/f001.jpg', ordine: 0,
+  file: 'https://images.unsplash.com/photo-1532454781337-fc3edff34f91', ordine: 0,
   alt_it: 'sposa sulla scalinata', alt_en: 'bride on the steps', in_home: true,
 };
 
@@ -760,7 +880,7 @@ describe('componente Foto', () => {
   });
 
   it('non serve mai JPEG', () => {
-    expect(html).not.toMatch(/\.jpe?g["\s]/);
+    expect(html).not.toMatch(/\.jpe?g["\s]|f=jpe?g|image\/jpeg/);
   });
 
   it('dichiara width e height per tenere il CLS', () => {
@@ -861,10 +981,21 @@ git commit -m "feat: componente immagine conforme alla pipeline"
 
 ### Task 6: Layout base accessibile
 
+> **Modifica (2026-09-26).** Solo struttura: layout, `lang`, `hreflang`, skip
+> link, pagine 404 e test axe. Nessuno stile, tranne nascondere lo skip link
+> finché non riceve il focus: la direzione visiva non è scelta, e lo stile di
+> layout, portfolio, form e hero ha un piano proprio (§ Cosa questo piano non
+> copre). I token non esistono ancora, quindi quel CSS resta quello del blocco
+> dello Step 3.
+>
+> `tests/e2e/a11y.spec.ts` esiste già dal Task 2, con un solo test su `/it/`:
+> lo Step 1 lo riscrive. Gli screenshot a 390, 768 e 1440 px e il controllo a
+> 320 px restano obbligatori: anche il markup nudo deve riflussare.
+
 **Files:**
 - Create: `src/layouts/Base.astro`
 - Modify: i dodici file in `src/pages/it/` e `src/pages/en/` per usarlo
-- Test: `tests/e2e/a11y.spec.ts`
+- Modify: `tests/e2e/a11y.spec.ts` (esiste dal Task 2)
 
 **Interfaces:**
 - Consumes: `pathFor`, `otherLocale`, `keyForPath`, `t` (Task 3).
@@ -1018,6 +1149,20 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 ---
 
 ### Task 7: Portfolio, flusso unico
+
+> **Modifica (2026-09-26).** US-2 chiede che al primo render vengano
+> *richieste* al massimo 3 immagini: contare gli attributi `loading="eager"`
+> non lo prova. Allo Step 1 si aggiunge un test che, a 390 e a 1440 px di
+> larghezza, conta le richieste delle foto del flusso partite prima di
+> qualunque scorrimento (`page.on('request')` con `resourceType() ===
+> 'image'`, escluse favicon e simili, fino a `networkidle`) e verifica che
+> siano al massimo 3.
+>
+> Il motivo è una scoperta dei prototipi: il lazy loading nativo di Chrome
+> anticipa di circa 1250 px, e a 390 px, con immagini basse, ne ha richieste
+> 6. Se il test fallisce non lo si allenta in silenzio: è una decisione da
+> portare a un umano, con le due strade possibili, un caricamento pigro
+> governato da `IntersectionObserver` oppure un emendamento a US-2.
 
 **Files:**
 - Modify: `src/pages/it/portfolio.astro`, `src/pages/en/portfolio.astro`
@@ -1291,6 +1436,25 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 
 ### Task 9: Home e test end-to-end del percorso critico
 
+> **Modifica (2026-09-26).** Quattro correzioni.
+> - Il poster passa dalla pipeline immagini. Il blocco originale usava
+>   `<img src={poster}>`, cioè l'originale servito direttamente, contro la
+>   regola "mai un file originale servito" e contro lo spec, che vuole il
+>   poster in AVIF. Il blocco dello Step 3 è corretto di conseguenza. Le
+>   larghezze coincidono con quelle di `Foto.astro`: usate in due posti, una
+>   costante condivisa ha il secondo caso d'uso che le convenzioni chiedono.
+> - La clip si scarica solo se `(min-width: 768px)` è vera, al posto di
+>   `(max-width: 800px)`: le convenzioni ammettono solo `min-width`, e 768 px
+>   è la larghezza tablet dello spec e la soglia già usata nei prototipi.
+> - Il test della home chiede da 10 a 15 foto con `in_home`, ma `foto.json`
+>   del Task 4 ne ha 2. Lo estende questo task, allo Step 4, con altre foto di
+>   `prototypes/comune/foto.js` e il loro `alt` in italiano e in inglese: il
+>   Task 4 resta com'è.
+> - Per il piano di stile, non per questo task: se il poster 16:9 viene
+>   ritagliato a 4:5 al telefono, `sizes` deve dichiarare la larghezza del
+>   ritaglio (nei prototipi `222vw`), altrimenti il browser sceglie un derivato
+>   troppo piccolo.
+
 **Files:**
 - Create: `src/components/Hero.astro`
 - Modify: `src/pages/it/index.astro`, `src/pages/en/index.astro`
@@ -1360,11 +1524,24 @@ con `prefers-reduced-motion`.
 ```astro
 ---
 // src/components/Hero.astro
+import { Picture } from 'astro:assets';
+
 interface Props { poster: string; clip?: string; motto: string }
 const { poster, clip, motto } = Astro.props;
 ---
 <section class="hero">
-  <img src={poster} alt="" width="2400" height="1350" loading="eager" fetchpriority="high" />
+  <Picture
+    src={poster}
+    inferSize
+    formats={['avif', 'webp']}
+    fallbackFormat="webp"
+    widths={[400, 800, 1200, 1600, 2400]}
+    sizes="100vw"
+    alt=""
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+  />
   {clip && <video class="clip" muted loop playsinline preload="none" data-src={clip}></video>}
   <h1>{motto}</h1>
 </section>
@@ -1372,8 +1549,8 @@ const { poster, clip, motto } = Astro.props;
 <script>
   const video = document.querySelector<HTMLVideoElement>('.hero .clip');
   const riduci = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mobile = window.matchMedia('(max-width: 800px)').matches;
-  if (video && !riduci && !mobile) {
+  const largo = window.matchMedia('(min-width: 768px)').matches;
+  if (video && !riduci && largo) {
     addEventListener('load', () => {
       video.src = video.dataset.src!;
       video.play().catch(() => {});
@@ -1413,8 +1590,19 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 
 ### Task 10: Gate di performance e verifica del recapito
 
+> **Modifica (2026-09-26).** `lighthouserc.json` esiste già dal Task 2, con le
+> asserzioni dello Step 1 e le URL di `/it/` e `/it/portfolio/`: lo Step 1 si
+> riduce a verificarlo. Da decidere qui: `tests/e2e/a11y.spec.ts` gira due
+> volte nel gate, perché `npm run e2e` lo include già e `verify.sh` poi esegue
+> anche `a11y`.
+>
+> Lo Step 4 non lo chiude un agente da solo: serve una persona con accesso
+> all'account Netlify di Leo, per la deploy preview e per leggere l'email
+> ricevuta. L'agente prepara tutto il resto e poi si ferma a chiederlo.
+
 **Files:**
-- Create: `lighthouserc.json`, `netlify.toml`
+- Modify: `lighthouserc.json` (esiste dal Task 2)
+- Create: `netlify.toml`
 - Test: la configurazione stessa è il test.
 
 **Interfaces:**
@@ -1525,16 +1713,18 @@ Ognuno richiede un piano proprio, e due sono bloccati.
 
 - **Pagine Chi sono e FAQ.** Non sono sul percorso critico e richiedono i testi
   di Leo. Piano successivo, nessun blocco tecnico.
-- **Direzione visiva e design system.** Non è bloccata, ha un piano proprio e
-  corre in parallelo a questo. Claude Design produce due o tre direzioni, Leo
-  ne sceglie una, e da lì escono i token CSS, `docs/04-design-system.md`
-  compilato e i riferimenti in `design/ref/`. Il brand mancante non è un
-  prerequisito: è l'output. I tre riferimenti negativi che
-  [01-discovery.md](../../01-discovery.md) aspetta si ottengono dalle due
-  direzioni che Leo scarta, quindi attenderli per poter iniziare è
-  un'attesa circolare. **Deve chiudere prima del Task 6:** i Task 2-5 non
-  toccano la resa visiva, il Task 6 la crea. Questo piano produce markup
-  corretto e accessibile, non un sito finito da vedere.
+- **Direzione visiva, design system e stile.** Non blocca questo piano, che
+  produce markup corretto e accessibile, non un sito finito da vedere: il
+  Task 6 costruisce solo la struttura. Le direzioni si esplorano con
+  prototipi in codice sul branch `prototypes`, al posto di Claude Design
+  previsto da ADR-0001 punto 2, che va emendato. Leo ne sceglie una, e da lì
+  escono i token CSS, `docs/04-design-system.md` compilato e i riferimenti in
+  `design/ref/`. Il brand mancante non è un prerequisito: è l'output. I tre
+  riferimenti negativi che [01-discovery.md](../../01-discovery.md) aspetta
+  si ottengono dalle direzioni che Leo scarta, quindi attenderli per poter
+  iniziare è un'attesa circolare. Lo stile di layout, portfolio, form e hero
+  è un piano proprio: parte a direzione scelta e usa la skill
+  frontend-design, `/verifica-visiva` e `design-reviewer`.
 - **Pannello di redazione.** Bloccato dalla verifica in
   [ADR-0004](../../03-adr/0004-pannello-e-storage-immagini.md): autenticazione
   da accertare prima di scegliere il prodotto.
