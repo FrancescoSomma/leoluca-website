@@ -40,7 +40,7 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 3 Rotte e lingua | fuso | — | 2 | `feat/fondamenta` | PC 1 |
 | 4 Modello contenuti | concluso | A | 3 | `feat/contenuti-immagini` | PC 1 |
 | 5 Componente Foto | in corso | A | 4 | `feat/contenuti-immagini` | PC 1 |
-| 6 Layout base | in corso | B | 3 | `feat/layout-form` | PC 2 |
+| 6 Layout base | concluso | B | 3 | `feat/layout-form` | PC 2 |
 | 8 Form e conferma | libero | B | 6 | `feat/layout-form` | — |
 | 7 Portfolio | bloccato | — | 5 e 6 fusi | da aprire | — |
 | 9 Home ed e2e | bloccato | — | 7 e 8 fusi | da aprire | — |
@@ -114,6 +114,9 @@ legge.
 | 2026-09-26 | 7 | Test sulle richieste di immagini reali al primo render | Vedi il Task 7 |
 | 2026-09-26 | 9 | Poster nella pipeline, `min-width: 768px`, foto di richiamo da estendere | Vedi il Task 9 |
 | 2026-09-26 | 10 | `lighthouserc.json` esiste già; `a11y` doppio nel gate | Vedi il Task 10 |
+| 2026-09-26 | 6 | `nav.label` in `ui.ts`; test hreflang sulla destinazione; axe sulle 404; `tests/unit/base.test.ts`; spazi espliciti fra i link del nav | Convenzioni, ADR-0005 e US-6: il perché di ciascuna è nel commit del Task 6 su `feat/layout-form` |
+| 2026-09-26 | 8 | `compressHTML` toglie gli spazi fra i tag; bersagli sotto 24×24 px senza CSS | Vedi il Task 8 |
+| 2026-09-26 | 10 | Regole 404 per lingua in `netlify.toml` | Vedi il Task 10 |
 
 ## Global Constraints
 
@@ -1266,6 +1269,20 @@ git commit -m "feat: portfolio come flusso unico ordinato"
 
 ### Task 8: Form di contatto e pagina di conferma
 
+> **Modifica (2026-09-26).** Due scoperte del Task 6, che valgono per il
+> form.
+>
+> - `compressHTML` di Astro toglie gli spazi fra i tag del sorgente: due
+>   elementi in riga scritti su righe diverse escono attaccati. Nel nav di
+>   `Base.astro` li separa un `{" "}` esplicito.
+> - Senza CSS nessun bersaglio arriva ai 24×24 px che lo spec chiede per
+>   2.5.8, e axe non se ne accorge sempre: passa sui link in riga per
+>   l'eccezione inline, e segnala `target-size` sui bersagli a blocco
+>   impilati, come il nav in `<ul>` provato e scartato nel Task 6. Il CSS
+>   resta escluso fino al piano di stile. Se axe segnala `target-size` sui
+>   controlli del form, non si allenta il test e non si aggiunge CSS: è una
+>   decisione da portare a un umano.
+
 **Files:**
 - Create: `src/components/FormContatto.astro`
 - Modify: `src/pages/it/contatti.astro`, `src/pages/en/contact.astro`,
@@ -1613,6 +1630,32 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 > Lo Step 4 non lo chiude un agente da solo: serve una persona con accesso
 > all'account Netlify di Leo, per la deploy preview e per leggere l'email
 > ricevuta. L'agente prepara tutto il resto e poi si ferma a chiederlo.
+>
+> Dal Task 6: le 404 per lingua sono `src/pages/it/404.astro` e
+> `src/pages/en/404.astro`, che Astro scrive in `dist/it/404/index.html` e
+> `dist/en/404/index.html`. La gestione speciale di Astro vale solo per
+> `/404` alla radice, e Netlify da sola serve solo `/404.html`: senza regole,
+> un URL sconosciuto mostra la 404 di Netlify. Allo Step 3, dopo la regola di
+> `/`:
+>
+> ```toml
+> [[redirects]]
+>   from = "/en/*"
+>   to = "/en/404/"
+>   status = 404
+>
+> [[redirects]]
+>   from = "/*"
+>   to = "/it/404/"
+>   status = 404
+> ```
+>
+> Senza `force`, Netlify non applica una regola a un percorso che esiste come
+> file, quindi queste colpiscono solo gli URL sconosciuti; fuori da `/en/` il
+> ripiego è l'italiano, come `x-default`. Per lo stesso motivo la regola di `/`
+> verso `/it/` non scatta, perché `dist/index.html` esiste: oggi reindirizza
+> quella pagina. Allo Step 4, sulla deploy preview, verificare che
+> `/en/inesistente/` risponda 404 con la pagina inglese.
 
 **Files:**
 - Modify: `lighthouserc.json` (esiste dal Task 2)
@@ -1740,7 +1783,9 @@ Ognuno richiede un piano proprio, e due sono bloccati.
   si ottengono dalle direzioni che Leo scarta, quindi attenderli per poter
   iniziare è un'attesa circolare. Lo stile di layout, portfolio, form e hero
   è un piano proprio: parte a direzione scelta e usa la skill
-  frontend-design, `/verifica-visiva` e `design-reviewer`.
+  frontend-design, `/verifica-visiva` e `design-reviewer`. Deve portare ogni
+  bersaglio interattivo a 24×24 px (2.5.8) e verificarlo con un test proprio:
+  senza CSS i link del nav sono alti 17 px, e axe non lo segnala (Task 6).
 - **Pannello di redazione.** Bloccato dalla verifica in
   [ADR-0004](../../03-adr/0004-pannello-e-storage-immagini.md): autenticazione
   da accertare prima di scegliere il prodotto.
