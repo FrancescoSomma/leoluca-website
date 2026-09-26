@@ -627,7 +627,7 @@ git commit -m "feat: mappa rotte bilingue e selettore lingua"
   - `caricaFaq(): Faq[]`, `caricaPagine(): Pagina[]`, `caricaImpostazioni(): Impostazioni`
   - `altPer(foto: Foto, locale: Locale): string`
 
-- [ ] **Step 1: Scrivere il test che fallisce**
+- [x] **Step 1: Scrivere il test che fallisce**
 
 ```ts
 // tests/unit/content.test.ts
@@ -685,12 +685,12 @@ describe('caricamento', () => {
 });
 ```
 
-- [ ] **Step 2: Eseguire il test e verificare che fallisca**
+- [x] **Step 2: Eseguire il test e verificare che fallisca**
 
 Run: `npm run test`
 Expected: FAIL, modulo `src/content/schema` inesistente.
 
-- [ ] **Step 3: Implementare gli schemi**
+- [x] **Step 3: Implementare gli schemi**
 
 ```ts
 // src/content/schema.ts
@@ -746,7 +746,7 @@ aggiungeva a entrambe le entità senza che nulla lo richiedesse, ed è
 esattamente la lista "in eccesso" di `spec-guardian`. Se il pannello di
 ADR-0004 dovesse pretenderlo, si aggiorna prima lo spec.
 
-- [ ] **Step 4: Implementare il caricamento**
+- [x] **Step 4: Implementare il caricamento**
 
 ```ts
 // src/content/load.ts
@@ -788,7 +788,7 @@ export function altPer(foto: Foto, locale: Locale): string {
 }
 ```
 
-- [ ] **Step 5: Creare dati di prova**
+- [x] **Step 5: Creare dati di prova**
 
 `foto.json` con almeno cinque voci che puntano a immagini di prova remote,
 `ordine` da 0 a 4, le prime due con `in_home: true`. Non usare foto di Leo: le
@@ -804,18 +804,18 @@ dice la stessa cosa in inglese, non parola per parola
 `pagine.json`, `faq.json` e `impostazioni.json` con valori segnaposto che
 passano lo schema. Email su `example.com`, nessun contatto reale.
 
-- [ ] **Step 6: Eseguire i test**
+- [x] **Step 6: Eseguire i test**
 
 Run: `npm run test`
 Expected: PASS, otto test verdi.
 
-- [ ] **Step 7: Chiudere il task**
+- [x] **Step 7: Chiudere il task**
 
 Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
 task produce una pagina che si vede, e i tre agenti di review sul diff. Le
 segnalazioni si risolvono prima del commit, non dopo.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/content tests/unit/content.test.ts
