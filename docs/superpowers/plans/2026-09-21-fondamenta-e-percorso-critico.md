@@ -130,6 +130,7 @@ legge.
 | 2026-09-26 | 7, 8, 9 | `seo_title_en` e `seo_description_en` obbligatori nello schema; `seoPer` in `load.ts`; una frase in spec § Pagina | Li scrive lo sviluppo, non Leo, e un `title` vuoto viola WCAG 2.4.2. Decisione di Francesco, vedi il Task 7 |
 | 2026-09-26 | 8, 9 | h1 di Contatti e Conferma da `ui.ts`; corpo da `corpoPer(slug, locale)` in fondo a `load.ts`, non reso se vuoto nella lingua | Il corpo è testo di Leo (05-content): US-8, nessun ripiego. Decisione di Francesco durante il Task 8, vedi il Task 9 |
 | 2026-09-26 | 7, 9 | Regola di reflow in `Foto.astro` (e nel poster di Hero); US-2 conta le immagini prioritarie, non le richieste | Senza CSS `scrollWidth` 2408 a 320 px; con il reflow Chrome richiede 5 foto su 5 sotto i 1440 px. Decisione di Francesco, vedi il Task 7 |
+| 2026-09-26 | 7, tutti | Reflow con un `img` con scope, senza `:global()`; `sizes` e corpo del portfolio affidati ai piani di stile e del pannello; screenshot dopo l'ultimo `verify.sh` | Review finale del Task 7: lo scope di Astro 7.3.3 raggiunge l'`<img>` di `<Picture>`, e Playwright svuota `test-results/` a ogni run |
 | 2026-09-26 | 10 | `lighthouserc.json` su tutte le pagine pubbliche; LCP e peso solo su home e portfolio | Spec § Budget: CLS su tutte le pagine, JavaScript per pagina. Dalla review del Task 8, vedi il Task 10 |
 
 ## Global Constraints
@@ -180,7 +181,9 @@ primo commit e nessun task li chiamava.
    sviluppa qui non ha occhi e un layout rotto non fallisce nessun test: è
    l'argomento centrale di
    [ADR-0005](../../03-adr/0005-stack-di-verifica.md), e installare Playwright
-   senza mai guardare nulla lo tradisce.
+   senza mai guardare nulla lo tradisce. Playwright svuota `test-results/` a
+   ogni run: gli screenshot si prendono dopo l'ultimo `verify.sh`, o si
+   rifanno.
 3. **Review in contesto pulito**, sul diff del task:
    - `spec-guardian` — sempre. Cosa manca e cosa è in eccesso rispetto allo
      spec.
@@ -1252,9 +1255,10 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 >
 > - `Foto.astro` porta quella sola regola, con un commento su 1.4.10: è il
 >   pavimento dello spec, non stile, come l'eccezione dello skip link in
->   `Base.astro`. Deve raggiungere l'`<img>` che rende `<Picture>`, che è un
->   altro componente. Un test e2e verifica che a 320 px il portfolio non
->   scorra in orizzontale, nelle due lingue.
+>   `Base.astro`. Basta un selettore `img` con lo scope del componente: in
+>   Astro 7.3.3 `<Picture>` passa `data-astro-cid-*` anche all'`<img>`, non
+>   serve `:global()` (review finale del Task 7). Un test e2e verifica che a
+>   320 px il portfolio non scorra in orizzontale, nelle due lingue.
 > - US-2 è emendato: al massimo 3 immagini prioritarie, le altre in lazy
 >   nativo. Il test che contava le richieste si toglie; resta quello sulle 3
 >   eager, e il peso fino all'LCP lo misura Lighthouse nel Task 10.
@@ -1913,12 +1917,13 @@ git commit -m "feat: gate di performance e configurazione Netlify"
 Ognuno richiede un piano proprio, e due sono bloccati.
 
 - **Pagine Chi sono e FAQ.** Non sono sul percorso critico e richiedono i testi
-  di Leo. Piano successivo, nessun blocco tecnico. Dal Task 4 i campi inglesi
+  di Leo. Piano successivo, nessun blocco tecnico. Dal Task 4 i testi inglesi
   di Pagina e FAQ possono essere stringhe vuote: la pagina inglese omette la
-  voce, senza ripiego sull'italiano (US-8), e il pannello lo segnala. I loro
-  `title` e `description` sono ancora i segnaposto letterali del Task 6:
-  quel piano li porta su `caricaPagine()`, come i Task 7-9 per le loro
-  pagine.
+  voce, senza ripiego sull'italiano (US-8), e il pannello lo segnala. Dal
+  Task 7 fanno eccezione `seo_title_en` e `seo_description_en`, obbligatori
+  (spec § Pagina). I loro `title` e `description` sono ancora i segnaposto
+  letterali del Task 6: quel piano li legge con `seoPer`, come i Task 7-9
+  per le loro pagine.
 - **Direzione visiva, design system e stile.** Non blocca questo piano, che
   produce markup corretto e accessibile, non un sito finito da vedere: il
   Task 6 costruisce solo la struttura. Le direzioni si esplorano con
@@ -1933,9 +1938,15 @@ Ognuno richiede un piano proprio, e due sono bloccati.
   frontend-design, `/verifica-visiva` e `design-reviewer`. Deve portare ogni
   bersaglio interattivo a 24×24 px (2.5.8) e verificarlo con un test proprio:
   senza CSS i link del nav sono alti 17 px, e axe non lo segnala (Task 6).
+  Deve anche ricavare dal contenitore il `sizes` del portfolio e delle foto
+  di richiamo: oggi dichiara `1200px`, ma a 1440 px senza contenitore
+  l'immagine si rende a 1424 e il browser ingrandisce il derivato 1200w
+  (Task 7).
 - **Pannello di redazione.** Bloccato dalla verifica in
   [ADR-0004](../../03-adr/0004-pannello-e-storage-immagini.md): autenticazione
-  da accertare prima di scegliere il prodotto.
+  da accertare prima di scegliere il prodotto. Non deve esporre il corpo del
+  portfolio: la pagina non lo rende, perché 05-content non assegna testi al
+  portfolio e la sua Pagina esiste per `title` e `description` (Task 7).
 - **Dati strutturati, sitemap.xml, redirect dal vecchio sito.** Lo spec li
   richiede; i redirect dipendono dall'elenco degli URL vivi, che è una domanda
   aperta con Leo.
