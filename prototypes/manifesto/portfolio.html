@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Portfolio, Leo Luca Iacoviello</title>
     <meta name="description" content="Prototipo Manifesto: portfolio." />
+    <!-- Il titolo sale dal primo paint: la classe deve esserci prima che il
+         body si disegni, e senza JS il titolo resta fermo e leggibile. -->
+    <script>document.documentElement.classList.add('anima');</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" />
@@ -28,7 +31,7 @@
 
     <main id="contenuto">
       <div class="apertura">
-        <h1>Portfolio</h1>
+        <h1 aria-label="Portfolio" style="--ultima: 8"><span class="maschera" aria-hidden="true"><span class="lettera" style="--i: 0">P</span><span class="lettera" style="--i: 1">o</span><span class="lettera" style="--i: 2">r</span><span class="lettera" style="--i: 3">t</span><span class="lettera" style="--i: 4">f</span><span class="lettera" style="--i: 5">o</span><span class="lettera" style="--i: 6">l</span><span class="lettera" style="--i: 7">i</span><span class="lettera" style="--i: 8">o</span></span></h1>
         <p>36 fotografie, in quest'ordine.</p>
       </div>
 

@@ -16,6 +16,27 @@
   --s5: 7rem;
   --margine: 1rem;
   --colonne: 12;
+  --rientro-segno: 1.75rem;
+  --segno: 0.75rem;
+
+  /* Movimento. La voltata è il momento firma: una tavola si scopre da destra a
+     sinistra, nel verso in cui si volta una pagina, con l'ombra che segue il bordo. */
+  --durata-voltata: 0.9s;
+  --durata-ombra: 0.35s;
+  --durata-numero: 0.4s;
+  --durata-nota: 0.32s;
+  --durata-segno: 0.2s;
+  --durata-clip: 1.2s;
+  --ritardo-numero: 0.62s;
+  --ritardo-dittico: 0.24s;
+  --ritardo-ombra: calc(var(--durata-voltata) * 0.8);
+  --curva-voltata: cubic-bezier(0.72, 0, 0.26, 1);
+  --curva-uscita: cubic-bezier(0.2, 0.6, 0.3, 1);
+  --curva-clip: ease;
+  --curva-ombra: linear;
+  --ombra: color-mix(in srgb, var(--inchiostro) 55%, transparent);
+  --banda-ombra: 14%;
+  --fuori-bordo: 0.75rem;
 }
 
 @media (min-width: 768px) {
@@ -140,7 +161,7 @@ picture {
   inset: 0;
   height: 100%;
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transition: opacity var(--durata-clip) var(--curva-clip);
 }
 
 .copertina video.pronta {
@@ -166,16 +187,75 @@ picture {
   line-height: 1.25;
 }
 
-.raccordo {
-  max-width: 34ch;
-  margin: var(--s5) var(--margine) var(--s4);
-  color: var(--grafite);
+/* Ogni sezione della home è una parte del volume, sulla stessa griglia delle
+   tavole: il titolo sta sempre sulla seconda colonna, il testo sempre sulla
+   stessa colonna stretta, come in un libro impaginato su una gabbia sola. */
+.parte {
+  margin-top: var(--s5);
+}
+
+.riga {
+  padding-inline: var(--margine);
+}
+
+.riga h2 {
+  margin: 0 0 var(--s3);
+  font-size: var(--titolo);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.colonna p {
+  max-width: 36ch;
+  margin: 0 0 var(--s2);
+  text-wrap: pretty;
 }
 
 @media (min-width: 768px) {
-  .raccordo {
-    margin-left: calc(var(--margine) + (100% - 2 * var(--margine)) / 12 * 1);
+  .riga {
+    display: grid;
+    grid-template-columns: repeat(var(--colonne), minmax(0, 1fr));
+    column-gap: var(--s3);
+    align-items: baseline;
   }
+
+  .riga h2 {
+    grid-column: 2 / 7;
+    margin-bottom: 0;
+  }
+
+  .riga .colonna {
+    grid-column: 7 / 13;
+  }
+}
+
+@media (min-width: 1200px) {
+  .riga .colonna {
+    grid-column: 8 / 13;
+  }
+}
+
+.testa {
+  margin-bottom: var(--s3);
+}
+
+.testa h2 {
+  margin-bottom: var(--s1);
+}
+
+@media (min-width: 768px) {
+  .testa {
+    margin-bottom: var(--s4);
+  }
+}
+
+.raccordo {
+  color: var(--grafite);
+}
+
+.rimando {
+  display: inline-block;
+  padding-block: 0.25rem;
 }
 
 .intestazione {
@@ -198,6 +278,13 @@ picture {
   flex-direction: column;
   gap: var(--s5);
   padding-inline: var(--margine);
+}
+
+/* Le tavole le genera pagina.js, che gira dopo il primo paint: finché il
+   contenitore è vuoto tiene uno schermo di posto, altrimenti seguito e piede
+   compaiono nel viewport e poi scendono, con un CLS di 0,2 nel portfolio. */
+.tavole:empty {
+  min-height: 100svh;
 }
 
 .tavola {
@@ -320,6 +407,7 @@ picture {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  align-items: baseline;
   gap: var(--s1) var(--s3);
   padding: var(--s3) var(--margine);
   color: var(--grafite);
@@ -332,4 +420,200 @@ picture {
 .piede a {
   display: inline-block;
   padding-block: 0.25rem;
+}
+
+/* Chi sono come risvolto di copertina: il ritratto è una tavola senza numero,
+   il testo una colonna stretta posata sul piede della foto. */
+.ritratto {
+  width: 72%;
+  margin-bottom: var(--s3);
+}
+
+@media (min-width: 768px) {
+  .risvolto .ritratto {
+    grid-column: 2 / 7;
+    align-self: start;
+    width: auto;
+    margin-bottom: 0;
+  }
+
+  .risvolto .colonna {
+    align-self: end;
+  }
+
+  .risvolto .colonna > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Domande frequenti come apparato in fondo al volume. Il filetto corto è quello
+   che nei libri separa le note dal testo. */
+.apparato h2::before {
+  content: '';
+  display: block;
+  width: var(--s4);
+  margin-bottom: var(--s3);
+  border-top: 1px solid var(--grafite);
+}
+
+.domande {
+  max-width: calc(36ch + var(--rientro-segno));
+  margin-bottom: var(--s2);
+}
+
+.domande summary {
+  position: relative;
+  display: block;
+  padding: var(--s1) 0 var(--s1) var(--rientro-segno);
+  list-style: none;
+  cursor: pointer;
+}
+
+.domande summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Il segno + diventa −: il tratto verticale si abbassa sull'orizzontale. */
+.domande summary::before,
+.domande summary::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(var(--s1) + 0.75em);
+  width: var(--segno);
+  border-top: 1px solid currentColor;
+}
+
+.domande summary::after {
+  transform: rotate(90deg);
+}
+
+.domande details[open] summary::after {
+  transform: rotate(0deg);
+}
+
+.risposta {
+  margin: 0;
+  padding: 0 0 var(--s2) var(--rientro-segno);
+  color: var(--grafite);
+}
+
+@media (min-width: 768px) {
+  /* Segni appesi nel margine: le domande si allineano alla colonna del testo. */
+  .domande {
+    margin-left: calc(-1 * var(--rientro-segno));
+  }
+}
+
+/* Contatti come ultima pagina: l'invito è l'unico testo del volume in taglia
+   grande, perché è l'ultima cosa che resta da dire. */
+.congedo {
+  padding-bottom: var(--s5);
+}
+
+.congedo .colonna p:first-child {
+  max-width: 24ch;
+  font-size: var(--titolo);
+  line-height: 1.25;
+}
+
+.azioni {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+  margin-top: var(--s3);
+}
+
+.azioni a {
+  display: inline-block;
+  padding-block: 0.25rem;
+}
+
+.azioni .pulsante {
+  padding: var(--s1) var(--s2);
+  background: var(--inchiostro);
+  color: var(--carta);
+  text-decoration: none;
+}
+
+.azioni .pulsante:hover {
+  background: var(--grafite);
+}
+
+/* Gli stati nascosti esistono solo se pagina.js ha messo html.anima, e solo sulle
+   tavole che al caricamento erano sotto la piega: senza JS, con reduced motion o
+   sopra la piega (l'LCP del portfolio) la tavola è già posata. */
+@media (prefers-reduced-motion: no-preference) {
+  html.anima .da-posare picture {
+    position: relative;
+    overflow: hidden;
+    /* Il ritaglio parte oltre il bordo destro: a filo, l'antialiasing lascia
+       visibile una riga di foto prima che la voltata cominci. */
+    clip-path: inset(0 calc(-1 * var(--fuori-bordo)) 0 calc(100% + var(--fuori-bordo)));
+  }
+
+  html.anima .da-posare picture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--ombra), transparent var(--banda-ombra));
+    transform: translateX(100%);
+  }
+
+  html.anima .da-posare .numero {
+    opacity: 0;
+  }
+
+  html.anima .da-posare.posata picture {
+    clip-path: inset(0);
+    transition: clip-path var(--durata-voltata) var(--curva-voltata);
+  }
+
+  html.anima .da-posare.posata picture::after {
+    transform: translateX(0);
+    opacity: 0;
+    transition:
+      transform var(--durata-voltata) var(--curva-voltata),
+      opacity var(--durata-ombra) var(--curva-ombra) var(--ritardo-ombra);
+  }
+
+  html.anima .da-posare.posata .numero {
+    opacity: 1;
+    transition: opacity var(--durata-numero) var(--curva-uscita) var(--ritardo-numero);
+  }
+
+  /* Nel dittico si volta prima la pagina di destra, poi quella di sinistra. */
+  html.anima .tavola--dittico.posata picture:first-child {
+    transition-delay: var(--ritardo-dittico);
+  }
+
+  html.anima .tavola--dittico.posata picture:first-child::after {
+    transition-delay: var(--ritardo-dittico), calc(var(--ritardo-dittico) + var(--ritardo-ombra));
+  }
+
+  html.anima .tavola--dittico.posata .numero {
+    transition-delay: calc(var(--ritardo-numero) + var(--ritardo-dittico));
+  }
+
+  .domande summary::after {
+    transition: transform var(--durata-segno) var(--curva-uscita);
+  }
+
+  /* La risposta si scopre dall'alto, come una nota sotto il foglio. */
+  .domande details[open] .risposta {
+    animation: scopri var(--durata-nota) var(--curva-uscita);
+  }
+}
+
+@keyframes scopri {
+  from {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+  }
+
+  to {
+    clip-path: inset(0);
+    opacity: 1;
+  }
 }

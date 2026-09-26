@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Leo Luca Iacoviello, fotografo di matrimoni</title>
     <meta name="description" content="Prototipo Proiezione: home." />
+    <!-- In testa e non in pagina.js: la classe deve esserci prima del primo
+         paint, o il cartello comparirebbe, sparirebbe e ricomparirebbe. -->
+    <script>
+      if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+        document.documentElement.classList.add('anima');
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="stile.css" />
   </head>
   <body>
@@ -49,22 +56,69 @@
         </picture>
         <video data-clip="../comune/media/hero.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
         <div class="cartello">
-          <h1>Fotografo i matrimoni mentre accadono.</h1>
+          <!-- Le righe entrano a fuoco una dopo l'altra: il nome accessibile
+               resta la frase intera, i frammenti sono solo visivi. -->
+          <h1 aria-label="Fotografo i matrimoni mentre accadono.">
+            <span class="riga" aria-hidden="true">Fotografo i matrimoni</span>
+            <span class="riga" aria-hidden="true">mentre accadono.</span>
+          </h1>
         </div>
       </div>
 
-      <p class="raccordo">Qualche fotografia dagli ultimi matrimoni. Le altre sono nel portfolio.</p>
+      <section class="sezione" aria-labelledby="titolo-portfolio">
+        <h2 class="bordo" id="titolo-portfolio">Portfolio</h2>
+        <div class="proiezione-breve" id="provino"></div>
+        <p class="seguito"><a href="portfolio.html">Vedi il portfolio completo</a></p>
+      </section>
 
-      <div class="provino" id="provino"></div>
+      <section class="sezione" aria-labelledby="titolo-chi-sono">
+        <h2 class="bordo" id="titolo-chi-sono">Chi sono</h2>
+        <figure class="telaio ritratto" id="ritratto"></figure>
+        <!-- Corsivo e una battuta per riga: il sottotitolo di una voce fuori campo. -->
+        <p class="sottotitoli">
+          <span>Mi chiamo Leo Luca Iacoviello e fotografo matrimoni.</span>
+          <span>Durante la giornata mi muovo piano e parlo poco: preferisco che vi dimentichiate di me.</span>
+          <span>Non vi chiederò di mettervi in posa, se non per qualche minuto con le famiglie.</span>
+          <span>Quello che conta succede quando nessuno guarda l'obiettivo.</span>
+        </p>
+        <p class="seguito"><a href="#">Leggi chi sono</a></p>
+      </section>
 
-      <div class="seguito">
-        <a href="portfolio.html">Vedi il portfolio completo</a>
-      </div>
+      <section class="sezione" aria-labelledby="titolo-domande">
+        <h2 class="bordo" id="titolo-domande">Domande frequenti</h2>
+        <div class="intertitoli">
+          <details>
+            <summary>Quanto costa un servizio?</summary>
+            <p>Dipende da durata, luogo e da cosa volete ricevere. Scrivimi data e location e ti mando un preventivo.</p>
+          </details>
+          <details>
+            <summary>Ti sposti fuori regione?</summary>
+            <p>Sì, in tutta Italia e all'estero. Il viaggio lo mettiamo nel preventivo, senza sorprese.</p>
+          </details>
+          <details>
+            <summary>Quando arrivano le foto?</summary>
+            <p>In una galleria online, di solito entro otto settimane dal matrimonio.</p>
+          </details>
+        </div>
+        <p class="seguito"><a href="#">Tutte le domande</a></p>
+      </section>
+
+      <section class="sezione coda" aria-labelledby="titolo-contatti">
+        <h2 class="bordo" id="titolo-contatti">Contatti</h2>
+        <div class="crediti">
+          <p class="invito">
+            <span>Raccontami la data, il luogo e che giornata avete in mente.</span>
+            <span>Rispondo entro due giorni.</span>
+          </p>
+          <a class="preventivo" href="#">Richiedi un preventivo</a>
+          <p class="indirizzo"><a href="mailto:info@leolucaiacoviello.it">info@leolucaiacoviello.it</a></p>
+        </div>
+      </section>
     </main>
 
     <footer class="piede">
       <p>Leo Luca Iacoviello, fotografo di matrimoni</p>
-      <p><a href="#">info@leolucaiacoviello.it</a></p>
+      <p><a href="mailto:info@leolucaiacoviello.it">info@leolucaiacoviello.it</a></p>
     </footer>
 
     <script src="../comune/foto.js"></script>

@@ -6,29 +6,69 @@
 
   --font: 'Jost', system-ui, sans-serif;
   --testo: 1rem;
+  --sottotitolo: 1.25rem;
   --titolo: 1.5rem;
+  --intertitolo: 1.75rem;
   --cartello: 2rem;
   --interlinea: 1.5;
+  --interlinea-media: 1.35;
+  --interlinea-stretta: 1.1;
+  /* 42 caratteri per riga: la misura massima dei sottotitoli al cinema. */
+  --battuta: 42ch;
+  --segno: 0.45em;
+  --segno-quota: 0.15em;
+  --tratto: 2px;
+  --cifre: 2ch;
 
+  --s0: 0.25rem;
   --s1: 0.5rem;
   --s2: 1rem;
   --s3: 2rem;
   --s4: 4rem;
+  --s5: 6rem;
   --margine: 1rem;
   --testata: 6rem;
+  --altezza-diapositiva: 80svh;
+  --altezza-ritratto: 58svh;
+  --bordo: 8rem;
+
+  --durata-lampada: 900ms;
+  --durata-titolo: 420ms;
+  --ritardo-riga: 160ms;
+  --ritardo-doppia: 180ms;
+  --durata-fuoco: 380ms;
+  --durata-scatto: 220ms;
+  --durata-clip: 1.2s;
+  --curva-lampada: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --curva-lente: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --curva-scatto: cubic-bezier(0.3, 1.6, 0.5, 1);
+  --curva-clip: ease;
+  --luce-spenta: 0.3;
+  /* Picco basso di proposito: una sola salita per diapositiva, mai un
+     lampeggio, anche scorrendo veloce (WCAG 2.3.1). */
+  --luce-picco: 1.12;
+  --buio: 0;
+  --sfocatura: 0.5rem;
+  --respiro: 1.015;
+  --salto: -0.4em;
 }
 
 @media (min-width: 768px) {
   :root {
+    --sottotitolo: 1.5rem;
     --titolo: 1.75rem;
+    --intertitolo: 2.25rem;
     --cartello: 3rem;
     --margine: 2rem;
     --testata: 4.5rem;
+    --altezza-diapositiva: 76svh;
+    --altezza-ritratto: 56svh;
   }
 }
 
 @media (min-width: 1200px) {
   :root {
+    --intertitolo: 2.75rem;
     --cartello: 4rem;
     --margine: 3rem;
   }
@@ -110,7 +150,7 @@ video {
 
 .testata a {
   display: inline-block;
-  padding-block: 0.25rem;
+  padding-block: var(--s0);
   text-decoration: none;
 }
 
@@ -150,7 +190,7 @@ video {
 
 .schermo video {
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transition: opacity var(--durata-clip) var(--curva-clip);
 }
 
 .schermo video.pronta {
@@ -169,44 +209,58 @@ video {
   margin: 0;
   font-size: var(--cartello);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: var(--interlinea-stretta);
 }
 
-.raccordo {
-  max-width: 36ch;
-  margin: 0;
-  padding: var(--s4) var(--margine) var(--s3);
-  color: var(--penombra);
-  font-size: var(--titolo);
-  line-height: 1.3;
+.riga {
+  display: block;
 }
 
-.provino {
+.sezione {
+  padding: var(--s5) var(--margine) 0;
+}
+
+.bordo {
+  margin: 0 0 var(--s3);
+  font-size: var(--testo);
+  font-weight: 500;
+  line-height: var(--interlinea);
+}
+
+/* Da 1200 px il titolo esce dal telo e va nel margine, come l'etichetta di una
+   bobina. Le due colonne laterali uguali tengono il contenuto sull'asse. */
+@media (min-width: 1200px) {
+  .sezione {
+    display: grid;
+    grid-template-columns: var(--bordo) minmax(0, 1fr) var(--bordo);
+  }
+
+  .sezione > * {
+    grid-column: 2;
+  }
+
+  .sezione > .bordo {
+    grid-column: 1;
+    align-self: start;
+    margin: 0;
+    padding-inline-end: var(--s2);
+  }
+}
+
+.proiezione-breve {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--s2);
-  padding-inline: var(--margine);
+  gap: var(--s3);
 }
 
 @media (min-width: 768px) {
-  .provino {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s3);
+  .proiezione-breve {
+    gap: var(--s4);
   }
 }
 
 .telaio {
-  display: grid;
-  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
-  place-items: center;
-  aspect-ratio: 1;
+  --altezza: var(--altezza-diapositiva);
   margin: 0;
-}
-
-@media (min-width: 768px) {
-  .telaio {
-    aspect-ratio: 4 / 3;
-  }
 }
 
 .telaio picture,
@@ -214,31 +268,207 @@ video {
   display: contents;
 }
 
-.telaio img,
-.diapositiva img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
+/* Larghezza ricavata da altezza massima e proporzione: il riquadro è noto
+   prima che la foto arrivi, quindi niente spostamenti al caricamento. */
+.telaio img {
+  width: min(100%, calc(var(--altezza) * var(--r)));
+  aspect-ratio: var(--r);
+  margin-inline: auto;
+}
+
+.doppia {
+  display: grid;
+  gap: var(--s3);
+}
+
+/* Due verticali consecutive vanno su due proiettori affiancati: la crescita
+   proporzionale al rapporto dà a entrambe la stessa altezza. */
+@media (min-width: 768px) {
+  .doppia {
+    display: flex;
+    width: 100%;
+    max-width: calc(var(--altezza-diapositiva) * var(--somma) + var(--s3));
+    margin-inline: auto;
+  }
+
+  .doppia .telaio {
+    flex: var(--r) 1 0%;
+    min-width: 0;
+  }
+
+  .doppia .telaio img {
+    width: 100%;
+  }
+}
+
+.ritratto {
+  --altezza: var(--altezza-ritratto);
+  margin-bottom: var(--s3);
+}
+
+.sottotitoli {
+  max-width: var(--battuta);
+  margin: 0 auto;
+  font-size: var(--sottotitolo);
+  font-style: italic;
+  line-height: var(--interlinea-media);
+  text-align: center;
+}
+
+.sottotitoli span {
+  display: block;
+  text-wrap: balance;
+}
+
+.sottotitoli span + span {
+  margin-top: var(--s1);
 }
 
 .seguito {
-  padding: var(--s4) var(--margine);
-}
-
-.seguito p {
-  max-width: 36ch;
-  margin: 0 0 var(--s2);
-  color: var(--penombra);
+  margin: var(--s4) 0 0;
+  text-align: center;
 }
 
 .seguito a {
   display: inline-block;
-  padding-block: 0.25rem;
+  padding-block: var(--s0);
   font-size: var(--titolo);
 }
 
+.intertitoli {
+  display: grid;
+  gap: var(--s3);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .intertitoli {
+    gap: var(--s4);
+  }
+}
+
+.intertitoli summary {
+  padding-block: var(--s1);
+  font-size: var(--intertitolo);
+  line-height: var(--interlinea-stretta);
+  text-wrap: balance;
+  list-style: none;
+  cursor: pointer;
+}
+
+.intertitoli summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Segno disegnato e non scritto: un «+» nel contenuto finirebbe nel nome
+   accessibile della domanda. */
+.intertitoli summary::after {
+  content: '';
+  display: inline-block;
+  width: var(--segno);
+  height: var(--segno);
+  margin-inline-start: var(--segno);
+  vertical-align: var(--segno-quota);
+  background:
+    linear-gradient(var(--penombra) 0 0) center / 100% var(--tratto) no-repeat,
+    linear-gradient(var(--penombra) 0 0) center / var(--tratto) 100% no-repeat;
+}
+
+.intertitoli details[open] summary::after {
+  background-size:
+    100% var(--tratto),
+    0 0;
+}
+
+.intertitoli p {
+  max-width: var(--battuta);
+  margin: var(--s2) auto 0;
+  color: var(--penombra);
+  font-size: var(--sottotitolo);
+  line-height: var(--interlinea-media);
+  text-wrap: balance;
+}
+
+.coda {
+  padding-bottom: var(--s5);
+  text-align: center;
+}
+
+.coda .bordo {
+  text-align: start;
+}
+
+/* L'ultimo cartello resta solo sul telo, come la fine dei titoli di coda. */
+@media (min-width: 768px) {
+  .coda {
+    display: flex;
+    flex-direction: column;
+    min-height: 80svh;
+  }
+
+  .crediti {
+    margin-block: auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  .coda {
+    display: grid;
+  }
+
+  .crediti {
+    align-self: center;
+  }
+}
+
+.invito {
+  max-width: var(--battuta);
+  margin: 0 auto var(--s3);
+  font-size: var(--sottotitolo);
+  line-height: var(--interlinea-media);
+}
+
+.invito span {
+  display: block;
+  text-wrap: balance;
+}
+
+.invito span + span {
+  color: var(--penombra);
+}
+
+.preventivo {
+  display: inline-block;
+  padding: var(--s2) var(--s3);
+  background: var(--telo);
+  color: var(--sala);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.preventivo:hover {
+  text-decoration: underline;
+}
+
+.indirizzo {
+  margin: var(--s3) 0 0;
+}
+
+.indirizzo a {
+  display: inline-block;
+  padding-block: var(--s0);
+}
+
+/* Se il browser dipinge prima dello script, la sequenza è ancora vuota: senza
+   questo schermo di riserva il blocco finale apparirebbe in cima e poi
+   verrebbe spinto via, con un CLS pari a 1. */
+#sequenza:empty {
+  min-height: 100svh;
+}
+
 .diapositiva {
+  /* Nel portfolio la prossima diapositiva aspetta al buio, appena visibile. */
+  --buio: 0.25;
   display: grid;
   grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
@@ -246,6 +476,13 @@ video {
   margin: 0;
   padding: var(--testata) var(--margine) var(--s4);
   scroll-snap-align: center;
+}
+
+.diapositiva img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .titoli {
@@ -271,6 +508,13 @@ video {
   font-variant-numeric: tabular-nums;
 }
 
+/* Due cifre riservate: il passaggio da 9 a 10 non sposta la barra. */
+.contatore #corrente {
+  display: inline-block;
+  min-width: var(--cifre);
+  text-align: end;
+}
+
 .fine {
   display: grid;
   align-content: center;
@@ -283,12 +527,12 @@ video {
   max-width: 30ch;
   margin: 0 0 var(--s2);
   font-size: var(--titolo);
-  line-height: 1.3;
+  line-height: var(--interlinea-media);
 }
 
 .fine a {
   display: inline-block;
-  padding-block: 0.25rem;
+  padding-block: var(--s0);
   font-size: var(--titolo);
 }
 
@@ -310,5 +554,81 @@ video {
 
 .piede a {
   display: inline-block;
-  padding-block: 0.25rem;
+  padding-block: var(--s0);
+}
+
+/* Il cambio di diapositiva: buio, un filo di luce in più, poi la foto com'è. */
+@keyframes accensione {
+  from {
+    opacity: var(--buio);
+    filter: brightness(var(--luce-spenta));
+  }
+  30% {
+    opacity: 1;
+    filter: brightness(var(--luce-picco));
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+/* La messa a fuoco dell'obiettivo, con il leggero respiro dell'ingrandimento. */
+@keyframes fuoco {
+  from {
+    opacity: 0;
+    filter: blur(var(--sfocatura));
+    transform: scale(var(--respiro));
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+@keyframes scatto {
+  from {
+    opacity: 0;
+    transform: translateY(var(--salto));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Gli stati di partenza esistono solo se il JavaScript ha messo html.anima:
+   senza script, o con movimento ridotto, tutto è già nel suo stato finale. */
+@media (prefers-reduced-motion: no-preference) {
+  html.anima .cartello .riga {
+    animation: fuoco var(--durata-titolo) var(--curva-lente) backwards;
+  }
+
+  html.anima .cartello .riga + .riga {
+    animation-delay: var(--ritardo-riga);
+  }
+
+  html.anima .telaio:not(.accesa) img,
+  html.anima .diapositiva:not(.accesa) img {
+    opacity: var(--buio);
+    filter: brightness(var(--luce-spenta));
+  }
+
+  html.anima .telaio.accesa img,
+  html.anima .diapositiva.accende img {
+    animation: accensione var(--durata-lampada) var(--curva-lampada) backwards;
+  }
+
+  html.anima .doppia .telaio + .telaio img {
+    animation-delay: var(--ritardo-doppia);
+  }
+
+  html.anima .intertitoli details[open] p {
+    animation: fuoco var(--durata-fuoco) var(--curva-lente);
+  }
+
+  html.anima .contatore .scatta {
+    animation: scatto var(--durata-scatto) var(--curva-scatto);
+  }
 }

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Leo Luca Iacoviello, fotografo di matrimoni</title>
     <meta name="description" content="Prototipo Manifesto: home." />
+    <!-- La testata sale dal primo paint: la classe deve esserci prima che il
+         body si disegni, e senza JS la testata resta ferma e leggibile. -->
+    <script>document.documentElement.classList.add('anima');</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" />
@@ -26,7 +29,12 @@
     </header>
 
     <main id="contenuto">
-      <h1 class="testata-grande"><span>Leo Luca</span> <span>Iacoviello</span></h1>
+      <!-- Lettere divise qui e non da JS: la testata è sopra la piega e
+           l'animazione deve partire dal primo paint, senza sostituire il testo. -->
+      <h1 class="testata-grande" aria-label="Leo Luca Iacoviello" style="--ultima: 16">
+        <span class="riga-testata" aria-hidden="true"><span class="maschera"><span class="lettera" style="--i: 0">L</span><span class="lettera" style="--i: 1">e</span><span class="lettera" style="--i: 2">o</span></span> <span class="maschera"><span class="lettera" style="--i: 3">L</span><span class="lettera" style="--i: 4">u</span><span class="lettera" style="--i: 5">c</span><span class="lettera" style="--i: 6">a</span></span></span>
+        <span class="riga-testata" aria-hidden="true"><span class="maschera"><span class="lettera" style="--i: 7">I</span><span class="lettera" style="--i: 8">a</span><span class="lettera" style="--i: 9">c</span><span class="lettera" style="--i: 10">o</span><span class="lettera" style="--i: 11">v</span><span class="lettera" style="--i: 12">i</span><span class="lettera" style="--i: 13">e</span><span class="lettera" style="--i: 14">l</span><span class="lettera" style="--i: 15">l</span><span class="lettera" style="--i: 16">o</span></span></span>
+      </h1>
 
       <div class="copertina">
         <picture>
@@ -53,17 +61,62 @@
 
       <div class="editoriale">
         <p class="motto">Fotografo i matrimoni mentre accadono.</p>
-        <p class="raccordo">Qualche fotografia dagli ultimi matrimoni. Le altre sono nel portfolio.</p>
       </div>
 
-      <div class="impaginato" id="impaginato"></div>
+      <section class="sezione" aria-labelledby="titolo-portfolio">
+        <div class="apertura-sezione">
+          <h2 class="titolo-sezione" id="titolo-portfolio">Portfolio</h2>
+          <p class="sommario">Qualche fotografia dagli ultimi matrimoni. Le altre sono nel portfolio.</p>
+        </div>
+        <div class="impaginato" id="impaginato"></div>
+        <p class="rimando rimando--portfolio"><a href="portfolio.html">Vedi il portfolio completo</a></p>
+      </section>
 
-      <div class="seguito">
-        <a href="portfolio.html">Vedi il portfolio completo</a>
-      </div>
+      <section class="sezione intervista" aria-labelledby="titolo-chi-sono">
+        <h2 class="titolo-sezione" id="titolo-chi-sono">Chi sono</h2>
+        <figure class="ritratto" id="ritratto"></figure>
+        <!-- Richiamo da rivista: ripete una frase del testo qui accanto, quindi
+             è nascosto alle tecnologie assistive per non farla leggere due volte. -->
+        <p class="richiamo" aria-hidden="true" data-rivela>«Preferisco che vi dimentichiate di me.»</p>
+        <p class="intervista-testo">
+          Mi chiamo Leo Luca Iacoviello e fotografo matrimoni. Durante la giornata mi muovo piano e parlo poco:
+          preferisco che vi dimentichiate di me. Non vi chiederò di mettervi in posa, se non per qualche minuto con le
+          famiglie. Quello che conta succede quando nessuno guarda l'obiettivo.
+        </p>
+        <p class="rimando"><a href="#">Leggi chi sono</a></p>
+      </section>
+
+      <section class="sezione domande" aria-labelledby="titolo-domande">
+        <h2 class="titolo-sezione" id="titolo-domande">Domande frequenti</h2>
+        <div class="domande-elenco">
+          <details class="domanda">
+            <summary><span>Quanto costa un servizio?</span><span class="segno" aria-hidden="true">+</span></summary>
+            <p class="risposta">Dipende da durata, luogo e da cosa volete ricevere. Scrivimi data e location e ti mando un preventivo.</p>
+          </details>
+          <details class="domanda">
+            <summary><span>Ti sposti fuori regione?</span><span class="segno" aria-hidden="true">+</span></summary>
+            <p class="risposta">Sì, in tutta Italia e all'estero. Il viaggio lo mettiamo nel preventivo, senza sorprese.</p>
+          </details>
+          <details class="domanda">
+            <summary><span>Quando arrivano le foto?</span><span class="segno" aria-hidden="true">+</span></summary>
+            <p class="risposta">In una galleria online, di solito entro otto settimane dal matrimonio.</p>
+          </details>
+        </div>
+        <p class="rimando"><a href="#">Tutte le domande</a></p>
+      </section>
+
+      <section class="quarta" aria-labelledby="titolo-contatti">
+        <h2 class="titolo-sezione" id="titolo-contatti">Contatti</h2>
+        <p class="invito" data-rivela>Raccontami la data, il luogo e che giornata avete in mente.</p>
+        <p class="tempi">Rispondo entro due giorni.</p>
+        <p class="azioni">
+          <a class="bottone" href="#">Richiedi un preventivo</a>
+          <a href="mailto:info@leolucaiacoviello.it">info@leolucaiacoviello.it</a>
+        </p>
+      </section>
     </main>
 
-    <footer class="piede">
+    <footer class="piede piede--quarta">
       <p>Leo Luca Iacoviello, fotografo di matrimoni</p>
       <p><a href="#">info@leolucaiacoviello.it</a></p>
     </footer>

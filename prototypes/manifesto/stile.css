@@ -8,9 +8,11 @@
   --testo: 1.0625rem;
   --titolo: 1.75rem;
   --motto: 2.25rem;
+  --sezione: 13vw;
   --testata: 20vw;
   --apertura: 22vw;
   --interlinea: 1.55;
+  --interlinea-corsivo: 1.08;
 
   --s1: 0.5rem;
   --s2: 1rem;
@@ -20,12 +22,25 @@
   --margine: 1rem;
   --fuga: 0.5rem;
   --riga: 15rem;
+  --misura: 34em;
+
+  /* La testata non resta nascosta oltre 600 ms dal primo paint:
+     16 sfasamenti più una salita fanno 16 × 13 + 380 = 588 ms. */
+  --durata-lettera: 380ms;
+  --durata-sfasamento-lettera: 13ms;
+  --durata-rivela: 1100ms;
+  --durata-sfasamento-riga: 120ms;
+  --durata-apri: 450ms;
+  --durata-clip: 1.2s;
+  --curva-uscita: cubic-bezier(0.16, 1, 0.3, 1);
+  --curva-clip: ease;
 }
 
 @media (min-width: 768px) {
   :root {
     --titolo: 2rem;
     --motto: 3.25rem;
+    --sezione: 7vw;
     --testata: 11.2vw;
     --apertura: 14vw;
     --margine: 2rem;
@@ -82,6 +97,15 @@ video {
 picture {
   display: block;
   background: var(--velina);
+}
+
+.per-lettori {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .salta {
@@ -145,14 +169,19 @@ picture {
   white-space: nowrap;
 }
 
-.testata-grande span {
+.riga-testata {
   display: block;
 }
 
 @media (min-width: 768px) {
-  .testata-grande span {
+  .riga-testata {
     display: inline;
   }
+}
+
+.maschera,
+.lettera {
+  display: inline-block;
 }
 
 .copertina {
@@ -172,7 +201,7 @@ picture {
   inset: 0;
   height: 100%;
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transition: opacity var(--durata-clip) var(--curva-clip);
 }
 
 .copertina video.pronta {
@@ -187,9 +216,7 @@ picture {
 }
 
 .editoriale {
-  display: grid;
-  gap: var(--s3);
-  padding: var(--s3) var(--margine) var(--s5);
+  padding: var(--s3) var(--margine) 0;
 }
 
 .editoriale .motto {
@@ -198,26 +225,62 @@ picture {
   font-size: var(--motto);
   font-style: italic;
   line-height: 1.05;
+  text-wrap: balance;
 }
 
-.editoriale .raccordo {
+.sezione {
+  padding: var(--s5) var(--margine) 0;
+}
+
+.titolo-sezione {
+  margin: 0;
+  font-size: var(--sezione);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.rimando {
+  margin: var(--s4) 0 0;
+}
+
+.rimando a {
+  display: inline-block;
+  padding-block: 0.25rem;
+  font-size: var(--titolo);
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.apertura-sezione {
+  display: grid;
+  gap: var(--s2);
+  margin-bottom: var(--s4);
+}
+
+.sommario {
   max-width: 30ch;
   margin: 0;
   color: var(--grigio);
 }
 
 @media (min-width: 768px) {
-  .editoriale {
+  .apertura-sezione {
     grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--s3);
     align-items: end;
   }
 
-  .editoriale .motto {
-    grid-column: 1 / 9;
+  .apertura-sezione .titolo-sezione {
+    grid-column: 1 / 8;
   }
 
-  .editoriale .raccordo {
-    grid-column: 10 / 13;
+  .sommario {
+    grid-column: 9 / 13;
+  }
+
+  .rimando--portfolio {
+    margin-top: var(--s5);
   }
 }
 
@@ -225,7 +288,6 @@ picture {
   display: flex;
   flex-direction: column;
   gap: var(--s5);
-  padding-inline: var(--margine);
 }
 
 .riga {
@@ -298,6 +360,209 @@ picture {
 
   .specchio .pezzo--piccolo.verticale {
     grid-column: 1 / 4;
+  }
+}
+
+.intervista {
+  display: grid;
+  gap: var(--s3);
+}
+
+.ritratto {
+  margin: 0;
+}
+
+.richiamo {
+  margin: 0;
+  font-size: var(--motto);
+  font-style: italic;
+  line-height: var(--interlinea-corsivo);
+  text-wrap: balance;
+}
+
+.intervista-testo {
+  max-width: var(--misura);
+  margin: 0;
+}
+
+.intervista .rimando {
+  margin: 0;
+}
+
+/* Impaginata come un'intervista: ritratto a tutta pagina a sinistra, titolo
+   in alto a destra, richiamo e testo in basso, al piede del ritratto. */
+@media (min-width: 768px) {
+  .intervista {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto 1fr auto auto auto;
+    column-gap: var(--s3);
+    row-gap: var(--s3);
+  }
+
+  .ritratto {
+    grid-column: 1 / 6;
+    grid-row: 1 / -1;
+  }
+
+  .intervista .titolo-sezione,
+  .richiamo,
+  .intervista-testo,
+  .intervista .rimando {
+    grid-column: 7 / 13;
+  }
+
+  .richiamo {
+    grid-row: 3;
+  }
+
+  .intervista-testo {
+    grid-row: 4;
+  }
+
+  .intervista .rimando {
+    grid-row: 5;
+  }
+}
+
+.domande-elenco {
+  margin-top: var(--s3);
+}
+
+.domanda summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s2);
+  padding-block: var(--s2);
+  font-size: var(--titolo);
+  font-style: italic;
+  line-height: 1.2;
+  list-style: none;
+  cursor: pointer;
+}
+
+.domanda summary::-webkit-details-marker {
+  display: none;
+}
+
+.segno {
+  display: inline-block;
+  font-size: 1.25em;
+  font-style: normal;
+  line-height: 1;
+  /* Il taglio ottico più piccolo ha i filetti più spessi: il segno resta
+     leggibile come indicatore di stato invece di sparire in un capello. */
+  font-optical-sizing: none;
+  font-variation-settings: 'opsz' 6;
+}
+
+.domanda[open] .segno {
+  transform: rotate(45deg);
+}
+
+.risposta {
+  max-width: var(--misura);
+  margin: 0;
+  padding-bottom: var(--s3);
+}
+
+@media (min-width: 768px) {
+  .domande {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--s3);
+  }
+
+  .domande .titolo-sezione {
+    grid-column: 1 / -1;
+  }
+
+  .domande-elenco,
+  .domande .rimando {
+    grid-column: 5 / 13;
+  }
+
+  /* Segno appeso nel margine, come la punteggiatura di un titolo di rivista:
+     domande, risposte e rimando restano allineati sulla stessa colonna. */
+  .domanda summary {
+    position: relative;
+    justify-content: flex-start;
+  }
+
+  .segno {
+    position: absolute;
+    right: 100%;
+    margin-right: var(--s2);
+  }
+}
+
+/* Quarta di copertina: l'unica pagina in negativo, perché chiude la rivista. */
+.quarta {
+  display: grid;
+  gap: var(--s3);
+  margin-top: var(--s5);
+  padding: var(--s5) var(--margine) var(--s4);
+  background: var(--nero);
+  color: var(--bianco);
+}
+
+.quarta :focus-visible,
+.piede--quarta :focus-visible {
+  outline-color: var(--bianco);
+}
+
+.invito {
+  max-width: 22ch;
+  margin: var(--s2) 0 0;
+  font-size: var(--motto);
+  font-style: italic;
+  line-height: var(--interlinea-corsivo);
+  text-wrap: balance;
+}
+
+.tempi {
+  margin: 0;
+  color: var(--velina);
+}
+
+.azioni {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+  margin: var(--s3) 0 0;
+}
+
+.azioni a {
+  display: inline-block;
+  padding-block: 0.25rem;
+}
+
+.azioni .bottone {
+  padding: var(--s2) var(--s3);
+  background: var(--bianco);
+  color: var(--nero);
+  font-size: var(--titolo);
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.azioni .bottone:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+  .quarta {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--s3);
+  }
+
+  .quarta > * {
+    grid-column: 1 / -1;
+  }
+
+  .tempi {
+    grid-column: 1 / 7;
   }
 }
 
@@ -378,4 +643,73 @@ picture {
 .piede a {
   display: inline-block;
   padding-block: 0.25rem;
+}
+
+.piede--quarta {
+  background: var(--nero);
+  color: var(--velina);
+}
+
+/* Movimento. Tutto qui dentro: con reduced motion non esiste nemmeno lo stato
+   iniziale nascosto. Gli stati nascosti valgono solo con la classe messa da
+   JS su <html>: `anima` per la testata, `osserva` per le rivelazioni. */
+@media (prefers-reduced-motion: no-preference) {
+  /* La maschera taglia solo sotto: le lettere salgono dalla linea di base,
+     aste e occhielli sopra restano liberi. Si toglie quando l'ultima lettera
+     è arrivata, perché taglierebbe le discendenti del corsivo (la f). */
+  html.anima .maschera {
+    clip-path: inset(-0.4em -0.15em 0 -0.15em);
+    animation: libera 0s
+      calc(var(--durata-lettera) + var(--ultima) * var(--durata-sfasamento-lettera)) forwards;
+  }
+
+  html.anima .lettera {
+    animation: sale var(--durata-lettera) var(--curva-uscita)
+      calc(var(--i) * var(--durata-sfasamento-lettera)) both;
+  }
+
+  /* Maschera allungata sotto la riga per non tagliare le discendenti del
+     corsivo; il testo parte oltre quell'allungamento, quindi non si vede. */
+  html.osserva .parola {
+    display: inline-block;
+    clip-path: inset(-0.5em -0.3em -0.3em -0.3em);
+  }
+
+  html.osserva .parola > span {
+    display: inline-block;
+    transform: translateY(calc(100% + 0.6em));
+  }
+
+  html.osserva .visto .parola > span {
+    transform: none;
+    transition: transform var(--durata-rivela) var(--curva-uscita)
+      calc(var(--riga) * var(--durata-sfasamento-riga));
+  }
+
+  .segno {
+    transition: transform var(--durata-apri) var(--curva-uscita);
+  }
+
+  .domanda[open] .risposta {
+    animation: svela var(--durata-apri) var(--curva-uscita);
+  }
+}
+
+@keyframes libera {
+  to {
+    clip-path: none;
+  }
+}
+
+@keyframes sale {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes svela {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
 }
