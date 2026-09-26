@@ -7,10 +7,11 @@ const locale = 'en' as const;
 
 {
   /*
-    Nessun URL proprio: Netlify serve questa pagina con stato 404 su ogni
-    percorso sconosciuto, dove canonical e hreflang non contano. L'unico
-    indirizzo dove risponde 200 è /en/404/, e lì canonical e hreflang verso
-    la home la tengono fuori dall'indice invece di dichiararla come pagina.
+    Nessun URL proprio: solo da quando netlify.toml avrà le regole del
+    Task 10, Netlify servirà questa pagina con stato 404 su ogni percorso
+    sconosciuto, dove canonical e hreflang non contano. L'unico indirizzo
+    dove risponde 200 è /en/404/, e lì canonical e hreflang verso la home
+    la tengono fuori dall'indice invece di dichiararla come pagina.
   */
 }
 <Base
