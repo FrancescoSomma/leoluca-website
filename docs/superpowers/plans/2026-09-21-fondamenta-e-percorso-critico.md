@@ -128,6 +128,7 @@ legge.
 | 2026-09-26 | tutti | Global Constraints: si scartano le larghezze il cui lato lungo supera 2400 px | Spec § Pipeline immagini e US-2 non reggevano insieme su una foto verticale; `Foto.astro` fa già così. Decisione di Francesco |
 | 2026-09-26 | tutti | Global Constraints: il ripiego WebP resta imposto, cambia il perché (PNG, non JPEG) | In Astro 7.3.3 `defaultFallbackFormat` è `png`; il formato dell'originale vale solo per un import ESM locale. Decisione di Francesco |
 | 2026-09-26 | 7, 8, 9 | `seo_title_en` e `seo_description_en` obbligatori nello schema; `seoPer` in `load.ts`; una frase in spec § Pagina | Li scrive lo sviluppo, non Leo, e un `title` vuoto viola WCAG 2.4.2. Decisione di Francesco, vedi il Task 7 |
+| 2026-09-26 | 8, 9 | h1 di Contatti e Conferma da `ui.ts`; corpo da `corpoPer(slug, locale)` in fondo a `load.ts`, non reso se vuoto nella lingua | Il corpo è testo di Leo (05-content): US-8, nessun ripiego. Decisione di Francesco durante il Task 8, vedi il Task 9 |
 
 ## Global Constraints
 
@@ -1584,6 +1585,13 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 > deciso nel Task 7, ultimo blocco Modifica. I campi SEO inglesi sono
 > obbligatori nello schema, e la home legge `title` e `description` con
 > `seoPer("home", locale)` di `load.ts`, che a questo punto esiste già.
+
+> **Modifica (2026-09-26, decisione di Francesco durante il Task 8).** Il
+> corpo della home si legge con `corpoPer("home", locale)` di `load.ts`, nata
+> nel Task 8: restituisce `corpo_it` o `corpo_en`, e la stringa vuota se la
+> traduzione manca. In quel caso la home non rende il paragrafo: US-8, nessun
+> ripiego sull'italiano. `titolo_*` non si usa per l'h1, che nell'hero è il
+> motto delle Impostazioni.
 
 **Files:**
 - Create: `src/components/Hero.astro`
