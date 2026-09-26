@@ -51,6 +51,15 @@ const larghezze = LARGHEZZE.filter(
 const larghezzaMassima = larghezze.at(-1) ?? LARGHEZZE[0];
 const altezzaMassima = altezzaPer(larghezzaMassima);
 ---
+{/*
+  fallbackFormat="webp" qui sotto: senza un valore esplicito, <Picture> su un
+  src remoto come questo ripiegherebbe su PNG (`defaultFallbackFormat` in
+  node_modules/astro/components/Picture.astro) — il ripiego al formato
+  originale (`specialFormatsFallback`) scatta solo per un import ESM locale,
+  mai per una stringa remota come `foto.file`. PNG è pesante per una
+  fotografia e fuori dai due formati ammessi dallo spec (§ Pipeline
+  immagini: niente JPEG, ripiego WebP imposto a mano).
+*/}
 <Picture
   src={foto.file}
   width={larghezzaMassima}
