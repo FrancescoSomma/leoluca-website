@@ -40,9 +40,9 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 3 Rotte e lingua | fuso | — | 2 | `feat/fondamenta` | PC 1 |
 | 4 Modello contenuti | fuso | A | 3 | `feat/fondamenta` | PC 1 |
 | 5 Componente Foto | fuso | A | 4 | `feat/fondamenta` | PC 1 |
-| 6 Layout base | concluso | B | 3 | `feat/layout-form` | PC 2 |
+| 6 Layout base | fuso | B | 3 | `feat/fondamenta` | PC 2 |
 | 8 Form e conferma | libero | B | 6 | `feat/layout-form` | — |
-| 7 Portfolio | bloccato | — | 5 e 6 fusi | da aprire | — |
+| 7 Portfolio | libero | — | 5 e 6 fusi | da aprire | — |
 | 9 Home ed e2e | bloccato | — | 7 e 8 fusi | da aprire | — |
 | 10 Gate e Netlify | bloccato | — | 9 | da aprire | — |
 
@@ -122,6 +122,9 @@ legge.
 | 2026-09-26 | 6 | `nav.label` in `ui.ts`; test hreflang sulla destinazione; axe sulle 404; `tests/unit/base.test.ts`; spazi espliciti fra i link del nav | Convenzioni, ADR-0005 e US-6: il perché di ciascuna è nel commit del Task 6 su `feat/layout-form` |
 | 2026-09-26 | 8 | `compressHTML` toglie gli spazi fra i tag; bersagli sotto 24×24 px senza CSS | Vedi il Task 8 |
 | 2026-09-26 | 10 | Regole 404 per lingua in `netlify.toml` | Vedi il Task 10 |
+| 2026-09-26 | 6 | Link alla home come primo del nav; skip link a fuoco nel flusso con `.skip:not(:focus)` | Review finale della linea B, approvate da Francesco: nessuna pagina portava alla home (WCAG 2.4.5), lo skip link a fuoco copriva il nav |
+| 2026-09-26 | tutti | Screenshot dello stato a fuoco in § Chiusura di ogni task | Lo skip link sovrapposto era invisibile negli screenshot a riposo. Approvato da Francesco |
+| 2026-09-26 | 7, 8, 9 | Titolo SEO inglese vuoto: da decidere prima dello Step 3 | Vedi il Task 7 |
 
 ## Global Constraints
 
@@ -161,8 +164,12 @@ primo commit e nessun task li chiamava.
 2. **Guardare.** Se il task produce una pagina che si vede, screenshot a 390,
    768 e 1440 px in `test-results/`, che git ignora. Più un controllo a 320 px
    che non compaia scorrimento orizzontale: è il pavimento di WCAG 2.2 AA
-   1.4.10 e axe non lo rileva. Chi sviluppa qui non ha
-   occhi e un layout rotto non fallisce nessun test: è l'argomento centrale di
+   1.4.10 e axe non lo rileva. Più lo stato a fuoco: uno screenshot dopo
+   ogni Tab dal caricamento, finché il focus non esce dall'header, e dopo
+   ogni Tab sui controlli nuovi del task, stati d'errore compresi. Nel Task 6
+   lo skip link a fuoco copriva il nav, e a riposo non si vedeva. Chi
+   sviluppa qui non ha occhi e un layout rotto non fallisce nessun test: è
+   l'argomento centrale di
    [ADR-0005](../../03-adr/0005-stack-di-verifica.md), e installare Playwright
    senza mai guardare nulla lo tradisce.
 3. **Review in contesto pulito**, sul diff del task:
@@ -1188,6 +1195,14 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 >   originale raggiungibile dal markup" e "nessun JPEG" sull'output reale. Il
 >   test del container del Task 5 non basta: in sviluppo gli URL sono
 >   `/_image?href=…` e portano l'originale codificato.
+>
+> **Da decidere con un umano prima dello Step 3** (dalla review finale della
+> linea B, vale anche per i Task 8 e 9). Dal Task 4 `seo_title_en` e
+> `seo_description_en` possono essere vuoti. Letti da `caricaPagine()`, una
+> pagina non tradotta avrebbe `<title></title>` in inglese, contro WCAG 2.4.2,
+> e `Base.astro` lo accetta senza errore. Il ripiego sull'italiano è escluso,
+> e US-6 vuole comunque la controparte di ogni pagina: cosa fa la pagina
+> inglese in quel caso non lo dice né lo spec né il piano.
 
 **Files:**
 - Modify: `src/pages/it/portfolio.astro`, `src/pages/en/portfolio.astro`
@@ -1803,7 +1818,10 @@ Ognuno richiede un piano proprio, e due sono bloccati.
 - **Pagine Chi sono e FAQ.** Non sono sul percorso critico e richiedono i testi
   di Leo. Piano successivo, nessun blocco tecnico. Dal Task 4 i campi inglesi
   di Pagina e FAQ possono essere stringhe vuote: la pagina inglese omette la
-  voce, senza ripiego sull'italiano (US-8), e il pannello lo segnala.
+  voce, senza ripiego sull'italiano (US-8), e il pannello lo segnala. I loro
+  `title` e `description` sono ancora i segnaposto letterali del Task 6:
+  quel piano li porta su `caricaPagine()`, come i Task 7-9 per le loro
+  pagine.
 - **Direzione visiva, design system e stile.** Non blocca questo piano, che
   produce markup corretto e accessibile, non un sito finito da vedere: il
   Task 6 costruisce solo la struttura. Le direzioni si esplorano con
