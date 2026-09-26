@@ -42,7 +42,7 @@ recupera.
 ## Da verificare prima di scegliere il prodotto
 
 La direzione è accettata. Il prodotto concreto che implementa il pannello non è
-ancora scelto, e due punti vanno accertati prima di sceglierlo. Nessuna
+ancora scelto, e tre punti vanno accertati prima di sceglierlo. Nessuna
 dipendenza entra nel progetto finché non sono chiusi.
 
 1. **Il percorso di autenticazione del pannello.** La strada storica dei CMS
@@ -62,6 +62,20 @@ dipendenza entra nel progetto finché non sono chiusi.
    proprio un bucket S3. Il lato consumo è quindi una strada supportata, non
    un'acrobazia. Resta da verificare solo il lato scrittura, cioè se il pannello
    sappia caricare lì invece che nel repository.
+3. **Quali formati accetta il caricamento.** La build ricava i derivati con
+   sharp, che nella versione distribuita non decodifica HEIC, il formato
+   predefinito delle foto scattate con iPhone. Su un file che riconosce ma non
+   sa decodificare, Astro 7.3.3 non ferma la build: emette un avviso e scrive
+   i byte dell'originale sotto il nome del derivato, per esempio
+   `foto_hash.webp` (`dist/assets/services/sharp.js`, il `catch` intorno a
+   `toBuffer`; `dist/assets/build/generate.js` tiene solo `data`). L'originale
+   finisce servito a piena risoluzione, contro § Pipeline immagini e US-2
+   dello spec. Fermare la build non è la risposta, perché US-7 vuole che un
+   originale non la faccia fallire per formato. Il candidato deve quindi
+   accettare al caricamento solo JPEG, PNG, WebP, AVIF e TIFF, oppure
+   convertire gli altri formati prima di scriverli sullo storage. Da quale
+   dispositivo carica Leo e in che formato consegna gli originali sono ancora
+   aperti in [01-discovery.md](../01-discovery.md).
 
 La verifica va fatta come prova usa e getta fuori dal repository di progetto,
 per non introdurre dipendenze prima che il prodotto sia scelto.
