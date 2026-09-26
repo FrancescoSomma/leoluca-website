@@ -105,7 +105,9 @@ describe("layout Base", () => {
       },
       slots: { default: "<p>Contenuto</p>" },
     });
-    expect(htmlIt).toMatch(/<a href="\/it\/"[^>]*>Leo Luca Iacoviello<\/a>/);
+    const navIt = htmlIt.match(/<nav[^>]*>([\s\S]*?)<\/nav>/);
+    if (navIt === null) throw new Error("<nav> mancante nell'HTML reso");
+    expect(navIt[1]).toMatch(/^<a href="\/it\/"[^>]*>Leo Luca Iacoviello<\/a>/);
 
     const htmlEn = await container.renderToString(Base, {
       props: {
@@ -116,6 +118,8 @@ describe("layout Base", () => {
       },
       slots: { default: "<p>Content</p>" },
     });
-    expect(htmlEn).toMatch(/<a href="\/en\/"[^>]*>Leo Luca Iacoviello<\/a>/);
+    const navEn = htmlEn.match(/<nav[^>]*>([\s\S]*?)<\/nav>/);
+    if (navEn === null) throw new Error("<nav> mancante nell'HTML reso");
+    expect(navEn[1]).toMatch(/^<a href="\/en\/"[^>]*>Leo Luca Iacoviello<\/a>/);
   });
 });

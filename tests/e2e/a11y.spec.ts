@@ -164,19 +164,20 @@ for (const locale of LOCALES) {
     });
     await expect(skipLink).toBeFocused();
 
-    const skipBox = await skipLink.boundingBox();
-    if (skipBox === null) throw new Error("riquadro mancante per lo skip link");
+    const riquadroSkip = await skipLink.boundingBox();
+    if (riquadroSkip === null)
+      throw new Error("riquadro mancante per lo skip link");
     const navLinks = page.getByRole("navigation").getByRole("link");
     const numeroLinkNav = await navLinks.count();
     for (let i = 0; i < numeroLinkNav; i++) {
-      const navBox = await navLinks.nth(i).boundingBox();
-      if (navBox === null)
+      const riquadroLink = await navLinks.nth(i).boundingBox();
+      if (riquadroLink === null)
         throw new Error(`riquadro mancante per il link nav ${i}`);
       const siSovrappongono =
-        skipBox.x < navBox.x + navBox.width &&
-        skipBox.x + skipBox.width > navBox.x &&
-        skipBox.y < navBox.y + navBox.height &&
-        skipBox.y + skipBox.height > navBox.y;
+        riquadroSkip.x < riquadroLink.x + riquadroLink.width &&
+        riquadroSkip.x + riquadroSkip.width > riquadroLink.x &&
+        riquadroSkip.y < riquadroLink.y + riquadroLink.height &&
+        riquadroSkip.y + riquadroSkip.height > riquadroLink.y;
       expect(siSovrappongono).toBe(false);
     }
 
