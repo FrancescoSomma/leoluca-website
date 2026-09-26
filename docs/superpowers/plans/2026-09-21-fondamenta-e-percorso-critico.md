@@ -76,10 +76,12 @@ ADR-0004, come prova usa e getta fuori dal repository.
    `spec-guardian` e `code-reviewer`, non il reviewer generico della skill,
    che resta per la review finale della linea. Poi, su `feat/fondamenta`:
    riga a `concluso`, commit, push.
-6. A linea finita, PR dal branch della linea verso `feat/fondamenta`. Se un
-   task dell'altra linea aspetta un tuo task già `concluso`, apri la PR
-   subito. La fusione la approva un umano; dopo la fusione le righe passano a
-   `fuso`, e quelle che ne dipendevano a `libero`.
+6. A linea finita, il branch della linea si fonde in `feat/fondamenta` con
+   `git merge --no-ff`, senza PR. Se un task dell'altra linea aspetta un tuo
+   task già `concluso`, chiedi subito la fusione. La fusione la approva un
+   umano: prima di fondere si chiede. `./scripts/verify.sh` gira sul
+   risultato della fusione prima del push. Dopo la fusione le righe passano
+   a `fuso`, e quelle che ne dipendevano a `libero`.
 7. Una decisione che cambia un task futuro si scrive dentro quel task, in un
    blocco `> **Modifica (AAAA-MM-GG).**`, più una riga nel registro qui
    sotto. Il ledger di superpowers in `.superpowers/` e la memoria di Claude
@@ -105,6 +107,7 @@ legge.
 | 2026-09-26 | 3 | `src/astro-moduli.d.ts` | `tsc` non legge i `.astro`: senza, i test uscivano dal controllo dei tipi |
 | 2026-09-26 | tutti | Review per task con `spec-guardian` e `code-reviewer` | CLAUDE.md e ADR-0001 punto 6; il reviewer generico di SDD resta per la review finale |
 | 2026-09-26 | tutti | Un branch per linea, esecuzione su due macchine | Parallelismo, § Stato di avanzamento |
+| 2026-09-26 | tutti | Fusione diretta del branch di linea in `feat/fondamenta`, senza PR | Decisione di Francesco alla chiusura della linea A; resta l'approvazione umana prima di fondere |
 | 2026-09-26 | 4 | `astro/zod`, JSON importati staticamente, foto di prova Unsplash | Vedi il Task 4 |
 | 2026-09-26 | 4 | Campi inglesi di Pagina e FAQ `.default("")` al posto di `min(1)` | US-8: un testo solo in italiano si salva e non si pubblica in inglese; con `min(1)` fermava la build. Filtrare spetta alle pagine (§ Cosa questo piano non copre) |
 | 2026-09-26 | 5 | Foto di prova raggiungibile, controllo JPEG rafforzato | Vedi il Task 5 |
