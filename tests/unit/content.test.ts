@@ -1,6 +1,7 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { FotoSchema, PaginaSchema, FaqSchema } from "../../src/content/schema";
 import { caricaFoto, altPer } from "../../src/content/load";
+import type { Foto } from "../../src/content/schema";
 
 describe("schema Foto", () => {
   const valida = {
@@ -61,20 +62,55 @@ describe("US-8 testo solo in italiano", () => {
 });
 
 describe("caricamento", () => {
-  it("restituisce le foto ordinate per ordine crescente", () => {
-    const foto = caricaFoto();
-    const ordini = foto.map((f) => f.ordine);
-    expect(ordini).toEqual([...ordini].sort((a, b) => a - b));
-  });
-
-  it("non ammette due foto con lo stesso ordine", () => {
-    const ordini = caricaFoto().map((f) => f.ordine);
-    expect(new Set(ordini).size).toBe(ordini.length);
-  });
-
   it("altPer sceglie la lingua giusta", () => {
     const foto = caricaFoto()[0];
     expect(altPer(foto, "it")).toBe(foto.alt_it);
     expect(altPer(foto, "en")).toBe(foto.alt_en);
+  });
+});
+
+// foto.json è già ordinato e senza duplicati: chiamare caricaFoto() su quel
+// fixture non esercita né il sort né il controllo dei duplicati in load.ts,
+// e i test restano verdi anche se load.ts li perde. Si inietta un fixture
+// fuori ordine o con un duplicato al posto del JSON reale, per lo scopo di
+// un solo test: vi.doMock non è hoisted come vi.mock, quindi vale solo per
+// l'import() dinamico che segue, dopo vi.resetModules().
+function fotoFixture(overrides: Partial<Foto>): Foto {
+  return {
+    file: "https://storage.example/f.jpg",
+    ordine: 0,
+    alt_it: "a",
+    alt_en: "a",
+    in_home: false,
+    ...overrides,
+  };
+}
+
+describe("caricaFoto su dati fuori ordine e duplicati", () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
+  it("restituisce le foto ordinate per ordine crescente anche se il JSON non lo è", async () => {
+    vi.doMock("../../src/content/foto.json", () => ({
+      default: [
+        fotoFixture({ ordine: 2 }),
+        fotoFixture({ ordine: 0 }),
+        fotoFixture({ ordine: 1 }),
+      ],
+    }));
+    const { caricaFoto: caricaFotoMockato } =
+      await import("../../src/content/load");
+    const ordini = caricaFotoMockato().map((f) => f.ordine);
+    expect(ordini).toEqual([0, 1, 2]);
+  });
+
+  it("rifiuta due foto con lo stesso ordine", async () => {
+    vi.doMock("../../src/content/foto.json", () => ({
+      default: [fotoFixture({ ordine: 0 }), fotoFixture({ ordine: 0 })],
+    }));
+    const { caricaFoto: caricaFotoMockato } =
+      await import("../../src/content/load");
+    expect(() => caricaFotoMockato()).toThrow(/stesso ordine/);
   });
 });
