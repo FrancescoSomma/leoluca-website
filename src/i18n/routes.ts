@@ -1,8 +1,15 @@
 export const LOCALES = ["it", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 
-export type PageKey =
-  "home" | "portfolio" | "about" | "faq" | "contact" | "thanks";
+export const PAGE_KEYS = [
+  "home",
+  "portfolio",
+  "about",
+  "faq",
+  "contact",
+  "thanks",
+] as const;
+export type PageKey = (typeof PAGE_KEYS)[number];
 
 export const ROUTES: Record<PageKey, Record<Locale, string>> = {
   home: { it: "/it/", en: "/en/" },
@@ -23,7 +30,7 @@ export function otherLocale(locale: Locale): Locale {
 
 export function keyForPath(path: string): PageKey | undefined {
   const normalised = path.endsWith("/") ? path : `${path}/`;
-  return (Object.keys(ROUTES) as PageKey[]).find((key) =>
+  return PAGE_KEYS.find((key) =>
     LOCALES.some((locale) => ROUTES[key][locale] === normalised),
   );
 }
