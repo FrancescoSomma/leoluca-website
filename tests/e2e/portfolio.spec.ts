@@ -1,20 +1,18 @@
 import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+// Solo il tipo: import di sola tipizzazione, cancellato al transpile. Non
+// trascina astro/zod in Playwright (nodo separato dal build) — a differenza
+// di un import di `../../src/content/load`, che li caricherebbe davvero.
+import type { Foto } from "../../src/content/schema";
 
-// Lettura diretta del fixture, non import di load.ts: importare load.ts
-// trascina astro/zod dentro Playwright (nodo separato dal build), rischio
-// evitabile qui perché serve solo il campo alt_it/alt_en/ordine del JSON.
+// Lettura diretta del fixture, non import di load.ts: vedi sopra sul motivo.
 // `import ... with { type: "json" }` funzionerebbe su Node 24, ma lega il
 // test alla versione di Node invece che restare portabile.
 const percorsoFoto = fileURLToPath(
   new URL("../../src/content/foto.json", import.meta.url),
 );
-interface FotoFixture {
-  ordine: number;
-  alt_it: string;
-  alt_en: string;
-}
+type FotoFixture = Pick<Foto, "ordine" | "alt_it" | "alt_en">;
 // JSON.parse restituisce `any`: l'annotazione sulla dichiarazione tipizza la
 // lettura senza ricorrere a un cast `as` (docs/07-convenzioni-codice.md).
 const fotoJson: FotoFixture[] = JSON.parse(readFileSync(percorsoFoto, "utf-8"));
