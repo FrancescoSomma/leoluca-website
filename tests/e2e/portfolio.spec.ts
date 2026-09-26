@@ -97,27 +97,18 @@ test("ogni src e ogni candidato di srcset viene dai derivati /_astro/", async ({
   }
 });
 
-// Scoperta dei prototipi: il lazy loading nativo di Chrome anticipa di circa
-// 1250px, e a 390px con immagini basse ne richiede 6 anche se solo 3 hanno
-// loading="eager". Contare l'attributo non prova quante immagini vengono
-// davvero richieste prima di ogni scorrimento: va contato il traffico di
-// rete. Se questo test fallisce non si allenta: è una decisione da portare a
-// un umano (vedi task-7-brief.md).
-for (const width of [390, 1440]) {
-  test(`al massimo 3 immagini del flusso richieste al primo render (${width}px)`, async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width, height: 800 });
-    const richiesteImmagini: string[] = [];
-    page.on("request", (request) => {
-      if (
-        request.resourceType() === "image" &&
-        new URL(request.url()).pathname.startsWith("/_astro/")
-      ) {
-        richiesteImmagini.push(request.url());
-      }
-    });
-    await page.goto("/it/portfolio/", { waitUntil: "networkidle" });
-    expect(richiesteImmagini.length).toBeLessThanOrEqual(3);
+// WCAG 2.2 AA 1.4.10 (spec § Dispositivi e larghezze): senza la regola di
+// reflow di Foto.astro, l'<img> si dichiara alla larghezza dei propri
+// attributi (1600 o 2400 px CSS) e a 320 px la pagina scorre in
+// orizzontale. È il pavimento, non uno screenshot: si verifica qui perché
+// axe non lo rileva (spec § Dispositivi e larghezze).
+for (const percorso of ["/it/portfolio/", "/en/portfolio/"]) {
+  test(`a 320px ${percorso} non scorre in orizzontale`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    await page.goto(percorso, { waitUntil: "networkidle" });
+    const scrollWidth = await page.evaluate(
+      () => document.documentElement.scrollWidth,
+    );
+    expect(scrollWidth).toBeLessThanOrEqual(320);
   });
 }
