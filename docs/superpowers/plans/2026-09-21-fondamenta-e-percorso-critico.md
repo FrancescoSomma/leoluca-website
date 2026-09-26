@@ -108,6 +108,8 @@ legge.
 | 2026-09-26 | 4 | `astro/zod`, JSON importati staticamente, foto di prova Unsplash | Vedi il Task 4 |
 | 2026-09-26 | 4 | Campi inglesi di Pagina e FAQ `.default("")` al posto di `min(1)` | US-8: un testo solo in italiano si salva e non si pubblica in inglese; con `min(1)` fermava la build. Filtrare spetta alle pagine (§ Cosa questo piano non copre) |
 | 2026-09-26 | 5 | Foto di prova raggiungibile, controllo JPEG rafforzato | Vedi il Task 5 |
+| 2026-09-26 | 5 | Dimensioni con `inferRemoteSize` di `astro:assets` e larghezze filtrate sul lato lungo, al posto di `inferSize`; test sul lato lungo e sull'originale assente dal markup | Con `inferSize` un remoto verticale riceveva un derivato 2400×3600 e un `src` alla risoluzione dell'originale: il test del piano guardava solo i descrittori `w` |
+| 2026-09-26 | 9 | Il poster segue lo stesso limite di `Foto.astro`, con calcolo e larghezze in un modulo condiviso | Vedi il Task 9 |
 | 2026-09-26 | 6 | Solo struttura, nessuno stile | Decisione di Francesco: lo stile ha un piano proprio |
 | 2026-09-26 | 7 | Test sulle richieste di immagini reali al primo render | Vedi il Task 7 |
 | 2026-09-26 | 9 | Poster nella pipeline, `min-width: 768px`, foto di richiamo da estendere | Vedi il Task 9 |
@@ -1455,6 +1457,17 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 >   ritagliato a 4:5 al telefono, `sizes` deve dichiarare la larghezza del
 >   ritaglio (nei prototipi `222vw`), altrimenti il browser sceglie un derivato
 >   troppo piccolo.
+
+> **Modifica (2026-09-26, dal Task 5).** Il blocco dello Step 3 usa
+> `inferSize` con `widths` fino a 2400. Per un originale remoto, Picture mette
+> nell'`src` dell'`<img>` un derivato alla larghezza dell'originale (il poster
+> di prova è 5472×3648) e non limita i `widths`: il lato lungo supera i
+> 2400 px. `Foto.astro` lo evita dal Task 5: legge le dimensioni con
+> `inferRemoteSize` di `astro:assets`, non di `astro/assets/utils`, che senza
+> configurazione non controlla `remotePatterns`; tiene solo le larghezze con
+> lato lungo ≤ 2400 e passa `width`/`height` espliciti al posto di
+> `inferSize`. Hero fa lo stesso: il calcolo e `LARGHEZZE` escono da
+> `Foto.astro` in un modulo condiviso, che Hero è il secondo a usare.
 
 **Files:**
 - Create: `src/components/Hero.astro`
