@@ -81,25 +81,17 @@ const altezzaMassima = altezzaPer(larghezzaMassima);
   alt={altPer(foto, locale)}
   loading={priorita ? "eager" : "lazy"}
   decoding="async"
-  class="foto"
 />
 
 <style>
   /*
    * Pavimento di WCAG 2.2 AA 1.4.10 (spec § Dispositivi e larghezze), non
    * stile: come l'eccezione dello skip link in Base.astro. Senza questa
-   * regola l'<img> renderizzato da <Picture> si dichiara alla larghezza e
-   * all'altezza dei propri attributi (1600 o 2400 px CSS): a 320 px la
-   * pagina scorre in orizzontale.
-   *
-   * `:global()` perché <Picture> è un altro componente e lo scope di Astro
-   * non lo raggiunge: l'hash di scope arriva solo al <picture> che lo
-   * racchiude (node_modules/astro/components/Picture.astro propaga
-   * `data-astro-cid-*` al <picture>, mai all'<img> interno), mai
-   * all'<img>. La classe `foto` la assegna solo questo componente: la
-   * regola non fugge su altre immagini della pagina.
+   * regola l'<img> si dichiara alla larghezza e all'altezza dei propri
+   * attributi (1600 o 2400 px CSS): a 320 px la pagina scorre in
+   * orizzontale.
    */
-  :global(.foto) {
+  img {
     max-width: 100%;
     height: auto;
   }
