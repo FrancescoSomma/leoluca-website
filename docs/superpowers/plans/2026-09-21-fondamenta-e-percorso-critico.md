@@ -189,7 +189,7 @@ git commit -m "docs: ADR-0005 stack di verifica"
   `npm run perf`, `npm run a11y`, `npm run lint`. `./scripts/verify.sh` smette
   di essere un no-op.
 
-- [ ] **Step 1: Creare il progetto Astro**
+- [x] **Step 1: Creare il progetto Astro**
 
 ```bash
 npm create astro@latest . -- --template minimal --typescript strict --no-install --no-git --skip-houston
@@ -198,7 +198,7 @@ npm install
 npx astro --version   # deve stampare 7.3.3
 ```
 
-- [ ] **Step 2: Configurare Astro**
+- [x] **Step 2: Configurare Astro**
 
 ```js
 // astro.config.mjs
@@ -223,7 +223,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 3: Installare le dipendenze di verifica**
+- [x] **Step 3: Installare le dipendenze di verifica**
 
 Autorizzate da ADR-0005. Non anticipare questo passo se l'ADR non è accettato.
 
@@ -236,7 +236,7 @@ Prettier va installato anche se nessuno script lo invoca direttamente:
 `scripts/format-changed.sh`, agganciato all'hook `PostToolUse`, lo cerca in
 `node_modules/.bin/prettier` a ogni file scritto e finora non lo trovava.
 
-- [ ] **Step 4: Aggiungere gli script che `verify.sh` cerca**
+- [x] **Step 4: Aggiungere gli script che `verify.sh` cerca**
 
 `scripts/verify.sh` cicla su `lint typecheck build test perf a11y` con
 `--if-present`. Definirli tutti, così il gate non passa per omissione.
@@ -260,7 +260,7 @@ npm pkg set scripts.test="vitest run --reporter=dot"
 npm pkg set scripts.e2e="playwright test --reporter=line"
 ```
 
-- [ ] **Step 5: Redirect della radice**
+- [x] **Step 5: Redirect della radice**
 
 ```astro
 ---
@@ -269,7 +269,7 @@ return Astro.redirect('/it/');
 ---
 ```
 
-- [ ] **Step 6: Aggiungere robots.txt**
+- [x] **Step 6: Aggiungere robots.txt**
 
 Lo spec lo elenca nella sitemap. `sitemap.xml` arriva in un piano successivo,
 quindi qui non va referenziato: un `Sitemap:` che punta al nulla è peggio che
@@ -281,7 +281,7 @@ User-agent: *
 Allow: /
 ```
 
-- [ ] **Step 7: Verificare che la build passi**
+- [x] **Step 7: Verificare che la build passi**
 
 Run: `npm run build`
 Expected: build completata senza errori.
@@ -289,13 +289,13 @@ Expected: build completata senza errori.
 Run: `./scripts/verify.sh`
 Expected: esce 0. Ora esegue davvero gli script, non li salta.
 
-- [ ] **Step 8: Chiudere il task**
+- [x] **Step 8: Chiudere il task**
 
 Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
 task produce una pagina che si vede, e i tre agenti di review sul diff. Le
 segnalazioni si risolvono prima del commit, non dopo.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add -A

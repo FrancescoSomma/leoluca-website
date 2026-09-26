@@ -11,8 +11,9 @@ oggetti con il prodotto ancora da scegliere (ADR-0004), Vitest, Playwright,
 axe, Lighthouse CI e Prettier (ADR-0005). Nient'altro entra senza un ADR
 accettato in `docs/03-adr/`.
 
-Codice: non esiste ancora. Si parte dal Task 2 di
-`docs/superpowers/plans/2026-09-21-fondamenta-e-percorso-critico.md`.
+Codice: scaffold Astro attivo (Task 2 di
+`docs/superpowers/plans/2026-09-21-fondamenta-e-percorso-critico.md`
+concluso). Si prosegue dal Task 3.
 
 Direzione visiva: non definita. Nessun token, `design/ref/` è vuoto. Finché
 resta così le pagine si scrivono con markup nudo, `design-reviewer` non ha un
@@ -22,8 +23,9 @@ design corre in parallelo e deve chiudere prima del Task 6.
 ## Comandi
 
 - `./scripts/verify.sh` — gate unico di verifica. Eseguilo prima di dichiarare
-  concluso un task. Finché `package.json` non esiste non fa nulla e passa per
-  omissione: un suo exit 0 oggi non è una prova.
+  concluso un task. Ora esegue la catena intera (`lint typecheck build test
+e2e perf a11y`); in modalità `--hook` esegue solo `lint typecheck test`,
+  perché lo Stop hook ha un timeout di 180 s.
 
 ## Regole
 
