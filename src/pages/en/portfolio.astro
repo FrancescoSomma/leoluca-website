@@ -7,8 +7,8 @@ import { caricaFoto, seoPer } from '../../content/load';
 const locale = 'en' as const;
 const foto = caricaFoto();
 const { title, description } = seoPer('portfolio', locale);
-// Vincolo di spec (US-2, "al primo render vengono richieste al massimo 3
-// immagini"), non preferenza: non parametrizzare.
+// Vincolo di spec (US-2, "al primo render al massimo 3 immagini sono
+// prioritarie"), non preferenza: non parametrizzare.
 const PRIORITARIE = 3;
 ---
 <Base locale={locale} pageKey="portfolio" title={title} description={description}>
