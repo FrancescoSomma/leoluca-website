@@ -18,13 +18,34 @@ type FotoFixture = Pick<Foto, "ordine" | "alt_it" | "alt_en">;
 const fotoJson: FotoFixture[] = JSON.parse(readFileSync(percorsoFoto, "utf-8"));
 const FOTO_ORDINATE = [...fotoJson].sort((a, b) => a.ordine - b.ordine);
 
-test("il portfolio è una sequenza unica senza filtri", async ({ page }) => {
-  await page.goto("/it/portfolio/");
-  await expect(page.getByRole("img")).not.toHaveCount(0);
-  await expect(
-    page.getByRole("button", { name: /filtr|categor/i }),
-  ).toHaveCount(0);
-});
+// US-2: "Nessuna categoria, nessun filtro, nessuna paginazione visibile".
+// Il nome accessibile del nav ("Portfolio", "Chi sono", "FAQ", "Contatti",
+// "English"/"Italiano", "Leo Luca Iacoviello") e dello skip link ("Vai al
+// contenuto"/"Skip to content") non contengono nessuna di queste parole:
+// il test non li confonde con paginazione.
+const PAGINAZIONE =
+  /pagin|successiv|precedent|avanti|indietro|carica altr|next|previous|load more/i;
+
+for (const percorso of ["/it/portfolio/", "/en/portfolio/"]) {
+  test(`${percorso} è una sequenza unica senza filtri né paginazione`, async ({
+    page,
+  }) => {
+    await page.goto(percorso);
+    await expect(page.getByRole("img")).not.toHaveCount(0);
+    await expect(
+      page.getByRole("button", { name: /filtr|categor/i }),
+    ).toHaveCount(0);
+    await expect(page.getByRole("link", { name: PAGINAZIONE })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: PAGINAZIONE })).toHaveCount(
+      0,
+    );
+    await expect(
+      page.locator(
+        'link[rel="next"], link[rel="prev"], a[rel="next"], a[rel="prev"]',
+      ),
+    ).toHaveCount(0);
+  });
+}
 
 test("solo le prime tre immagini sono eager", async ({ page }) => {
   await page.goto("/it/portfolio/");
