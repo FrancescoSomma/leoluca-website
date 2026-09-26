@@ -28,10 +28,9 @@ const canonical = new URL(pathFor(pageKey, locale), Astro.site);
     }
     {
       /*
-        Un gruppo hreflang dev'essere reciproco: x-default fisso sulla home
-        metterebbe /it/ nel gruppo di ogni pagina. "/it/" nello spec (§ SEO)
-        si legge come la sezione italiana, quindi punta alla controparte
-        italiana della pagina corrente.
+        x-default punta alla versione italiana della stessa pagina (§ SEO),
+        non sempre alla home: un gruppo hreflang dev'essere reciproco, e un
+        x-default fisso su /it/ metterebbe la home nel gruppo di ogni pagina.
       */
     }
     <link rel="alternate" hreflang="x-default" href={new URL(pathFor(pageKey, 'it'), Astro.site)} />
