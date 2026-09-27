@@ -41,7 +41,7 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 4 Modello contenuti | fuso | A | 3 | `feat/fondamenta` | PC 1 |
 | 5 Componente Foto | fuso | A | 4 | `feat/fondamenta` | PC 1 |
 | 6 Layout base | fuso | B | 3 | `feat/fondamenta` | PC 2 |
-| 8 Form e conferma | in corso | B | 6 | `feat/layout-form` | PC 2 |
+| 8 Form e conferma | concluso | B | 6 | `feat/layout-form` | PC 2 |
 | 7 Portfolio | fuso | — | 5 e 6 fusi | `feat/portfolio` | PC 1 |
 | 9 Home ed e2e | bloccato | — | 7 e 8 fusi | da aprire | — |
 | 10 Gate e Netlify | bloccato | — | 9 | da aprire | — |
