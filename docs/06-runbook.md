@@ -78,8 +78,8 @@ usato per la verifica funzionale è su un account di Francesco e non conta.
       mese per sito, non superabile (ADR-0003).
 - [ ] Sul piano Free a crediti, i crediti consumati nel mese: il tetto è di
       300 al mese, rigido, non se ne comprano altri. Li consumano la banda
-      (20 crediti per GB) e ogni deploy di produzione (15); deploy preview e
-      branch deploy non costano crediti. A crediti esauriti tutti i progetti
+      (20 crediti per GB), ogni deploy di produzione (15) e le richieste (2
+      ogni 10.000); deploy preview e branch deploy non costano crediti. A crediti esauriti tutti i progetti
       del team si sospendono fino al ciclo successivo: i visitatori vedono
       "Site not available" e il form non riceve invii. È il rischio più
       probabile per un sito di fotografie: 300 crediti sono al massimo circa
