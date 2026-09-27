@@ -79,12 +79,18 @@ ADR-0004, come prova usa e getta fuori dal repository.
    `spec-guardian` e `code-reviewer`, non il reviewer generico della skill,
    che resta per la review finale della linea. Poi, su `feat/fondamenta`:
    riga a `concluso`, commit, push.
-6. A linea finita, il branch della linea si fonde in `feat/fondamenta` con
-   `git merge --no-ff`, senza PR. Se un task dell'altra linea aspetta un tuo
-   task già `concluso`, chiedi subito la fusione. La fusione la approva un
-   umano: prima di fondere si chiede. `./scripts/verify.sh` gira sul
-   risultato della fusione prima del push. Dopo la fusione le righe passano
-   a `fuso`, e quelle che ne dipendevano a `libero`.
+6. A lavorazione finita, il branch si fonde in `feat/fondamenta` con
+   `git merge --no-ff`, senza PR e, dal 2026-09-27, senza chiedere:
+   l'approvazione di Francesco non serve più. Si fonde solo quando la
+   review finale del branch è chiusa, senza segnalazioni aperte. Se ne
+   resta una che non si sa chiudere, non si fonde e la si porta a
+   Francesco. Se un task dell'altra linea aspetta un tuo task già
+   `concluso`, review finale e fusione vengono prima del resto.
+   `./scripts/verify.sh` gira sul risultato della fusione prima del push:
+   se è rosso, non si pusha. Poi `git pull --rebase=merges`, non
+   `--rebase` semplice, che appiattirebbe il commit di merge. Dopo la
+   fusione le righe passano a `fuso`, e quelle che ne dipendevano a
+   `libero`.
 7. Una decisione che cambia un task futuro si scrive dentro quel task, in un
    blocco `> **Modifica (AAAA-MM-GG).**`, più una riga nel registro qui
    sotto. Il ledger di superpowers in `.superpowers/` e la memoria di Claude
@@ -137,6 +143,7 @@ legge.
 | 2026-09-26 | 10 | `lighthouserc.json` su tutte le pagine pubbliche; LCP e peso solo su home e portfolio | Spec § Budget: CLS su tutte le pagine, JavaScript per pagina. Dalla review del Task 8, vedi il Task 10 |
 | 2026-09-27 | 9, 10 | Test del percorso critico in due lingue; recapito verificato in due lingue, rilevamento dei form di Netlify, lingua della richiesta | Review finale della linea B, vedi i Task 9 e 10 |
 | 2026-09-27 | 10 | Task 10 diviso: 10a (Netlify, recapito, runbook) in parallelo al 9 dopo il Task 8, 10b (gate con la home) dopo il 9; recapito verificato su un account Netlify di prova di Francesco, checklist della messa online nel runbook per l'account di Leo | Il Task 10 non tocca i file del 9, e l'account di Leo bloccava lo Step 4. Decisione di Francesco, vedi il Task 10 |
+| 2026-09-27 | tutti | Fusione a fine lavorazione senza approvazione; solo a review finale chiusa, niente push se il gate sulla fusione è rosso, `git pull --rebase=merges` | Decisione di Francesco: sostituisce l'approvazione umana della riga del 2026-09-26. Protocollo, punto 6 |
 
 ## Global Constraints
 
