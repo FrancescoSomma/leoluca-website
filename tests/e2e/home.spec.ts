@@ -35,6 +35,18 @@ for (const locale of LOCALES) {
     test(`a ${viewport.width}px l'LCP di ${pathFor("home", locale)} è il poster dell'hero`, async ({
       page,
     }) => {
+      // Deciso da Francesco durante il Task 9 (vedi il piano, Task 9,
+      // Modifica 2026-09-27): sotto i 768px, senza CSS oltre alla regola di
+      // reflow, l'LCP è la prima foto di richiamo e non il poster (spec §
+      // Hero punto 1). Non è un difetto di questo componente da correggere
+      // qui: è rimandato al piano di stile. Le asserzioni sotto restano
+      // invariate, così quando il piano di stile sistema l'hero Playwright
+      // segnala "expected to fail, but passed" e il rimando si nota.
+      test.fail(
+        viewport.width < 768,
+        "sotto i 768px l'LCP è la prima foto di richiamo, non il poster: rimandato al piano di stile (decisione di Francesco, Task 9)",
+      );
+
       await page.setViewportSize(viewport);
       await page.goto(pathFor("home", locale), { waitUntil: "networkidle" });
 
@@ -60,16 +72,21 @@ for (const locale of LOCALES) {
             // avvenire prima di leggere `ultima`.
             setTimeout(() => {
               osservatore.disconnect();
-              const elemento = (
-                ultima as unknown as { element?: Element } | undefined
-              )?.element;
-              if (!elemento) return resolve(null);
+              // Niente `as`: si narrowa con `instanceof` (docs/07), sia sul
+              // tipo dell'entry sia su quello dell'elemento.
+              if (
+                !(ultima instanceof LargestContentfulPaint) ||
+                !ultima.element
+              ) {
+                return resolve(null);
+              }
+              const elemento = ultima.element;
               resolve({
                 tag: elemento.tagName,
                 dentroHero: elemento.closest(".hero") != null,
                 currentSrc:
-                  "currentSrc" in elemento
-                    ? (elemento as HTMLImageElement).currentSrc
+                  elemento instanceof HTMLImageElement
+                    ? elemento.currentSrc
                     : null,
                 larghezzaResa: elemento.getBoundingClientRect().width,
               });
@@ -82,10 +99,6 @@ for (const locale of LOCALES) {
       expect(lcp.tag).toBe("IMG");
       expect(lcp.dentroHero).toBe(true);
       expect(lcp.currentSrc).toMatch(/\.avif(\?|$)/);
-      // eslint-disable-next-line no-console
-      console.log(
-        `LCP ${locale} @${viewport.width}px: tag=${lcp.tag} dentroHero=${lcp.dentroHero} larghezzaResa=${lcp.larghezzaResa} viewport=${viewport.width} currentSrc=${lcp.currentSrc}`,
-      );
     });
   }
 }
