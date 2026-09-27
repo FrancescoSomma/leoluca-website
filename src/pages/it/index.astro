@@ -1,14 +1,31 @@
 ---
+// src/pages/en/index.astro è la versione identica con locale = 'en'.
 import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Foto from '../../components/Foto.astro';
+import { caricaFoto, caricaImpostazioni, seoPer, corpoPer } from '../../content/load';
+import { pathFor } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
 
 const locale = 'it' as const;
+const impostazioni = caricaImpostazioni();
+// US-1: solo le foto marcate in_home, nell'ordine del flusso.
+const richiamo = caricaFoto().filter((f) => f.in_home);
+const { title, description } = seoPer('home', locale);
+const corpo = corpoPer('home', locale);
 ---
 
-<Base
-  locale={locale}
-  pageKey="home"
-  title="Leo Luca Iacoviello"
-  description="Fotografo di matrimoni in Italia: stile, portfolio e contatti."
->
-  <h1>Leo Luca Iacoviello</h1>
+<Base locale={locale} pageKey="home" title={title} description={description}>
+  <Hero
+    poster={impostazioni.hero_poster}
+    clip={impostazioni.hero_clip}
+    motto={impostazioni.motto_it}
+  />
+  {corpo && <p>{corpo}</p>}
+  <div class="richiamo">
+    {richiamo.map((f) => (
+      <Foto foto={f} locale={locale} sizes="(max-width: 800px) 100vw, 1200px" />
+    ))}
+  </div>
+  <a href={pathFor('portfolio', locale)}>{t(locale, 'home.toPortfolio')}</a>
 </Base>
