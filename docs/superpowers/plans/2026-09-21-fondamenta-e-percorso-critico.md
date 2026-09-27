@@ -1982,7 +1982,7 @@ invii al mese.
 
 Registrare l'esito con uno screenshot. Senza evidenza, il task non è concluso.
 
-- [ ] **Step 5: Scrivere nel runbook ciò che resta acceso a metà**
+- [x] **Step 5: Scrivere nel runbook ciò che resta acceso a metà**
 
 ADR-0005 lo impone e la prima stesura di questo piano non lo faceva: diceva che
 l'accensione delle asserzioni rimandate «va scritta nel runbook, non lasciata
