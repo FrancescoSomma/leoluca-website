@@ -145,6 +145,7 @@ legge.
 | 2026-09-27 | 10 | Task 10 diviso: 10a (Netlify, recapito, runbook) in parallelo al 9 dopo il Task 8, 10b (gate con la home) dopo il 9; recapito verificato su un account Netlify di prova di Francesco, checklist della messa online nel runbook per l'account di Leo | Il Task 10 non tocca i file del 9, e l'account di Leo bloccava lo Step 4. Decisione di Francesco, vedi il Task 10 |
 | 2026-09-27 | tutti | Fusione a fine lavorazione senza approvazione; solo a review finale chiusa, niente push se il gate sulla fusione è rosso, `git pull --rebase=merges` | Decisione di Francesco: sostituisce l'approvazione umana della riga del 2026-09-26. Protocollo, punto 6 |
 | 2026-09-27 | 9, stile | LCP della home sotto i 768 px: test a 390 px in `test.fail()`, vincolo di § Hero punto 1 al piano di stile | Senza CSS a 320 e 390 px l'LCP è la prima foto di richiamo. Decisione di Francesco, vedi il Task 9 |
+| 2026-09-27 | pannello, clip | § Cosa non copre: conteggio di `in_home` nel pannello; clip dell'hero con WCAG 2.2.2, controllo in build e rapporto d'aspetto da chiudere prima che una clip vada online | Review finale del Task 9. Il 2.2.2 emenda lo spec: da decidere con Francesco |
 
 ## Global Constraints
 
@@ -2054,7 +2055,28 @@ Ognuno richiede un piano proprio, e due sono bloccati.
   portfolio e la sua Pagina esiste per `title` e `description` (Task 7).
   Nemmeno `titolo_*` di Contatti e Conferma: il loro h1 viene da `ui.ts`, per
   decisione di Francesco (Task 8), e nel pannello sarebbe un campo che non
-  cambia nulla.
+  cambia nulla. Il numero di foto con `in_home`, da 10 a 15 per US-1, oggi lo
+  controlla solo l'e2e della home: il pannello deve segnalarlo prima della
+  pubblicazione, come la traduzione mancante di US-8 (Task 9).
+- **Clip dell'hero.** Il contenuto non ne ha una, e il Task 9 la verifica
+  con markup iniettato e una prova manuale. Prima che una clip vada online
+  restano tre cose, emerse dalla review finale del Task 9.
+  - **WCAG 2.2.2 Pause, Stop, Hide**, livello A. Un contenuto in movimento
+    che parte da solo, dura più di 5 s ed è mostrato accanto ad altro
+    contenuto richiede un modo per fermarlo; rispettare
+    `prefers-reduced-motion` non basta. Spec § Hero punto 2 vuole la clip in
+    `loop`, e il budget ammette fino a 6 s: entrambi lo violano. Le strade
+    sono un controllo di pausa, un'interfaccia che lo spec non prevede,
+    oppure una clip di al massimo 5 s senza `loop`. Tutte e due emendano lo
+    spec: decide Francesco.
+  - **Il controllo in build della clip** (≤ 6 s, ≤ 1.5 MB, senza traccia
+    audio, spec § Budget) non è assegnato a nessun task di questo piano.
+  - **Il rapporto d'aspetto.** Il `<video>` dichiara `width` e `height` del
+    poster: il layout resta fermo solo se la clip ha lo stesso rapporto.
+    Altrimenti, dopo il `load`, a 1440 px una clip 16:9 su un poster 3:2
+    sposta di circa 148 px ciò che segue, e Lighthouse in mobile non la
+    carica, quindi non lo vede. Lo risolve il piano di stile, con
+    `aspect-ratio` e `object-fit`, o un controllo in build sul rapporto.
 - **Dati strutturati, sitemap.xml, redirect dal vecchio sito.** Lo spec li
   richiede; i redirect dipendono dall'elenco degli URL vivi, che è una domanda
   aperta con Leo.
