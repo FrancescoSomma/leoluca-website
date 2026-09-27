@@ -44,15 +44,18 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 8 Form e conferma | concluso | B | 6 | `feat/layout-form` | PC 2 |
 | 7 Portfolio | fuso | — | 5 e 6 fusi | `feat/portfolio` | PC 1 |
 | 9 Home ed e2e | bloccato | — | 7 e 8 fusi | da aprire | — |
-| 10 Gate e Netlify | bloccato | — | 9 | da aprire | — |
+| 10a Netlify e recapito | bloccato | — | 8 fuso | da aprire | — |
+| 10b Gate con la home | bloccato | — | 9 e 10a fusi | da aprire | — |
 
 Stati: `libero` nessuno ci lavora; `in corso` preso da una macchina;
 `concluso` review passata e commit sul branch della linea; `fuso` dentro
 `feat/fondamenta`; `bloccato` dipendenze non ancora fuse.
 
 Macchine: **PC 1** è il Mac su cui sono stati eseguiti i Task 2 e 3, e tiene
-la linea A. **PC 2** è la seconda macchina, e tiene la linea B. I Task 7, 9 e
-10 li prende chi si libera per primo, dopo la fusione di entrambe le linee.
+la linea A. **PC 2** è la seconda macchina, e tiene la linea B. I Task 7, 9,
+10a e 10b li prende chi si libera per primo, dopo la fusione di entrambe le
+linee. Il 9 e il 10a possono correre in parallelo (Task 10, Modifica del
+2026-09-27).
 
 Binari fuori piano, per chi resta fermo: la direzione visiva, che richiede la
 scelta di Francesco e di Leo (§ Cosa questo piano non copre), e la verifica di
@@ -133,6 +136,7 @@ legge.
 | 2026-09-26 | 7, tutti | Reflow con un `img` con scope, senza `:global()`; `sizes` e corpo del portfolio affidati ai piani di stile e del pannello; screenshot dopo l'ultimo `verify.sh` | Review finale del Task 7: lo scope di Astro 7.3.3 raggiunge l'`<img>` di `<Picture>`, e Playwright svuota `test-results/` a ogni run |
 | 2026-09-26 | 10 | `lighthouserc.json` su tutte le pagine pubbliche; LCP e peso solo su home e portfolio | Spec § Budget: CLS su tutte le pagine, JavaScript per pagina. Dalla review del Task 8, vedi il Task 10 |
 | 2026-09-27 | 9, 10 | Test del percorso critico in due lingue; recapito verificato in due lingue, rilevamento dei form di Netlify, lingua della richiesta | Review finale della linea B, vedi i Task 9 e 10 |
+| 2026-09-27 | 10 | Task 10 diviso: 10a (Netlify, recapito, runbook) in parallelo al 9 dopo il Task 8, 10b (gate con la home) dopo il 9; recapito verificato su un account Netlify di prova di Francesco, checklist della messa online nel runbook per l'account di Leo | Il Task 10 non tocca i file del 9, e l'account di Leo bloccava lo Step 4. Decisione di Francesco, vedi il Task 10 |
 
 ## Global Constraints
 
@@ -1829,6 +1833,43 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 >   senza la pagina d'origine Leo non sa se rispondere in inglese. Se la
 >   notifica non la mostra, si propone a Francesco un emendamento allo spec.
 >   Nessun campo si aggiunge prima.
+
+> **Modifica (2026-09-27, decisione di Francesco).** Il task si divide in
+> due, perché quasi nulla dipende dalla home: il Task 10 tocca
+> `lighthouserc.json`, `netlify.toml` e `docs/06-runbook.md`, il Task 9
+> nessuno dei tre.
+>
+> - **10a**, dopo la fusione del Task 8 e in parallelo al 9, su un branch
+>   proprio: Step 1, 3, 4 e 5. Serve il Task 8 fuso, perché il form e il suo
+>   script vanno misurati e il recapito va provato.
+> - **10b**, dopo la fusione del 9 e del 10a: Step 2 e 6 con la home dentro
+>   il gate, poi la chiusura. LCP e peso restano spenti fino alle foto vere
+>   (Step 1): della home il gate misura CLS, accessibilità e script.
+>
+> Lo Step 4 non richiede più l'account Netlify di Leo, contro il primo blocco
+> Modifica di questo task. Si divide così.
+>
+> - **Verifica funzionale, nel 10a**, su un account Netlify di prova di
+>   Francesco, piano gratuito. Lo crea lui e collega il repository: l'agente
+>   prepara `netlify.toml` e la procedura, poi si ferma a chiederlo. Su una
+>   deploy preview si verifica:
+>   - la build nell'ambiente di Netlify, con il download degli originali
+>     remoti;
+>   - il redirect di `/` e `/en/inesistente/` in 404 con la pagina inglese;
+>   - le tre verifiche sul form del blocco precedente;
+>   - che il campo `bot-field` scarti un invio automatico.
+>
+>   Evidenza: screenshot delle pagine d'arrivo e dell'email di notifica. Il
+>   sito di prova ha un indirizzo `….netlify.app` pubblico: si controlla che
+>   la deploy preview risponda con `X-Robots-Tag: noindex`, altrimenti il sito
+>   si elimina dopo la prova. Nessuna foto vera, per le liberatorie.
+> - **Checklist per la messa online**, scritta nel runbook allo Step 5, per
+>   chi mantiene il sito e non per Leo. Sull'account di Leo:
+>   - il piano e quanti invii al mese include: Netlify è passata ai crediti,
+>     e il tetto di 100 invii dello Step 4 va riletto lì;
+>   - il rilevamento dei form acceso;
+>   - le notifiche verso l'indirizzo di destinazione vero;
+>   - un invio di prova per lingua, che arrivi e non finisca in spam.
 
 **Files:**
 - Modify: `lighthouserc.json` (esiste dal Task 2)
