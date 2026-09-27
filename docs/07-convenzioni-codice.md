@@ -73,6 +73,19 @@ filesystem e non è riusabile in un'altra pagina.
 - Si asserisce il vincolo dello spec, non il dettaglio di implementazione. "Non
   serve JPEG" è un vincolo; "chiama `<Picture>` con questi argomenti" è un
   dettaglio.
+- Un elenco che deve coprire tutte le pagine (URL misurati da Lighthouse,
+  pagine controllate da axe) si ricava da `PAGE_KEYS` × `LOCALES` con
+  `pathFor`, oppure ha un test che lo confronta con quelle. Scritto a mano,
+  una pagina aggiunta a `src/i18n/routes.ts` resta fuori senza che nulla lo
+  segnali: è il caso di `lighthouserc.json`, legato alle rotte da
+  `tests/unit/lighthouserc.test.ts` (Task 10a). Un percorso singolo scritto a
+  mano in un test va bene: se la rotta cambia, il test fallisce da solo.
+- Un controllo spento in un file di configurazione che non ammette commenti,
+  come un'asserzione a `"off"` in un JSON, ha il motivo e la condizione per
+  riaccenderlo in [06-runbook.md](06-runbook.md) § Manutenzione. Dove i
+  commenti esistono, stanno accanto al controllo. Un controllo spento senza
+  una data di riaccensione scritta è un gate che non misura ciò che conta
+  (ADR-0005, Task 10).
 
 ## CSS
 
