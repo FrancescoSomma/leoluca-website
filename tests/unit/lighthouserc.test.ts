@@ -20,4 +20,31 @@ describe("lighthouserc.json", () => {
     expect(new Set(lighthouserc.ci.collect.url)).toEqual(new Set(attesi));
     expect(lighthouserc.ci.collect.url).toHaveLength(attesi.length);
   });
+
+  it("i pattern di assertMatrix colgono solo le pagine del proprio gruppo", () => {
+    const attesiPer = {
+      home: LOCALES.map(
+        (locale) => `http://localhost${pathFor("home", locale)}index.html`,
+      ),
+      portfolio: LOCALES.map(
+        (locale) => `http://localhost${pathFor("portfolio", locale)}index.html`,
+      ),
+    } as const;
+
+    for (const chiave of ["home", "portfolio"] as const) {
+      const attesi = attesiPer[chiave];
+      const gruppo = lighthouserc.ci.assert.assertMatrix.find(
+        (g) =>
+          g.matchingUrlPattern !== ".*" &&
+          attesi.every((url) => new RegExp(g.matchingUrlPattern).test(url)),
+      );
+      if (!gruppo) throw new Error(`nessun gruppo copre ${chiave}`);
+
+      const pattern = new RegExp(gruppo.matchingUrlPattern);
+      const colti = lighthouserc.ci.collect.url.filter((url) =>
+        pattern.test(url),
+      );
+      expect(new Set(colti)).toEqual(new Set(attesi));
+    }
+  });
 });
