@@ -5,7 +5,21 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:4321",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  // Due progetti perché a11y.spec.ts va eseguito una sola volta nel gate:
+  // `npm run e2e` lo esclude, `npm run a11y` esegue solo lui. Un nuovo file
+  // di spec finisce in "e2e" da solo, senza bisogno di aggiornare questa lista.
+  projects: [
+    {
+      name: "e2e",
+      testIgnore: "**/a11y.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "a11y",
+      testMatch: "**/a11y.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
+  ],
   webServer: {
     // verify.sh esegue `astro build` prima di questo step: qui si serve
     // solo il dist/ già pronto, senza ricostruirlo.
