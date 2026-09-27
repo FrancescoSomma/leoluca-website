@@ -146,6 +146,7 @@ legge.
 | 2026-09-27 | tutti | Fusione a fine lavorazione senza approvazione; solo a review finale chiusa, niente push se il gate sulla fusione è rosso, `git pull --rebase=merges` | Decisione di Francesco: sostituisce l'approvazione umana della riga del 2026-09-26. Protocollo, punto 6 |
 | 2026-09-27 | 9, stile | LCP della home sotto i 768 px: test a 390 px in `test.fail()`, vincolo di § Hero punto 1 al piano di stile | Senza CSS a 320 e 390 px l'LCP è la prima foto di richiamo. Decisione di Francesco, vedi il Task 9 |
 | 2026-09-27 | pannello, clip | § Cosa non copre: conteggio di `in_home` nel pannello; clip dell'hero con WCAG 2.2.2, controllo in build e rapporto d'aspetto da chiudere prima che una clip vada online | Review finale del Task 9. Il 2.2.2 emenda lo spec: da decidere con Francesco |
+| 2026-09-27 | 10 | Un nome di form per lingua, `contatto-it` e `contatto-en`; sito di prova Private e branch deploy senza noindex | Netlify tiene una pagina di successo per nome di form: la conferma italiana usciva in inglese. Decisione di Francesco, vedi il Task 10 |
 
 ## Global Constraints
 
@@ -1905,6 +1906,19 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 >   - il rilevamento dei form acceso;
 >   - le notifiche verso l'indirizzo di destinazione vero;
 >   - un invio di prova per lingua, che arrivi e non finisca in spam.
+
+> **Modifica (2026-09-27, dallo Step 4 del 10a, decisione di Francesco).**
+> Sulla deploy di prova la POST italiana su `/it/grazie/` riceveva il
+> contenuto di `/en/thank-you/`: Netlify tiene una sola pagina di successo
+> per nome di form e ignora il percorso della POST. Il form ha ora un nome
+> per lingua, `contatto-it` e `contatto-en`, ciascuno con la propria
+> `action` e la propria notifica; il nome dice anche la lingua della
+> richiesta. Sul sito di prova tre fatti da sapere per rifare la verifica:
+> il progetto nasce Private (team creati dal 2026-07-28) e va reso pubblico,
+> anteprime comprese, per il tempo della prova; il branch deploy più recente
+> non ha `X-Robots-Tag: noindex`, quindi il sito si elimina dopo; un invio
+> con indirizzo `@example.com` da un browser automatico finisce nello spam di
+> Netlify, senza notifica.
 
 **Files:**
 - Modify: `lighthouserc.json` (esiste dal Task 2)
