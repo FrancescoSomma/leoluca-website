@@ -1,7 +1,8 @@
 import { inferRemoteSize } from "astro:assets";
 
-// Larghezze, formati e lato lungo massimo sono vincoli di spec (US-2), non
-// preferenze: non parametrizzarli.
+// Larghezze e lato lungo massimo sono vincoli di spec (US-2), non
+// preferenze: non parametrizzarli. I formati (avif/webp) non vivono qui:
+// sono letterali nei `<Picture>` di Foto.astro e Hero.astro.
 const LARGHEZZE = [400, 800, 1200, 1600, 2400];
 const LATO_LUNGO_MASSIMO = 2400;
 

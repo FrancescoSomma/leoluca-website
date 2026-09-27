@@ -10,7 +10,7 @@ import type { Locale } from "../i18n/routes";
 interface Props {
   foto: DatoFoto;
   locale: Locale;
-  /** true solo per il poster dell'hero e le prime tre del flusso. */
+  /** true solo per le prime tre foto del flusso del portfolio (US-2); il poster dell'hero è Hero.astro, non questo componente. */
   priorita?: boolean;
   sizes: string;
 }

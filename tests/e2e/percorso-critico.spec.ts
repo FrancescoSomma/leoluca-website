@@ -16,9 +16,12 @@ for (const locale of LOCALES) {
     await expect(page.locator("main img").first()).toBeVisible();
 
     // Il collegamento esplicito al portfolio è il primo passo del percorso
-    // critico dall'arrivo in home (US-1); si cerca dentro main perché il
-    // nav porta un link "Portfolio" proprio, con un nome diverso ma che
-    // Playwright considererebbe comunque una sottostringa dell'altro.
+    // critico dall'arrivo in home (US-1): vive nel contenuto principale, non
+    // nel nav (che ha un proprio link "Portfolio", con un nome diverso). Si
+    // cerca dentro main per prendere quello specifico, non per un'ambiguità
+    // di nome: "Portfolio" non è una sottostringa di "Guarda il
+    // portfolio"/"See the portfolio", quindi getByRole non li confonderebbe
+    // comunque.
     await page
       .locator("main")
       .getByRole("link", { name: t(locale, "home.toPortfolio") })
