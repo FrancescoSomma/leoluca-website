@@ -62,8 +62,20 @@ pigre che partono dopo l'LCP, va ripensata la metrica, non alzato il valore.
 Se cambiare la misura o lo spec lo decide Francesco: chi accende i controlli
 si ferma e gli porta il caso.
 
+Se le foto vere arrivano prima del piano di stile, a 390 px l'LCP della home
+non è il poster ma la prima foto di richiamo, che è pigra (spec § Hero punto
+1; `test.fail()` in `tests/e2e/home.spec.ts`). Un LCP rosso sulla home ha
+allora questa causa nota, e la correzione spetta al piano di stile.
+
 Dopo l'accensione, eseguire `./scripts/verify.sh`: se il gate diventa rosso,
 il budget è violato e si interviene sul sito, non sulla soglia.
+
+Una nota su un'asserzione accesa. `resource-summary:script:size` conta solo
+gli script scaricati come file. Astro scrive dentro l'HTML ogni script sotto
+i 4 KB (`build.assetsInlineLimit`), come quelli dell'hero e del form, e
+l'asserzione non li vede: oggi misura 0 su ogni pagina. Il budget JavaScript
+dello spec regge perché ciascuno resta piccolo; uno oltre i 4 KB diventa un
+file, e da lì l'asserzione lo conta.
 
 ### Messa online sull'account Netlify di Leo
 

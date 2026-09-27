@@ -9,6 +9,11 @@ const URL_404 = [
   "http://localhost/en/404/index.html",
 ];
 
+// lhci confronta i pattern con lhr.finalUrl, che contiene la porta del server
+// statico: un pattern ancorato a "localhost/" passerebbe senza porta e non
+// coglierebbe nulla.
+const comeLhci = (url: string) => url.replace("localhost", "localhost:4173");
+
 describe("lighthouserc.json", () => {
   it("misura ogni pagina pubblica della sitemap, comprese le 404 per lingua", () => {
     const attesi = PAGE_KEYS.flatMap((key) =>
@@ -36,15 +41,30 @@ describe("lighthouserc.json", () => {
       const gruppo = lighthouserc.ci.assert.assertMatrix.find(
         (g) =>
           g.matchingUrlPattern !== ".*" &&
-          attesi.every((url) => new RegExp(g.matchingUrlPattern).test(url)),
+          attesi.every((url) =>
+            new RegExp(g.matchingUrlPattern).test(comeLhci(url)),
+          ),
       );
       if (!gruppo) throw new Error(`nessun gruppo copre ${chiave}`);
 
       const pattern = new RegExp(gruppo.matchingUrlPattern);
       const colti = lighthouserc.ci.collect.url.filter((url) =>
-        pattern.test(url),
+        pattern.test(comeLhci(url)),
       );
       expect(new Set(colti)).toEqual(new Set(attesi));
     }
+  });
+
+  // Senza questo gruppo lhci passa con [], come se tutto fosse in regola.
+  it("il gruppo .* asserta CLS, accessibilità e script su ogni pagina", () => {
+    const tutte = lighthouserc.ci.assert.assertMatrix.find(
+      (g) => g.matchingUrlPattern === ".*",
+    );
+
+    expect(tutte?.assertions).toEqual({
+      "cumulative-layout-shift": ["error", { maxNumericValue: 0.1 }],
+      "categories:accessibility": ["error", { minScore: 1 }],
+      "resource-summary:script:size": ["error", { maxNumericValue: 51200 }],
+    });
   });
 });

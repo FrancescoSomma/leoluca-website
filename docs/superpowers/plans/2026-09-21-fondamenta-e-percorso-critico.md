@@ -1974,7 +1974,7 @@ e passando da `preset: desktop` alla configurazione mobile 4G. Se nessuno lo
 fa, il progetto crede di avere un gate che non misura ciò che conta: per questo
 l'accensione va scritta nel runbook, non lasciata alla memoria.
 
-- [ ] **Step 2: Eseguire e verificare che i budget passino**
+- [x] **Step 2: Eseguire e verificare che i budget passino**
 
 Run: `npm run build && npm run perf`
 Expected: nessuna asserzione violata.
@@ -2014,18 +2014,18 @@ sottosezione marcata come rivolta a chi mantiene il sito e non a Leo: quali
 asserzioni di `lighthouserc.json` sono spente, con quali valori vanno accese,
 e che l'innesco è l'arrivo delle foto vere.
 
-- [ ] **Step 6: Eseguire il gate completo**
+- [x] **Step 6: Eseguire il gate completo**
 
 Run: `./scripts/verify.sh`
 Expected: `verify: tutti i controlli superati`, exit 0.
 
-- [ ] **Step 7: Chiudere il task**
+- [x] **Step 7: Chiudere il task**
 
 Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
 task produce una pagina che si vede, e i tre agenti di review sul diff. Le
 segnalazioni si risolvono prima del commit, non dopo.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lighthouserc.json netlify.toml docs/06-runbook.md
