@@ -1,0 +1,24 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/"
+  to = "/it/"
+  status = 302
+  # dist/index.html esiste (la pagina di redirect di Astro): senza force
+  # Netlify vede un file a quel percorso e non applica la regola.
+  force = true
+
+[[redirects]]
+  from = "/en/*"
+  to = "/en/404/"
+  status = 404
+  # Senza force: deve colpire solo gli URL inglesi sconosciuti, mai un file
+  # esistente sotto /en/.
+
+[[redirects]]
+  from = "/*"
+  to = "/it/404/"
+  status = 404
+  # Senza force: deve colpire solo gli URL sconosciuti, mai un file esistente.

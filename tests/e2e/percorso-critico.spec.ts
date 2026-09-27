@@ -43,7 +43,7 @@ for (const locale of LOCALES) {
 
     // In locale Netlify non intercetta la POST: si verifica che il form sia
     // valido e diretto alla conferma. Il recapito reale è nel Task 10.
-    const form = page.locator('form[name="contatto"]');
+    const form = page.locator(`form[name="contatto-${locale}"]`);
     await expect(form).toHaveAttribute("action", pathFor("thanks", locale));
     expect(await form.evaluate((f: HTMLFormElement) => f.checkValidity())).toBe(
       true,

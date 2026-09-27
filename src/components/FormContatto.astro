@@ -10,10 +10,16 @@ interface Props {
 }
 const { locale } = Astro.props;
 const azione = pathFor("thanks", locale);
+// Netlify associa una sola pagina di successo a ogni nome di form e ignora
+// il percorso della POST: con un nome unico condiviso fra le lingue,
+// l'invio da /it/contatti/ mostrava la conferma inglese (misurato sulla
+// deploy di prova, Task 10a). Un nome per lingua dà a ciascuna la propria
+// pagina di successo.
+const nomeForm = `contatto-${locale}`;
 ---
 
 <form
-  name="contatto"
+  name={nomeForm}
   method="POST"
   data-netlify="true"
   netlify-honeypot="bot-field"
@@ -22,7 +28,7 @@ const azione = pathFor("thanks", locale);
   data-errore-email={t(locale, "form.error.email")}
   data-errore-data={t(locale, "form.error.date")}
 >
-  <input type="hidden" name="form-name" value="contatto" />
+  <input type="hidden" name="form-name" value={nomeForm} />
   <p hidden>
     <label
       >{t(locale, "form.honeypot.label")}{" "}<input name="bot-field" /></label
@@ -152,7 +158,7 @@ const azione = pathFor("thanks", locale);
 
 <script>
   const form = document.querySelector(
-    'form[name="contatto"]',
+    'form[name^="contatto-"]',
   ) as HTMLFormElement;
 
   const planner = form.querySelector(

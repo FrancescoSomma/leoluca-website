@@ -124,11 +124,17 @@ describe.each(LOCALES)("FormContatto (%s)", (locale) => {
     expect(html[locale]).toContain('data-netlify="true"');
     expect(html[locale]).toContain('netlify-honeypot="bot-field"');
     expect(html[locale]).toContain('name="form-name"');
-    expect(html[locale]).toContain('value="contatto"');
+    expect(html[locale]).toContain(`value="contatto-${locale}"`);
     const honeypotBlock = html[locale].match(
       /<p hidden>[\s\S]*?name="bot-field"[\s\S]*?<\/p>/,
     );
     expect(honeypotBlock, "honeypot non è dentro un <p hidden>").not.toBeNull();
+  });
+
+  it("il nome del form codifica la lingua: Netlify associa una sola pagina di successo a ogni nome di form", () => {
+    expect(html[locale]).toMatch(
+      new RegExp(`<form[^>]*name="contatto-${locale}"`),
+    );
   });
 
   it("il contenitore del nome della wedding planner è hidden nel markup", () => {
