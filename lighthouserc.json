@@ -4,7 +4,19 @@
       "staticDistDir": "./dist",
       "url": [
         "http://localhost/it/index.html",
-        "http://localhost/it/portfolio/index.html"
+        "http://localhost/it/portfolio/index.html",
+        "http://localhost/it/chi-sono/index.html",
+        "http://localhost/it/faq/index.html",
+        "http://localhost/it/contatti/index.html",
+        "http://localhost/it/grazie/index.html",
+        "http://localhost/it/404/index.html",
+        "http://localhost/en/index.html",
+        "http://localhost/en/portfolio/index.html",
+        "http://localhost/en/about/index.html",
+        "http://localhost/en/faq/index.html",
+        "http://localhost/en/contact/index.html",
+        "http://localhost/en/thank-you/index.html",
+        "http://localhost/en/404/index.html"
       ],
       "numberOfRuns": 3,
       "settings": {
@@ -13,13 +25,33 @@
       }
     },
     "assert": {
-      "assertions": {
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
-        "categories:accessibility": ["error", { "minScore": 1 }],
-        "resource-summary:script:size": ["error", { "maxNumericValue": 51200 }],
-        "largest-contentful-paint": "off",
-        "total-byte-weight": "off"
-      }
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": ".*",
+          "assertions": {
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+            "categories:accessibility": ["error", { "minScore": 1 }],
+            "resource-summary:script:size": [
+              "error",
+              { "maxNumericValue": 51200 }
+            ]
+          }
+        },
+        {
+          "matchingUrlPattern": "/(it|en)/index\\.html$",
+          "assertions": {
+            "largest-contentful-paint": "off",
+            "total-byte-weight": "off"
+          }
+        },
+        {
+          "matchingUrlPattern": "/(it|en)/portfolio/index\\.html$",
+          "assertions": {
+            "largest-contentful-paint": "off",
+            "total-byte-weight": "off"
+          }
+        }
+      ]
     }
   }
 }
