@@ -1,0 +1,119 @@
+---
+import { Picture } from "astro:assets";
+import { misuraDerivati } from "./derivati";
+
+interface Props {
+  poster: string;
+  /** Assente finché il contenuto non ha una clip: hero_clip è facoltativo (spec § Hero, punto 4). */
+  clip?: string;
+  motto: string;
+}
+const { poster, clip, motto } = Astro.props;
+
+// Il calcolo e il motivo di inferRemoteSize invece di inferSize vivono in
+// derivati.ts: questo è il secondo caso d'uso, condiviso con Foto.astro.
+const { larghezze, larghezza, altezza } = await misuraDerivati(poster);
+---
+
+<section class="hero">
+  {
+    /*
+      fallbackFormat="webp": senza un valore esplicito <Picture> ripiega su
+      PNG per un src remoto come questo, stesso motivo di Foto.astro. PNG è
+      pesante per una fotografia e fuori dai due formati ammessi (spec §
+      Pipeline immagini).
+    */
+  }
+  {
+    /*
+      alt="" vuoto apposta: il motto adiacente porta già il significato,
+      duplicarlo sarebbe rumore per uno screen reader (docs/07 § Commenti,
+      che cita proprio questo caso).
+    */
+  }
+  <Picture
+    src={poster}
+    width={larghezza}
+    height={altezza}
+    formats={["avif", "webp"]}
+    fallbackFormat="webp"
+    widths={larghezze}
+    sizes="100vw"
+    alt=""
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+  />
+  {
+    clip && (
+      <video
+        class="clip"
+        muted
+        loop
+        playsinline
+        preload="none"
+        hidden
+        // Il poster è decorativo (alt=""): la clip che lo sostituisce non
+        // va esposta come contenuto a uno screen reader (Important 3 della
+        // review finale).
+        aria-hidden="true"
+        // Stesse width/height del poster: tengono fermo il layout solo se
+        // la clip condivide il suo rapporto 3:2. Con `height: auto` (regola
+        // di reflow) vince il rapporto naturale del video appena arrivano i
+        // metadati: con un rapporto diverso ci sarebbe comunque uno scatto
+        // (misura manuale con una webm dello stesso rapporto: 947.8 contro
+        // 949.6 px, coerenti). Non risolvibile senza CSS: è del piano di
+        // stile.
+        width={larghezza}
+        height={altezza}
+        data-src={clip}
+      ></video>
+    )
+  }
+  <h1>{motto}</h1>
+</section>
+
+<style>
+  /*
+   * Stesso pavimento di reflow di Foto.astro (WCAG 2.2 AA 1.4.10), esteso
+   * al video: la clip parte da 768 px in su con una larghezza intrinseca
+   * (il derivato del poster) che supera il viewport, e senza questa regola
+   * scorrerebbe in orizzontale come l'<img> non vincolato.
+   */
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
+
+<script>
+  const video = document.querySelector<HTMLVideoElement>(".hero .clip");
+  const picture = document.querySelector<HTMLElement>(".hero picture");
+  const riduciMovimento = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  const largo = window.matchMedia("(min-width: 768px)").matches;
+
+  // Niente `!`: si controlla `dataset.src` invece di darlo per scontato
+  // (docs/07-convenzioni-codice.md).
+  if (video && picture && video.dataset.src && !riduciMovimento && largo) {
+    const sorgente = video.dataset.src;
+    // Con preload="none" assegnare src non avvia da solo lo scaricamento:
+    // il browser aspetterebbe play() (o simile), ben oltre l'LCP. load()
+    // esplicito lo forza subito dopo il load della finestra (spec § Hero,
+    // punto 2: la clip parte dopo l'LCP).
+    addEventListener("load", () => {
+      video.src = sorgente;
+      video.load();
+    });
+    // La sostituzione del poster avviene solo a dati pronti, non
+    // all'avvio del caricamento: altrimenti l'hero mostrerebbe un
+    // fotogramma vuoto o nero mentre la clip scarica.
+    video.addEventListener("loadeddata", () => {
+      picture.hidden = true;
+      video.hidden = false;
+      video.play().catch(() => {});
+    });
+  }
+</script>

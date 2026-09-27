@@ -43,8 +43,8 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 6 Layout base | fuso | B | 3 | `feat/fondamenta` | PC 2 |
 | 8 Form e conferma | fuso | B | 6 | `feat/layout-form` | PC 2 |
 | 7 Portfolio | fuso | — | 5 e 6 fusi | `feat/portfolio` | PC 1 |
-| 9 Home ed e2e | in corso | — | 7 e 8 fusi | `feat/home` | PC 1 |
-| 10a Netlify e recapito | in corso | — | 8 fuso | `feat/netlify` | PC 2 |
+| 9 Home ed e2e | fuso | — | 7 e 8 fusi | `feat/home` | PC 1 |
+| 10a Netlify e recapito | in corso | — | 8 fuso | `feat/netlify` | PC 1 |
 | 10b Gate con la home | bloccato | — | 9 e 10a fusi | da aprire | — |
 
 Stati: `libero` nessuno ci lavora; `in corso` preso da una macchina;
@@ -144,6 +144,8 @@ legge.
 | 2026-09-27 | 9, 10 | Test del percorso critico in due lingue; recapito verificato in due lingue, rilevamento dei form di Netlify, lingua della richiesta | Review finale della linea B, vedi i Task 9 e 10 |
 | 2026-09-27 | 10 | Task 10 diviso: 10a (Netlify, recapito, runbook) in parallelo al 9 dopo il Task 8, 10b (gate con la home) dopo il 9; recapito verificato su un account Netlify di prova di Francesco, checklist della messa online nel runbook per l'account di Leo | Il Task 10 non tocca i file del 9, e l'account di Leo bloccava lo Step 4. Decisione di Francesco, vedi il Task 10 |
 | 2026-09-27 | tutti | Fusione a fine lavorazione senza approvazione; solo a review finale chiusa, niente push se il gate sulla fusione è rosso, `git pull --rebase=merges` | Decisione di Francesco: sostituisce l'approvazione umana della riga del 2026-09-26. Protocollo, punto 6 |
+| 2026-09-27 | 9, stile | LCP della home sotto i 768 px: test a 390 px in `test.fail()`, vincolo di § Hero punto 1 al piano di stile | Senza CSS a 320 e 390 px l'LCP è la prima foto di richiamo. Decisione di Francesco, vedi il Task 9 |
+| 2026-09-27 | pannello, clip | § Cosa non copre: conteggio di `in_home` nel pannello; clip dell'hero con WCAG 2.2.2, controllo in build e rapporto d'aspetto da chiudere prima che una clip vada online | Review finale del Task 9. Il 2.2.2 emenda lo spec: da decidere con Francesco |
 
 ## Global Constraints
 
@@ -1646,6 +1648,32 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 > chiama `contatto`, e la prima opzione di `fascia_budget` è vuota:
 > `selectOption({ index: 2 })` sceglie la seconda fascia.
 
+> **Modifica (2026-09-27, decisione di Francesco durante il Task 9).** Senza
+> CSS oltre la regola di reflow, spec § Hero punto 1 non regge sotto i
+> 768 px. Misure sul sito costruito, uguali in italiano e in inglese:
+>
+> | Viewport | Elemento LCP | Poster |
+> | --- | --- | --- |
+> | 320×800 | prima foto di richiamo, 2:3, 304×456 a y 494 | 304×203 a y 44 |
+> | 390×844 | la stessa, 374×561 a y 486, 358 px nel viewport | 374×250 a y 44 |
+> | 768×1024 | poster, 752×501 | — |
+> | 1440×900 | poster, 1424×950, 92% sopra la piega | — |
+>
+> Il poster 3:2 al telefono è basso, e sotto il motto la prima foto di
+> richiamo, verticale e lazy, entra nel viewport con un'area maggiore. US-1
+> regge a tutte le larghezze: l'LCP è sempre una fotografia, e sopra la
+> piega ci sono il poster a piena larghezza del contenuto e il nome di Leo
+> nel nav. Deciso: i test a 390 px dell'LCP in `tests/e2e/home.spec.ts`
+> sono `test.fail()` con il motivo, e il vincolo passa al piano di stile (§
+> Cosa questo piano non copre). Quando il piano di stile lo risolve,
+> Playwright segnala i test che passano e le annotazioni si tolgono.
+> Scartati: CSS nell'hero adesso, che deciderebbe la composizione senza una
+> direzione visiva e con valori letterali contro le convenzioni; una prima
+> foto orizzontale o un poster verticale, che passerebbero per la ragione
+> sbagliata, legati alla lunghezza del motto e all'ordine che Leo cambia dal
+> pannello (US-7); un emendamento allo spec, che al telefono lascerebbe
+> l'LCP a una foto lazy.
+
 **Files:**
 - Create: `src/components/Hero.astro`
 - Modify: `src/pages/it/index.astro`, `src/pages/en/index.astro`
@@ -2014,7 +2042,12 @@ Ognuno richiede un piano proprio, e due sono bloccati.
   Deve anche ricavare dal contenitore il `sizes` del portfolio e delle foto
   di richiamo: oggi dichiara `1200px`, ma a 1440 px senza contenitore
   l'immagine si rende a 1424 e il browser ingrandisce il derivato 1200w
-  (Task 7).
+  (Task 7). E deve rendere il poster l'LCP della home anche sotto i
+  768 px (spec § Hero punto 1): senza CSS, a 320 e 390 px l'LCP è la prima
+  foto di richiamo. L'hero al telefono deve occupare la piega, per esempio
+  con il ritaglio 4:5 e il `sizes` del Task 9. I test a 390 px dell'LCP in
+  `tests/e2e/home.spec.ts` sono `test.fail()` fino ad allora; il piano di
+  stile toglie l'annotazione e aggiunge 320 px (Task 9).
 - **Pannello di redazione.** Bloccato dalla verifica in
   [ADR-0004](../../03-adr/0004-pannello-e-storage-immagini.md): autenticazione
   da accertare prima di scegliere il prodotto. Non deve esporre il corpo del
@@ -2022,7 +2055,28 @@ Ognuno richiede un piano proprio, e due sono bloccati.
   portfolio e la sua Pagina esiste per `title` e `description` (Task 7).
   Nemmeno `titolo_*` di Contatti e Conferma: il loro h1 viene da `ui.ts`, per
   decisione di Francesco (Task 8), e nel pannello sarebbe un campo che non
-  cambia nulla.
+  cambia nulla. Il numero di foto con `in_home`, da 10 a 15 per US-1, oggi lo
+  controlla solo l'e2e della home: il pannello deve segnalarlo prima della
+  pubblicazione, come la traduzione mancante di US-8 (Task 9).
+- **Clip dell'hero.** Il contenuto non ne ha una, e il Task 9 la verifica
+  con markup iniettato e una prova manuale. Prima che una clip vada online
+  restano tre cose, emerse dalla review finale del Task 9.
+  - **WCAG 2.2.2 Pause, Stop, Hide**, livello A. Un contenuto in movimento
+    che parte da solo, dura più di 5 s ed è mostrato accanto ad altro
+    contenuto richiede un modo per fermarlo; rispettare
+    `prefers-reduced-motion` non basta. Spec § Hero punto 2 vuole la clip in
+    `loop`, e il budget ammette fino a 6 s: entrambi lo violano. Le strade
+    sono un controllo di pausa, un'interfaccia che lo spec non prevede,
+    oppure una clip di al massimo 5 s senza `loop`. Tutte e due emendano lo
+    spec: decide Francesco.
+  - **Il controllo in build della clip** (≤ 6 s, ≤ 1.5 MB, senza traccia
+    audio, spec § Budget) non è assegnato a nessun task di questo piano.
+  - **Il rapporto d'aspetto.** Il `<video>` dichiara `width` e `height` del
+    poster: il layout resta fermo solo se la clip ha lo stesso rapporto.
+    Altrimenti, dopo il `load`, a 1440 px una clip 16:9 su un poster 3:2
+    sposta di circa 148 px ciò che segue, e Lighthouse in mobile non la
+    carica, quindi non lo vede. Lo risolve il piano di stile, con
+    `aspect-ratio` e `object-fit`, o un controllo in build sul rapporto.
 - **Dati strutturati, sitemap.xml, redirect dal vecchio sito.** Lo spec li
   richiede; i redirect dipendono dall'elenco degli URL vivi, che è una domanda
   aperta con Leo.
