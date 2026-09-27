@@ -147,6 +147,7 @@ legge.
 | 2026-09-27 | 9, stile | LCP della home sotto i 768 px: test a 390 px in `test.fail()`, vincolo di § Hero punto 1 al piano di stile | Senza CSS a 320 e 390 px l'LCP è la prima foto di richiamo. Decisione di Francesco, vedi il Task 9 |
 | 2026-09-27 | pannello, clip | § Cosa non copre: conteggio di `in_home` nel pannello; clip dell'hero con WCAG 2.2.2, controllo in build e rapporto d'aspetto da chiudere prima che una clip vada online | Review finale del Task 9. Il 2.2.2 emenda lo spec: da decidere con Francesco |
 | 2026-09-27 | 10 | Un nome di form per lingua, `contatto-it` e `contatto-en`; sito di prova Private e branch deploy senza noindex | Netlify tiene una pagina di successo per nome di form: la conferma italiana usciva in inglese. Decisione di Francesco, vedi il Task 10 |
+| 2026-09-27 | 10 | Il sito di prova resta, come ambiente di prova usato come la produzione | Decisione di Francesco dopo la fusione del 10a, vedi il Task 10 |
 
 ## Global Constraints
 
@@ -1919,6 +1920,12 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 > non ha `X-Robots-Tag: noindex`, quindi il sito si elimina dopo; un invio
 > con indirizzo `@example.com` da un browser automatico finisce nello spam di
 > Netlify, senza notifica.
+
+> **Modifica (2026-09-27, decisione di Francesco, dopo la fusione del 10a).**
+> Il sito di prova non si elimina, contro il blocco precedente: resta
+> sull'account di Francesco come ambiente di prova, usato come se fosse la
+> produzione. Da pubblico il branch deploy più recente è indicizzabile, e lo
+> è per costruzione anche la produzione di Netlify.
 
 **Files:**
 - Modify: `lighthouserc.json` (esiste dal Task 2)
