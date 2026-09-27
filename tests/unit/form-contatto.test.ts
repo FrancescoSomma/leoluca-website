@@ -124,11 +124,17 @@ describe.each(LOCALES)("FormContatto (%s)", (locale) => {
     expect(html[locale]).toContain('data-netlify="true"');
     expect(html[locale]).toContain('netlify-honeypot="bot-field"');
     expect(html[locale]).toContain('name="form-name"');
-    expect(html[locale]).toContain('value="contatto"');
+    expect(html[locale]).toContain(`value="contatto-${locale}"`);
     const honeypotBlock = html[locale].match(
       /<p hidden>[\s\S]*?name="bot-field"[\s\S]*?<\/p>/,
     );
     expect(honeypotBlock, "honeypot non è dentro un <p hidden>").not.toBeNull();
+  });
+
+  it("il nome del form codifica la lingua: una pagina di successo Netlify per lingua", () => {
+    expect(html[locale]).toMatch(
+      new RegExp(`<form[^>]*name="contatto-${locale}"`),
+    );
   });
 
   it("il contenitore del nome della wedding planner è hidden nel markup", () => {
@@ -153,6 +159,14 @@ describe.each(LOCALES)("FormContatto (%s)", (locale) => {
   it('la checkbox della wedding planner ha value="sì"', () => {
     expect(html[locale]).toMatch(/name="wedding_planner"[^>]*value="sì"/);
   });
+});
+
+it("i nomi dei due form sono diversi fra loro: Netlify tiene una sola pagina di successo per nome di form, quindi condividerlo fra le lingue mostrerebbe la conferma sbagliata", () => {
+  const nomeForm = (sorgente: string) =>
+    sorgente.match(/<form[^>]*name="([^"]+)"/)?.[1];
+  expect(nomeForm(html.it)).toBe("contatto-it");
+  expect(nomeForm(html.en)).toBe("contatto-en");
+  expect(nomeForm(html.it)).not.toBe(nomeForm(html.en));
 });
 
 it("i value delle opzioni sono uguali nelle due lingue", () => {

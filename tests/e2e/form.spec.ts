@@ -142,9 +142,9 @@ for (const locale of LOCALES) {
   }) => {
     await page.goto(percorso);
 
-    const attesi = await page.evaluate(() => {
+    const attesi = await page.evaluate((nomeForm) => {
       const form = document.querySelector(
-        'form[name="contatto"]',
+        `form[name="${nomeForm}"]`,
       ) as HTMLFormElement;
       return Array.from(
         form.querySelectorAll<HTMLElement>("input, select, textarea, button"),
@@ -157,7 +157,7 @@ for (const locale of LOCALES) {
             el.getAttribute("name") !== "bot-field",
         )
         .map((el) => el.getAttribute("name") ?? el.tagName.toLowerCase());
-    });
+    }, `contatto-${locale}`);
 
     await page.locator('[name="nome"]').focus();
     const visitati: string[] = ["nome"];
@@ -210,7 +210,9 @@ for (const locale of LOCALES) {
       }
     }
     if (!trovatoCampoNome) {
-      throw new Error(`non ha raggiunto il campo "nome" entro ${tetto} pressioni di Tab`);
+      throw new Error(
+        `non ha raggiunto il campo "nome" entro ${tetto} pressioni di Tab`,
+      );
     }
     await page.keyboard.type("Maria Rossi");
     await tabViaCampo(page, "nome");
@@ -256,7 +258,7 @@ for (const locale of LOCALES) {
     const inviato: { metodo: string; corpo: string } = richiesta;
     const dati = new URLSearchParams(inviato.corpo);
     expect(inviato.metodo).toBe("POST");
-    expect(dati.get("form-name")).toBe("contatto");
+    expect(dati.get("form-name")).toBe(`contatto-${locale}`);
     expect(dati.get("nome")).toBe("Maria Rossi");
     expect(dati.get("email")).toBe("maria@example.com");
     expect(dati.get("data_evento")).toBe("2030-01-01");
