@@ -46,12 +46,27 @@ ancora scelto, e tre punti vanno accertati prima di sceglierlo. Nessuna
 dipendenza entra nel progetto finché non sono chiusi.
 
 1. **Il percorso di autenticazione del pannello.** La strada storica dei CMS
-   git-based su Netlify era il servizio di identità della piattaforma, che
-   Netlify ha deprecato. Le alternative sono un'autenticazione OAuth verso il
-   provider del repository, che richiede un piccolo servizio dedicato, oppure un
-   servizio ospitato con un piano gratuito, che però reintroduce la dipendenza
-   da terzi che ADR-0002 voleva evitare. Va accertato quale sia oggi il
-   percorso valido, e a che costo, prima di scegliere il candidato.
+   git-based su Netlify univa due servizi della piattaforma: Netlify Identity
+   per il login, e Git Gateway per scrivere nel repository per conto
+   dell'utente, senza che questo avesse un account sul provider git.
+   **Aggiornato il 2026-09-27.** Netlify aveva annunciato la deprecazione di
+   Identity, e il 19 febbraio 2026 l'ha ritirata: Identity resta supportato.
+   È deprecato invece Git Gateway, che funziona solo dove era già attivo,
+   riceve correzioni di sicurezza ma non di funzionalità, e non va usato in
+   una configurazione nuova
+   ([Netlify Docs](https://docs.netlify.com/manage/security/secure-access-to-sites/git-gateway/),
+   [annuncio sul forum](https://answers.netlify.com/t/netlify-identity-is-staying-feb-2026-reversal-what-changed-whos-affected-and-how-to-proceed/162733)).
+   Identity da solo non basta a un CMS git-based, quindi la strada storica
+   resta chiusa, per un motivo diverso da quello scritto in origine. Sveltia
+   CMS, uno dei candidati, non supporta comunque Git Gateway. Le alternative
+   non cambiano. La prima è un'autenticazione OAuth verso il provider del
+   repository, che richiede un piccolo servizio dedicato: Sveltia ne
+   distribuisce uno per Cloudflare Workers, da installare noi. Chi entra
+   deve avere un account sul provider, con accesso in scrittura al
+   repository. La seconda è un servizio ospitato con un piano gratuito, che
+   però reintroduce la dipendenza da terzi che ADR-0002 voleva evitare. Va
+   accertato quale sia oggi il percorso valido, e a che costo, prima di
+   scegliere il candidato.
 2. **Dove finiscono gli originali caricati dal pannello.** Un CMS git-based per
    impostazione predefinita scrive i file caricati dentro il repository: è
    esattamente ciò che questo ADR esclude. Va verificato che il candidato scelto
