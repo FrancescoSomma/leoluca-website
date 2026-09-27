@@ -82,3 +82,17 @@ const altezzaMassima = altezzaPer(larghezzaMassima);
   loading={priorita ? "eager" : "lazy"}
   decoding="async"
 />
+
+<style>
+  /*
+   * Pavimento di WCAG 2.2 AA 1.4.10 (spec § Dispositivi e larghezze), non
+   * stile: come l'eccezione dello skip link in Base.astro. Senza questa
+   * regola l'<img> si dichiara alla larghezza e all'altezza dei propri
+   * attributi (1600 o 2400 px CSS): a 320 px la pagina scorre in
+   * orizzontale.
+   */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+</style>

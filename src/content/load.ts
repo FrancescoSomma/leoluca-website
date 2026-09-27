@@ -35,6 +35,14 @@ export function caricaPagine(): Pagina[] {
   return PaginaSchema.array().parse(datiPagine);
 }
 
+export function seoPer(slug: string, locale: Locale) {
+  const pagina = caricaPagine().find((p) => p.slug === slug);
+  if (!pagina) throw new Error(`pagine.json: manca la pagina "${slug}"`);
+  return locale === "it"
+    ? { title: pagina.seo_title_it, description: pagina.seo_description_it }
+    : { title: pagina.seo_title_en, description: pagina.seo_description_en };
+}
+
 export function caricaImpostazioni(): Impostazioni {
   return ImpostazioniSchema.parse(datiImpostazioni);
 }

@@ -1,14 +1,21 @@
 ---
+// src/pages/it/portfolio.astro è la versione identica con locale = 'it'.
 import Base from '../../layouts/Base.astro';
+import Foto from '../../components/Foto.astro';
+import { caricaFoto, seoPer } from '../../content/load';
 
 const locale = 'en' as const;
+const foto = caricaFoto();
+const { title, description } = seoPer('portfolio', locale);
+// Vincolo di spec (US-2, "al primo render al massimo 3 immagini sono
+// prioritarie"), non preferenza: non parametrizzare.
+const PRIORITARIE = 3;
 ---
-
-<Base
-  locale={locale}
-  pageKey="portfolio"
-  title="Portfolio — Leo Luca Iacoviello"
-  description="The full photographic selection of weddings told by Leo."
->
+<Base locale={locale} pageKey="portfolio" title={title} description={description}>
   <h1>Portfolio</h1>
+  <div class="flusso">
+    {foto.map((f, i) => (
+      <Foto foto={f} locale={locale} priorita={i < PRIORITARIE} sizes="(max-width: 800px) 100vw, 1200px" />
+    ))}
+  </div>
 </Base>

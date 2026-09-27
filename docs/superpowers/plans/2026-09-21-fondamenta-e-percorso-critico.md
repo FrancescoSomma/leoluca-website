@@ -1274,7 +1274,7 @@ git commit -m "feat: layout base con hreflang, skip link e pagine 404"
 - Consumes: `caricaFoto` (Task 4), `Foto.astro` (Task 5), `Base.astro` (Task 6).
 - Produces: la pagina che il percorso critico attraversa.
 
-- [ ] **Step 1: Scrivere il test che fallisce**
+- [x] **Step 1: Scrivere il test che fallisce**
 
 ```ts
 // tests/e2e/portfolio.spec.ts
@@ -1310,12 +1310,12 @@ test("l'ordine è stabile tra due caricamenti", async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Eseguire il test e verificare che fallisca**
+- [x] **Step 2: Eseguire il test e verificare che fallisca**
 
 Run: `npm run build && npx playwright test tests/e2e/portfolio.spec.ts`
 Expected: FAIL, la pagina non ha immagini.
 
-- [ ] **Step 3: Implementare la pagina**
+- [x] **Step 3: Implementare la pagina**
 
 ```astro
 ---
@@ -1343,18 +1343,18 @@ const PRIORITARIE = 3;
 </Base>
 ```
 
-- [ ] **Step 4: Eseguire i test**
+- [x] **Step 4: Eseguire i test**
 
 Run: `npm run build && npx playwright test tests/e2e/portfolio.spec.ts`
 Expected: PASS, quattro test verdi.
 
-- [ ] **Step 5: Chiudere il task**
+- [x] **Step 5: Chiudere il task**
 
 Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
 task produce una pagina che si vede, e i tre agenti di review sul diff. Le
 segnalazioni si risolvono prima del commit, non dopo.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/pages/it/portfolio.astro src/pages/en/portfolio.astro tests/e2e/portfolio.spec.ts
