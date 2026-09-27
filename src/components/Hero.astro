@@ -1,0 +1,100 @@
+---
+import { Picture } from "astro:assets";
+import { misuraDerivati } from "./derivati";
+
+interface Props {
+  poster: string;
+  /** Assente finché il contenuto non ha una clip: hero_clip è facoltativo (spec § Hero, punto 4). */
+  clip?: string;
+  motto: string;
+}
+const { poster, clip, motto } = Astro.props;
+
+// Il calcolo e il motivo di inferRemoteSize invece di inferSize vivono in
+// derivati.ts: questo è il secondo caso d'uso, condiviso con Foto.astro.
+const { larghezze, larghezza, altezza } = await misuraDerivati(poster);
+---
+
+<section class="hero">
+  {
+    /*
+      fallbackFormat="webp": senza un valore esplicito <Picture> ripiega su
+      PNG per un src remoto come questo, stesso motivo di Foto.astro. PNG è
+      pesante per una fotografia e fuori dai due formati ammessi (spec §
+      Pipeline immagini).
+    */
+  }
+  <Picture
+    src={poster}
+    width={larghezza}
+    height={altezza}
+    formats={["avif", "webp"]}
+    fallbackFormat="webp"
+    widths={larghezze}
+    sizes="100vw"
+    alt=""
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+  />
+  {
+    clip && (
+      <video
+        class="clip"
+        muted
+        loop
+        playsinline
+        preload="none"
+        hidden
+        width={larghezza}
+        height={altezza}
+        data-src={clip}
+      ></video>
+    )
+  }
+  <h1>{motto}</h1>
+</section>
+
+<style>
+  /*
+   * Stesso pavimento di reflow di Foto.astro (WCAG 2.2 AA 1.4.10), esteso
+   * al video: la clip parte da 768 px in su con una larghezza intrinseca
+   * (il derivato del poster) che supera il viewport, e senza questa regola
+   * scorrerebbe in orizzontale come l'<img> non vincolato.
+   */
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
+
+<script>
+  const video = document.querySelector<HTMLVideoElement>(".hero .clip");
+  const picture = document.querySelector<HTMLElement>(".hero picture");
+  const riduciMovimento = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  const largo = window.matchMedia("(min-width: 768px)").matches;
+
+  // Niente `!`: si controlla `dataset.src` invece di darlo per scontato
+  // (docs/07-convenzioni-codice.md).
+  if (video && picture && video.dataset.src && !riduciMovimento && largo) {
+    const sorgente = video.dataset.src;
+    // preload="none" non basta da solo a evitare lo scaricamento dopo
+    // l'assegnazione di src: serve load() esplicito (spec § Hero, punto 2:
+    // la clip parte dopo l'LCP).
+    addEventListener("load", () => {
+      video.src = sorgente;
+      video.load();
+    });
+    // La sostituzione del poster avviene solo a dati pronti, non
+    // all'avvio del caricamento: altrimenti l'hero mostrerebbe un
+    // fotogramma vuoto o nero mentre la clip scarica.
+    video.addEventListener("loadeddata", () => {
+      picture.hidden = true;
+      video.hidden = false;
+      video.play().catch(() => {});
+    });
+  }
+</script>
