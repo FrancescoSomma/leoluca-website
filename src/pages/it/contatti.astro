@@ -1,14 +1,16 @@
 ---
 import Base from '../../layouts/Base.astro';
+import FormContatto from '../../components/FormContatto.astro';
+import { seoPer, corpoPer } from '../../content/load';
+import { t } from '../../i18n/ui';
 
 const locale = 'it' as const;
+const { title, description } = seoPer('contact', locale);
+const corpo = corpoPer('contact', locale);
 ---
 
-<Base
-  locale={locale}
-  pageKey="contact"
-  title="Contatti — Leo Luca Iacoviello"
-  description="Richiedi un preventivo raccontando il tuo matrimonio a Leo."
->
-  <h1>Contatti</h1>
+<Base locale={locale} pageKey="contact" title={title} description={description}>
+  <h1>{t(locale, 'contact.title')}</h1>
+  {corpo && <p>{corpo}</p>}
+  <FormContatto locale={locale} />
 </Base>

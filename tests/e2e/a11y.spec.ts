@@ -186,3 +186,21 @@ for (const locale of LOCALES) {
     await expect(page.locator("main:target")).toHaveCount(1);
   });
 }
+
+for (const locale of LOCALES) {
+  const percorso = pathFor("contact", locale);
+
+  test(`${percorso} nessuna violazione axe con il form in stato d'errore e il campo wedding planner visibile`, async ({
+    page,
+  }) => {
+    await page.goto(percorso);
+    // Stato che il caricamento normale non produce mai da solo: errori
+    // annunciati e campo facoltativo mostrato, gli stessi che axe deve
+    // valutare (US-5).
+    await page.locator('[name="wedding_planner"]').check();
+    await page.getByRole("button", { name: t(locale, "form.send") }).click();
+
+    const esito = await new AxeBuilder({ page }).withTags(TAG_WCAG).analyze();
+    expect(esito.violations).toEqual([]);
+  });
+}
