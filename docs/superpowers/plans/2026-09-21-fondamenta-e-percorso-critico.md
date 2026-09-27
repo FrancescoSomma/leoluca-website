@@ -2019,13 +2019,13 @@ e che l'innesco è l'arrivo delle foto vere.
 Run: `./scripts/verify.sh`
 Expected: `verify: tutti i controlli superati`, exit 0.
 
-- [ ] **Step 7: Chiudere il task**
+- [x] **Step 7: Chiudere il task**
 
 Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
 task produce una pagina che si vede, e i tre agenti di review sul diff. Le
 segnalazioni si risolvono prima del commit, non dopo.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lighthouserc.json netlify.toml docs/06-runbook.md
