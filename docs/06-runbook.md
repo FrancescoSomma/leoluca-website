@@ -63,9 +63,10 @@ usato per la verifica funzionale è su un account di Francesco e non conta.
 - [ ] Il rilevamento dei form acceso: sui siti nuovi può essere spento, e
       senza la POST del form non arriva a nessuno. Netlify rileva i form
       quando pubblica: dopo averlo acceso serve una nuova pubblicazione.
-- [ ] Le notifiche email del form `contatto` verso l'indirizzo di
-      destinazione vero delle richieste. Si configura su Netlify, non nel
-      codice (piano, § Vincoli aperti).
+- [ ] Le notifiche email, una per ciascuno dei due form `contatto-it` e
+      `contatto-en`, verso l'indirizzo di destinazione vero delle richieste.
+      Si configura su Netlify, non nel codice (piano, § Vincoli aperti). Il
+      nome del form nella notifica dice la lingua della richiesta.
 - [ ] Un invio di prova per lingua: da `/it/contatti/` arriva a
       `/it/grazie/`, da `/en/contact/` a `/en/thank-you/`. Ciascuno arriva
       all'indirizzo vero e non finisce nello spam.
