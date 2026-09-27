@@ -44,7 +44,7 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 8 Form e conferma | fuso | B | 6 | `feat/layout-form` | PC 2 |
 | 7 Portfolio | fuso | — | 5 e 6 fusi | `feat/portfolio` | PC 1 |
 | 9 Home ed e2e | fuso | — | 7 e 8 fusi | `feat/home` | PC 1 |
-| 10a Netlify e recapito | in corso | — | 8 fuso | `feat/netlify` | PC 1 |
+| 10a Netlify e recapito | concluso | — | 8 fuso | `feat/netlify` | PC 1 |
 | 10b Gate con la home | bloccato | — | 9 e 10a fusi | da aprire | — |
 
 Stati: `libero` nessuno ci lavora; `in corso` preso da una macchina;
