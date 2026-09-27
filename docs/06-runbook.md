@@ -43,9 +43,13 @@ Da fare, tutto insieme, all'innesco:
   `"throttlingMethod": "simulate"`. Senza preset la rete torna quella dello
   spec, 4G lenta simulata e mobile; lo schermo no, perché il predefinito di
   Lighthouse è 412 px a DPR 1.75 e lo spec (§ Dispositivi) misura i budget a
-  390 px. Aggiungere quindi `screenEmulation` a 390 px di larghezza. Il DPR
-  pesa più della larghezza e lo spec non lo fissa: va deciso con Francesco
-  prima dell'accensione.
+  390 px. Aggiungere quindi:
+  `"screenEmulation": { "mobile": true, "width": 390, "height": 844,
+  "deviceScaleFactor": 3, "disabled": false }`. DPR 3 è quello di un
+  iPhone, decisione di Francesco del 2026-09-27: i budget si misurano sul
+  telefono che le coppie usano davvero. Con 1.75 il browser sceglie un
+  derivato di circa metà peso, e il budget passerebbe più facilmente che
+  per chi guarda il sito.
 - Nei due gruppi di `assertMatrix` (home e portfolio), aggiungere
   `"aggregationMethod": "median-run"` accanto ad `"assertions"`. Senza,
   lhci usa `optimistic` e per un `maxNumericValue` prende il migliore dei 3
@@ -55,6 +59,8 @@ Da fare, tutto insieme, all'innesco:
 Avvertenza: `total-byte-weight` conta tutti i byte del caricamento, non solo
 quelli fino all'LCP come dice lo spec. È più severo. Se sfora per le immagini
 pigre che partono dopo l'LCP, va ripensata la metrica, non alzato il valore.
+Se cambiare la misura o lo spec lo decide Francesco: chi accende i controlli
+si ferma e gli porta il caso.
 
 Dopo l'accensione, eseguire `./scripts/verify.sh`: se il gate diventa rosso,
 il budget è violato e si interviene sul sito, non sulla soglia.
