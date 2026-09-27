@@ -73,8 +73,21 @@ describe("componente Hero", () => {
     expect(htmlConClip).toMatch(/<video[^>]*\shidden/);
   });
 
-  it("con clip il video dichiara la stessa larghezza e altezza del poster (CLS)", () => {
+  // Il titolo dichiara l'ipotesi (Minor 5 della review finale): width/height
+  // uguali al poster tengono fermo il layout solo finché la clip condivide
+  // il suo rapporto. Con `height: auto` (regola di reflow), appena arrivano
+  // i metadati vince il rapporto naturale del video: misura manuale, video
+  // 947.8 px contro poster 949.6 px di altezza resa, alla stessa larghezza.
+  // Non risolvibile senza CSS: è del piano di stile.
+  it("con clip il video dichiara la stessa larghezza e altezza del poster (tiene fermo il layout solo se il rapporto della clip coincide)", () => {
     expect(htmlConClip).toMatch(/<video[^>]*\swidth="2400"/);
     expect(htmlConClip).toMatch(/<video[^>]*\sheight="1600"/);
+  });
+
+  // Important 3 / Minor 13: il poster è decorativo (alt=""), e la clip che
+  // lo sostituisce non deve essere esposta come contenuto a uno screen
+  // reader.
+  it("con clip il video è aria-hidden: sostituisce un poster decorativo", () => {
+    expect(htmlConClip).toMatch(/<video[^>]*\saria-hidden="true"/);
   });
 });
