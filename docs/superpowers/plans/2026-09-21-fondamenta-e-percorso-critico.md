@@ -1887,7 +1887,7 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 - Consumes: il sito costruito (Task 2-9).
 - Produces: `npm run perf` che fallisce se i budget dello spec sono superati.
 
-- [ ] **Step 1: Scrivere il budget come asserzioni**
+- [x] **Step 1: Scrivere il budget come asserzioni**
 
 ADR-0005 impone di assertare ciò che dipende dal codice e rimandare ciò che
 dipende dalle fotografie. Con contenuti di prova, LCP e peso trasferito
@@ -1930,7 +1930,7 @@ l'accensione va scritta nel runbook, non lasciata alla memoria.
 Run: `npm run build && npm run perf`
 Expected: nessuna asserzione violata.
 
-- [ ] **Step 3: Configurare Netlify**
+- [x] **Step 3: Configurare Netlify**
 
 ```toml
 # netlify.toml
