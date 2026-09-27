@@ -41,6 +41,7 @@ const UI = {
     "contact.title": "Contatti",
     "thanks.title": "Grazie",
     "thanks.backToPortfolio": "Torna al portfolio",
+    "home.toPortfolio": "Guarda il portfolio",
   },
   en: {
     "nav.label": "Main",
@@ -80,6 +81,7 @@ const UI = {
     "contact.title": "Contact",
     "thanks.title": "Thank you",
     "thanks.backToPortfolio": "Back to the portfolio",
+    "home.toPortfolio": "See the portfolio",
   },
 } as const;
 

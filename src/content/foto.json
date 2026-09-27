@@ -33,5 +33,61 @@
     "alt_it": "Una donna inginocchiata allaccia la scarpa alla sposa seduta in un salotto luminoso",
     "alt_en": "A woman kneels to fasten the bride's shoe as she sits in a bright living room",
     "in_home": false
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1643697706170-d2a1892155d1",
+    "ordine": 5,
+    "alt_it": "Sposa di spalle accompagnata all'altare lungo il tappeto rosso della navata",
+    "alt_en": "Bride seen from behind, walked down the red-carpeted aisle to the altar",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1573676048035-9c2a72b6a12a",
+    "ordine": 6,
+    "alt_it": "Gli sposi escono sotto una pioggia di riso lanciata dagli amici ai due lati",
+    "alt_en": "The newlyweds walk out under a shower of rice thrown by friends on both sides",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1639330907580-1be70acbc1e1",
+    "ordine": 7,
+    "alt_it": "Sposi di spalle sulla soglia di un portone di legno aperto su un cortile pieno di invitati",
+    "alt_en": "The newlyweds seen from behind in a wooden doorway opening onto a courtyard full of guests",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1739823701475-1f74ccb53745",
+    "ordine": 8,
+    "alt_it": "Sposi abbracciati su una gondola davanti a Palazzo Ducale e al campanile di San Marco",
+    "alt_en": "The newlyweds embrace on a gondola in front of the Doge's Palace and St Mark's bell tower",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1549416878-b9ca95e26903",
+    "ordine": 9,
+    "alt_it": "Sposa sulla scalinata di una villa sul lago, lo strascico di tulle aperto sui gradini",
+    "alt_en": "Bride on the staircase of a lakeside villa, her tulle train spread across the steps",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1612599542650-3b98fd99f96a",
+    "ordine": 10,
+    "alt_it": "Cortile di una villa con lucine e tavoli apparecchiati, gli sposi entrano tra gli invitati",
+    "alt_en": "A villa courtyard strung with lights and set tables, the newlyweds walking in among the guests",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1639330693395-0944b5bef0c7",
+    "ordine": 11,
+    "alt_it": "Primo ballo degli sposi sulla pista vuota, illuminati da fasci di luce di scena",
+    "alt_en": "The newlyweds' first dance on the empty floor, lit by beams of stage light",
+    "in_home": true
+  },
+  {
+    "file": "https://images.unsplash.com/photo-1588849538263-fbc2b7b8965f",
+    "ordine": 12,
+    "alt_it": "Sposi si baciano tra due file di amici che alzano le stelline accese nella notte",
+    "alt_en": "The newlyweds kiss between two rows of friends holding up lit sparklers in the night",
+    "in_home": true
   }
 ]
