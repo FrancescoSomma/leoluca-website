@@ -144,6 +144,7 @@ legge.
 | 2026-09-27 | 9, 10 | Test del percorso critico in due lingue; recapito verificato in due lingue, rilevamento dei form di Netlify, lingua della richiesta | Review finale della linea B, vedi i Task 9 e 10 |
 | 2026-09-27 | 10 | Task 10 diviso: 10a (Netlify, recapito, runbook) in parallelo al 9 dopo il Task 8, 10b (gate con la home) dopo il 9; recapito verificato su un account Netlify di prova di Francesco, checklist della messa online nel runbook per l'account di Leo | Il Task 10 non tocca i file del 9, e l'account di Leo bloccava lo Step 4. Decisione di Francesco, vedi il Task 10 |
 | 2026-09-27 | tutti | Fusione a fine lavorazione senza approvazione; solo a review finale chiusa, niente push se il gate sulla fusione è rosso, `git pull --rebase=merges` | Decisione di Francesco: sostituisce l'approvazione umana della riga del 2026-09-26. Protocollo, punto 6 |
+| 2026-09-27 | 9, stile | LCP della home sotto i 768 px: test a 390 px in `test.fail()`, vincolo di § Hero punto 1 al piano di stile | Senza CSS a 320 e 390 px l'LCP è la prima foto di richiamo. Decisione di Francesco, vedi il Task 9 |
 
 ## Global Constraints
 
@@ -1646,6 +1647,32 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 > chiama `contatto`, e la prima opzione di `fascia_budget` è vuota:
 > `selectOption({ index: 2 })` sceglie la seconda fascia.
 
+> **Modifica (2026-09-27, decisione di Francesco durante il Task 9).** Senza
+> CSS oltre la regola di reflow, spec § Hero punto 1 non regge sotto i
+> 768 px. Misure sul sito costruito, uguali in italiano e in inglese:
+>
+> | Viewport | Elemento LCP | Poster |
+> | --- | --- | --- |
+> | 320×800 | prima foto di richiamo, 2:3, 304×456 a y 494 | 304×203 a y 44 |
+> | 390×844 | la stessa, 374×561 a y 486, 358 px nel viewport | 374×250 a y 44 |
+> | 768×1024 | poster, 752×501 | — |
+> | 1440×900 | poster, 1424×950, 92% sopra la piega | — |
+>
+> Il poster 3:2 al telefono è basso, e sotto il motto la prima foto di
+> richiamo, verticale e lazy, entra nel viewport con un'area maggiore. US-1
+> regge a tutte le larghezze: l'LCP è sempre una fotografia, e sopra la
+> piega ci sono il poster a piena larghezza del contenuto e il nome di Leo
+> nel nav. Deciso: i test a 390 px dell'LCP in `tests/e2e/home.spec.ts`
+> sono `test.fail()` con il motivo, e il vincolo passa al piano di stile (§
+> Cosa questo piano non copre). Quando il piano di stile lo risolve,
+> Playwright segnala i test che passano e le annotazioni si tolgono.
+> Scartati: CSS nell'hero adesso, che deciderebbe la composizione senza una
+> direzione visiva e con valori letterali contro le convenzioni; una prima
+> foto orizzontale o un poster verticale, che passerebbero per la ragione
+> sbagliata, legati alla lunghezza del motto e all'ordine che Leo cambia dal
+> pannello (US-7); un emendamento allo spec, che al telefono lascerebbe
+> l'LCP a una foto lazy.
+
 **Files:**
 - Create: `src/components/Hero.astro`
 - Modify: `src/pages/it/index.astro`, `src/pages/en/index.astro`
@@ -2014,7 +2041,12 @@ Ognuno richiede un piano proprio, e due sono bloccati.
   Deve anche ricavare dal contenitore il `sizes` del portfolio e delle foto
   di richiamo: oggi dichiara `1200px`, ma a 1440 px senza contenitore
   l'immagine si rende a 1424 e il browser ingrandisce il derivato 1200w
-  (Task 7).
+  (Task 7). E deve rendere il poster l'LCP della home anche sotto i
+  768 px (spec § Hero punto 1): senza CSS, a 320 e 390 px l'LCP è la prima
+  foto di richiamo. L'hero al telefono deve occupare la piega, per esempio
+  con il ritaglio 4:5 e il `sizes` del Task 9. I test a 390 px dell'LCP in
+  `tests/e2e/home.spec.ts` sono `test.fail()` fino ad allora; il piano di
+  stile toglie l'annotazione e aggiunge 320 px (Task 9).
 - **Pannello di redazione.** Bloccato dalla verifica in
   [ADR-0004](../../03-adr/0004-pannello-e-storage-immagini.md): autenticazione
   da accertare prima di scegliere il prodotto. Non deve esporre il corpo del
