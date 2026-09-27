@@ -112,6 +112,31 @@ for (const locale of LOCALES) {
     );
   });
 
+  test(`${percorso} una data incompleta mostra il messaggio dedicato, non quello dell'email`, async ({
+    page,
+  }) => {
+    await page.goto(percorso);
+    await page.fill('[name="nome"]', "Maria Rossi");
+    await page.fill('[name="email"]', "maria@example.com");
+    // Digitare solo il giorno (un input[type=date] è diviso in segmenti
+    // giorno/mese/anno) lascia il campo con un valore non analizzabile:
+    // validity.badInput, non valueMissing né typeMismatch.
+    await page.locator('[name="data_evento"]').focus();
+    await page.keyboard.type("01");
+    await page.fill('[name="location"]', "Villa dei Fiori");
+    await page.selectOption('[name="fascia_budget"]', { index: 1 });
+    await page.getByRole("button", { name: t(locale, "form.send") }).click();
+
+    const dataEvento = page.locator('[name="data_evento"]');
+    await expect(dataEvento).toBeFocused();
+    await expect(dataEvento).toHaveAttribute("aria-invalid", "true");
+    const descritto = await dataEvento.getAttribute("aria-describedby");
+    if (descritto === null) throw new Error("aria-describedby mancante");
+    await expect(page.locator(`#${descritto}`)).toHaveText(
+      t(locale, "form.error.date"),
+    );
+  });
+
   test(`${percorso} l'ordine da tastiera segue l'ordine dei controlli nel DOM`, async ({
     page,
   }) => {
@@ -169,13 +194,34 @@ for (const locale of LOCALES) {
 
     await page.goto(percorso);
 
-    await page.locator('[name="nome"]').focus();
+    // Il percorso "da tastiera" deve partire dal caricamento, non da un
+    // focus sintetico: skip link, nav e selettore lingua vengono prima del
+    // form nel DOM, quindi servono più Tab per arrivare al primo campo.
+    const tetto = 15;
+    let trovatoCampoNome = false;
+    for (let i = 0; i < tetto; i += 1) {
+      await page.keyboard.press("Tab");
+      const attivo = await page.evaluate(
+        () => document.activeElement?.getAttribute("name") ?? null,
+      );
+      if (attivo === "nome") {
+        trovatoCampoNome = true;
+        break;
+      }
+    }
+    if (!trovatoCampoNome) {
+      throw new Error(`non ha raggiunto il campo "nome" entro ${tetto} pressioni di Tab`);
+    }
     await page.keyboard.type("Maria Rossi");
     await tabViaCampo(page, "nome");
     await page.keyboard.type("maria@example.com");
     await tabViaCampo(page, "email");
     await tabViaCampo(page, "telefono");
-    await page.keyboard.type("06152030");
+    // "01" è un giorno e un mese validi in entrambi gli ordini (mm/dd o
+    // dd/mm): il valore finale è 2030-01-01 indipendentemente dal formato
+    // della lingua di sistema, a differenza di una data come "06/15" che
+    // in ordine giorno/mese non esiste.
+    await page.keyboard.type("01012030");
     await tabViaCampo(page, "data_evento");
     await tabViaCampo(page, "tipo_cerimonia");
     await tabViaCampo(page, "momento");
@@ -185,7 +231,19 @@ for (const locale of LOCALES) {
     await tabViaCampo(page, "wedding_planner");
     await page.keyboard.type("Studio Nozze");
     await tabViaCampo(page, "wedding_planner_nome");
-    await page.keyboard.press("ArrowDown");
+    // ArrowDown su una select chiusa apre il menu invece di cambiare
+    // opzione su macOS: la ricerca per carattere (typeahead) cambia valore
+    // senza aprire nulla, su qualunque piattaforma. Si digita l'etichetta
+    // intera invece del solo primo carattere perché le fasce vere di Leo
+    // potrebbero condividere l'iniziale fra loro.
+    // L'etichetta contiene "€", non digitabile come singolo tasto: Chromium
+    // lo inserisce con execCommand("insertText"), che scrive nella
+    // selezione di testo del documento invece che nel campo a fuoco. Il
+    // focus è già sulla select, ma la selezione testuale è rimasta ferma
+    // sull'ultimo campo di testo (wedding_planner_nome): senza svuotarla,
+    // l'ultimo carattere dell'etichetta finirebbe lì invece che nella select.
+    await page.evaluate(() => window.getSelection()?.removeAllRanges());
+    await page.keyboard.type(t(locale, "form.fascia.0"));
     await tabViaCampo(page, "fascia_budget");
     await tabViaCampo(page, "messaggio");
     await page.keyboard.press("Enter");
@@ -196,12 +254,46 @@ for (const locale of LOCALES) {
     if (!richiesta)
       throw new Error("la richiesta POST non è stata intercettata");
     const inviato: { metodo: string; corpo: string } = richiesta;
+    const dati = new URLSearchParams(inviato.corpo);
     expect(inviato.metodo).toBe("POST");
-    expect(inviato.corpo).toContain("nome=Maria");
-    expect(inviato.corpo).toContain("email=maria%40example.com");
-    expect(inviato.corpo).toMatch(/data_evento=\d{4}-\d{2}-\d{2}/);
-    expect(inviato.corpo).toContain("wedding_planner_nome=Studio");
-    expect(inviato.corpo).toMatch(/fascia_budget=.+/);
+    expect(dati.get("form-name")).toBe("contatto");
+    expect(dati.get("nome")).toBe("Maria Rossi");
+    expect(dati.get("email")).toBe("maria@example.com");
+    expect(dati.get("data_evento")).toBe("2030-01-01");
+    expect(dati.get("location")).toBe("Villa dei Fiori, Roma");
+    expect(dati.get("wedding_planner_nome")).toBe("Studio Nozze");
+    // Valore in italiano, uguale nelle due lingue: Leo legge l'email in
+    // italiano indipendentemente dalla lingua della pagina.
+    expect(dati.get("fascia_budget")).toBe("fino a 1.500 €");
+  });
+
+  test(`${percorso} il nome della wedding planner non si invia se la spunta viene tolta`, async ({
+    page,
+  }) => {
+    // hidden non esclude un controllo dall'invio: chi spunta, scrive un
+    // nome e poi toglie la spunta manderebbe a Leo wedding_planner_nome
+    // senza wedding_planner, un dato incoerente.
+    let corpoInviato = "";
+    await page.route(`**${azione}`, async (route) => {
+      corpoInviato = route.request().postData() ?? "";
+      await route.fulfill({ status: 303, headers: { location: azione } });
+    });
+
+    await page.goto(percorso);
+    await page.fill('[name="nome"]', "Maria Rossi");
+    await page.fill('[name="email"]', "maria@example.com");
+    await page.fill('[name="data_evento"]', "2030-01-01");
+    await page.fill('[name="location"]', "Villa dei Fiori");
+    await page.selectOption('[name="fascia_budget"]', { index: 1 });
+    await page.locator('[name="wedding_planner"]').check();
+    await page.fill('[name="wedding_planner_nome"]', "Studio Nozze");
+    await page.locator('[name="wedding_planner"]').uncheck();
+    await page.getByRole("button", { name: t(locale, "form.send") }).click();
+
+    await expect(page).toHaveURL(new RegExp(`${azione}$`));
+    const dati = new URLSearchParams(corpoInviato);
+    expect(dati.has("wedding_planner_nome")).toBe(false);
+    expect(dati.has("wedding_planner")).toBe(false);
   });
 
   test(`${percorso} è configurato per il recapito Netlify senza CAPTCHA visibile`, async ({

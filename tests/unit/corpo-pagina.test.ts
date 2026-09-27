@@ -30,7 +30,14 @@ describe("corpoPer con corpo_en mancante (US-8, nessun ripiego sull'italiano)", 
           slug: "contact",
           titolo_it: "Contatti",
           seo_title_it: "Contatti",
+          // seo_title_en e seo_description_en valorizzati: dopo la fusione
+          // con il Task 7 lo schema li rende obbligatori (min(1)), e una
+          // fixture che li ometta farebbe fallire il parse per un motivo
+          // estraneo al caso che questo test vuole esercitare, che è solo
+          // corpo_en assente.
+          seo_title_en: "Contact",
           seo_description_it: "Descrizione dei contatti.",
+          seo_description_en: "Contact description.",
           corpo_it: "Corpo italiano.",
         },
       ],

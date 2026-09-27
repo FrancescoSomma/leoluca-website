@@ -88,9 +88,11 @@ describe.each(LOCALES)("FormContatto (%s)", (locale) => {
   it("il controllo e lo span d'errore non sono attaccati (compressHTML)", () => {
     // compressHTML toglie gli spazi fra i tag: senza {' '} espliciti il
     // controllo e il messaggio d'errore si toccherebbero, illeggibili a
-    // schermo (come il nav di Base.astro nel Task 6).
+    // schermo (come il nav di Base.astro nel Task 6). Astro chiude <input>
+    // senza barra (">", non "/>"): cercare solo "/>" lascia passare
+    // l'incollatura su input, span, textarea — la coglie solo su </select>.
     for (const nome of OBBLIGATORI) {
-      const attaccato = new RegExp(`(?:/>|</select>)<span id="errore-${nome}"`);
+      const attaccato = new RegExp(`><span id="errore-${nome}"`);
       expect(html[locale]).not.toMatch(attaccato);
     }
   });
@@ -130,8 +132,13 @@ describe.each(LOCALES)("FormContatto (%s)", (locale) => {
   });
 
   it("il contenitore del nome della wedding planner è hidden nel markup", () => {
+    // Il primo <p> del form è quello dell'honeypot: un [\s\S]*? lazy senza
+    // limiti attraverserebbe il suo </p> e troverebbe sempre e solo gli
+    // attributi di QUEL <p>, non di quello che contiene davvero
+    // wedding_planner_nome. Il lookahead negativo vieta di attraversare un
+    // </p>, così il motore backtracka fino al <p> giusto.
     const contenitore = html[locale].match(
-      /<p([^>]*)>[\s\S]*?name="wedding_planner_nome"[\s\S]*?<\/p>/,
+      /<p([^>]*)>(?:(?!<\/p>)[\s\S])*name="wedding_planner_nome"/,
     );
     expect(contenitore).not.toBeNull();
     expect(contenitore?.[1]).toMatch(/\bhidden\b/);

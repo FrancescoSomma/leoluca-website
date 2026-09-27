@@ -20,6 +20,7 @@ const azione = pathFor("thanks", locale);
   action={azione}
   data-errore-obbligatorio={t(locale, "form.error.required")}
   data-errore-email={t(locale, "form.error.email")}
+  data-errore-data={t(locale, "form.error.date")}
 >
   <input type="hidden" name="form-name" value="contatto" />
   <p hidden>
@@ -153,22 +154,32 @@ const azione = pathFor("thanks", locale);
   const form = document.querySelector(
     'form[name="contatto"]',
   ) as HTMLFormElement;
-  // Senza JS il markup non ha novalidate e resta la validazione nativa del
-  // browser; con JS la spegniamo per gestire noi focus e messaggi.
-  form.noValidate = true;
 
   const planner = form.querySelector(
     '[name="wedding_planner"]',
   ) as HTMLInputElement;
-  const contenitorePlanner = (
-    form.querySelector('[name="wedding_planner_nome"]') as HTMLInputElement
-  ).closest("p");
+  const nomePlanner = form.querySelector(
+    '[name="wedding_planner_nome"]',
+  ) as HTMLInputElement;
+  const contenitorePlanner = nomePlanner.closest("p");
   if (!contenitorePlanner) {
     throw new Error("contenitore di wedding_planner_nome non trovato");
   }
 
+  // Solo qui, dopo che la preparazione sopra è andata a buon fine: se il
+  // throw fosse scattato, senza questa riga resterebbe almeno la
+  // validazione nativa del browser invece di nessuna validazione affatto.
+  form.noValidate = true;
+
   const sincronizzaPlanner = () => {
-    contenitorePlanner.hidden = !planner.checked;
+    const visibile = planner.checked;
+    contenitorePlanner.hidden = !visibile;
+    // hidden non esclude un controllo dall'invio: senza anche disabled, chi
+    // spunta, scrive un nome e poi toglie la spunta manderebbe comunque
+    // wedding_planner_nome, incoerente con wedding_planner assente. Solo
+    // qui, nello script: nel markup statico il campo resta normale, così
+    // Netlify lo rileva in fase di build.
+    nomePlanner.disabled = !visibile;
   };
   sincronizzaPlanner();
   planner.addEventListener("change", sincronizzaPlanner);
@@ -177,6 +188,7 @@ const azione = pathFor("thanks", locale);
   // i testi vengono da ui.ts via data-attribute.
   const messaggioObbligatorio = form.dataset.erroreObbligatorio ?? "";
   const messaggioEmail = form.dataset.erroreEmail ?? "";
+  const messaggioData = form.dataset.erroreData ?? "";
 
   form.addEventListener("submit", (evento) => {
     let primoNonValido: HTMLElement | null = null;
@@ -185,15 +197,29 @@ const azione = pathFor("thanks", locale);
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >("[required]")) {
       const erroreEl = document.getElementById(`errore-${campo.name}`);
-      let messaggio = "";
-      if (campo.validity.valueMissing) {
-        messaggio = messaggioObbligatorio;
-      } else if (campo.validity.typeMismatch) {
-        messaggio = messaggioEmail;
-      }
-      campo.setAttribute("aria-invalid", String(messaggio !== ""));
+      // La validità viene da checkValidity(), non dal testo del messaggio:
+      // se un attributo data- mancasse, il campo risulterebbe comunque non
+      // valido invece di passare in silenzio.
+      const valido = campo.checkValidity();
+      // Ogni causa di invalidità ha il suo messaggio: un campo vuoto non è
+      // lo stesso errore di un'email scritta male o di una data incompleta.
+      // badInput va controllato prima di valueMissing: un input[type=date]
+      // con un solo segmento digitato (per esempio il giorno) ha .value
+      // vuoto, quindi valueMissing è vero insieme a badInput, e senza
+      // questa precedenza l'utente vedrebbe "campo obbligatorio" invece
+      // dell'errore sulla data che ha effettivamente digitato.
+      const messaggio = valido
+        ? ""
+        : campo.validity.badInput
+          ? messaggioData
+          : campo.validity.valueMissing
+            ? messaggioObbligatorio
+            : campo.validity.typeMismatch
+              ? messaggioEmail
+              : messaggioObbligatorio;
+      campo.setAttribute("aria-invalid", String(!valido));
       if (erroreEl) erroreEl.textContent = messaggio;
-      if (messaggio && !primoNonValido) primoNonValido = campo;
+      if (!valido && !primoNonValido) primoNonValido = campo;
     }
 
     if (primoNonValido) {
