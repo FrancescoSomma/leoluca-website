@@ -24,6 +24,13 @@ const { larghezze, larghezza, altezza } = await misuraDerivati(poster);
       Pipeline immagini).
     */
   }
+  {
+    /*
+      alt="" vuoto apposta: il motto adiacente porta già il significato,
+      duplicarlo sarebbe rumore per uno screen reader (docs/07 § Commenti,
+      che cita proprio questo caso).
+    */
+  }
   <Picture
     src={poster}
     width={larghezza}
@@ -46,6 +53,17 @@ const { larghezze, larghezza, altezza } = await misuraDerivati(poster);
         playsinline
         preload="none"
         hidden
+        // Il poster è decorativo (alt=""): la clip che lo sostituisce non
+        // va esposta come contenuto a uno screen reader (Important 3 della
+        // review finale).
+        aria-hidden="true"
+        // Stesse width/height del poster: tengono fermo il layout solo se
+        // la clip condivide il suo rapporto 3:2. Con `height: auto` (regola
+        // di reflow) vince il rapporto naturale del video appena arrivano i
+        // metadati: con un rapporto diverso ci sarebbe comunque uno scatto
+        // (misura manuale con una webm dello stesso rapporto: 947.8 contro
+        // 949.6 px, coerenti). Non risolvibile senza CSS: è del piano di
+        // stile.
         width={larghezza}
         height={altezza}
         data-src={clip}
@@ -81,9 +99,10 @@ const { larghezze, larghezza, altezza } = await misuraDerivati(poster);
   // (docs/07-convenzioni-codice.md).
   if (video && picture && video.dataset.src && !riduciMovimento && largo) {
     const sorgente = video.dataset.src;
-    // preload="none" non basta da solo a evitare lo scaricamento dopo
-    // l'assegnazione di src: serve load() esplicito (spec § Hero, punto 2:
-    // la clip parte dopo l'LCP).
+    // Con preload="none" assegnare src non avvia da solo lo scaricamento:
+    // il browser aspetterebbe play() (o simile), ben oltre l'LCP. load()
+    // esplicito lo forza subito dopo il load della finestra (spec § Hero,
+    // punto 2: la clip parte dopo l'LCP).
     addEventListener("load", () => {
       video.src = sorgente;
       video.load();
