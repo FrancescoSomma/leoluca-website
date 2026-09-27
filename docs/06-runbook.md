@@ -86,6 +86,8 @@ usato per la verifica funzionale è su un account di Francesco e non conta.
       15 GB al mese, e se il pannello (ADR-0004) pubblica a ogni salvataggio,
       ogni salvataggio è un deploy di produzione. Controllare anche che gli
       avvisi di Netlify al 50, 75 e 100 % arrivino a chi mantiene il sito.
+      Piano consigliato: Personal con la ricarica automatica accesa
+      (ADR-0003).
 - [ ] Il rilevamento dei form acceso: sui siti nuovi può essere spento, e
       senza la POST del form non arriva a nessuno. Netlify rileva i form
       quando pubblica: dopo averlo acceso serve una nuova pubblicazione.

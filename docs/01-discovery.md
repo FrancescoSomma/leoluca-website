@@ -77,6 +77,9 @@ Ordinati per impatto. Il primo blocca la pubblicazione di qualsiasi foto.
 7. Requisiti esatti che i contest pongono al sito del fotografo.
 8. Instagram e altri canali da integrare o ignorare.
 9. Indirizzo a cui devono arrivare le richieste inviate dal form.
+10. Su quale piano è oggi il suo account Netlify, e se accetta il piano
+    Personal con la ricarica automatica: vedi
+    [ADR-0003](03-adr/0003-generatore-statico-e-hosting.md).
 
 Chiuso: chi aggiorna le gallerie dopo il lancio → vedi
 [ADR-0002](03-adr/0002-gestione-contenuti.md).

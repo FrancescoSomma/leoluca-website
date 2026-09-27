@@ -74,3 +74,19 @@ sono illimitati; sui vecchi piani Free e Starter il tetto è di 100 invii al
 mese, non superabile, e l'account di Leo preesiste quindi va verificato su quale
 piano sia. Per il volume atteso di un fotografo di matrimoni anche 100 al mese
 sono abbondanti, ma il tetto è rigido e va conosciuto.
+
+**Aggiornamento (2026-09-27, dal Task 10a).** Sui piani a crediti il limite
+che conta non è il form, ma il credito. Il Free ha 300 crediti al mese, con
+un tetto rigido: non se ne comprano altri. Li consumano la banda (20 crediti
+per GB), ogni deploy di produzione (15) e le richieste (2 ogni 10.000). A
+crediti esauriti tutti i progetti del team si sospendono fino al ciclo
+successivo, e il form smette di ricevere. Un sito di fotografie consuma
+soprattutto banda, e un pannello che pubblica a ogni salvataggio
+([ADR-0004](0004-pannello-e-storage-immagini.md)) fa di ogni salvataggio un
+deploy di produzione. Francesco consiglierà a Leo il piano Personal, 9 $ al
+mese per 1.000 crediti, con la ricarica automatica accesa (500 crediti per
+5 $): un sito spento mentre una giuria lo guarda costa più di qualunque
+ricarica. Resta da confermare con Leo, insieme al piano su cui è oggi il suo
+account ([01-discovery.md](../01-discovery.md), § Rimasto aperto). La
+checklist della messa online è in [06-runbook.md](../06-runbook.md) §
+Manutenzione.
