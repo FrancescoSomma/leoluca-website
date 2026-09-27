@@ -45,7 +45,7 @@ Prima di cominciare: `git switch feat/fondamenta && git pull`, poi leggi qui.
 | 7 Portfolio | fuso | — | 5 e 6 fusi | `feat/portfolio` | PC 1 |
 | 9 Home ed e2e | fuso | — | 7 e 8 fusi | `feat/home` | PC 1 |
 | 10a Netlify e recapito | fuso | — | 8 fuso | `feat/netlify` | PC 1 |
-| 10b Gate con la home | libero | — | 9 e 10a fusi | da aprire | — |
+| 10b Gate con la home | in corso | — | 9 e 10a fusi | `feat/gate-home` | PC 1 |
 
 Stati: `libero` nessuno ci lavora; `in corso` preso da una macchina;
 `concluso` review passata e commit sul branch della linea; `fuso` dentro
