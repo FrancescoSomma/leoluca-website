@@ -132,6 +132,7 @@ legge.
 | 2026-09-26 | 7, 9 | Regola di reflow in `Foto.astro` (e nel poster di Hero); US-2 conta le immagini prioritarie, non le richieste | Senza CSS `scrollWidth` 2408 a 320 px; con il reflow Chrome richiede 5 foto su 5 sotto i 1440 px. Decisione di Francesco, vedi il Task 7 |
 | 2026-09-26 | 7, tutti | Reflow con un `img` con scope, senza `:global()`; `sizes` e corpo del portfolio affidati ai piani di stile e del pannello; screenshot dopo l'ultimo `verify.sh` | Review finale del Task 7: lo scope di Astro 7.3.3 raggiunge l'`<img>` di `<Picture>`, e Playwright svuota `test-results/` a ogni run |
 | 2026-09-26 | 10 | `lighthouserc.json` su tutte le pagine pubbliche; LCP e peso solo su home e portfolio | Spec § Budget: CLS su tutte le pagine, JavaScript per pagina. Dalla review del Task 8, vedi il Task 10 |
+| 2026-09-27 | 9, 10 | Test del percorso critico in due lingue; recapito verificato in due lingue, rilevamento dei form di Netlify, lingua della richiesta | Review finale della linea B, vedi i Task 9 e 10 |
 
 ## Global Constraints
 
@@ -1625,6 +1626,15 @@ git commit -m "feat: form di contatto accessibile e pagina di conferma"
 > serve la stessa regola, con lo stesso test a 320 px sulla home. US-2 conta
 > le immagini prioritarie, non le richieste: vedi il Task 7.
 
+> **Modifica (2026-09-27, dalla review finale della linea B).** Il test del
+> percorso critico dello Step 1 si chiama "da tastiera" ma usa `fill` e
+> `click`, e gira solo in italiano, contro ADR-0005. Gira in entrambe le
+> lingue, con i testi da `t()` e le rotte da `pathFor`. Il nome non promette
+> la tastiera: il form completato con i soli tasti, dal caricamento fino alla
+> conferma, lo copre già `tests/e2e/form.spec.ts` dal Task 8. Il form si
+> chiama `contatto`, e la prima opzione di `fascia_budget` è vuota:
+> `selectOption({ index: 2 })` sceglie la seconda fascia.
+
 **Files:**
 - Create: `src/components/Hero.astro`
 - Modify: `src/pages/it/index.astro`, `src/pages/en/index.astro`
@@ -1805,6 +1815,21 @@ git commit -m "feat: home con hero e test end-to-end del percorso critico"
 > peso trasferito, quando si accendono, valgono solo per home e portfolio, come
 > dice lo spec: `assertMatrix`, con un `matchingUrlPattern` per ciascun gruppo.
 
+> **Modifica (2026-09-27, dalla review finale della linea B).** Allo Step 4,
+> tre verifiche in più sulla deploy preview.
+>
+> - Il recapito in **entrambe le lingue**. Le due pagine hanno lo stesso form,
+>   `name="contatto"`, con `action` diverse (`/it/grazie/` e
+>   `/en/thank-you/`): controllare che ciascun invio arrivi alla propria
+>   conferma, guardando l'URL d'arrivo.
+> - Che il rilevamento dei form sia attivo sul sito Netlify: per i siti nuovi
+>   potrebbe andare acceso dal pannello. Senza, la POST non arriva a nessuno.
+> - Se la notifica di Netlify dice da quale pagina arriva la richiesta. I
+>   `value` sono in italiano in entrambe le lingue e `messaggio` è facoltativo:
+>   senza la pagina d'origine Leo non sa se rispondere in inglese. Se la
+>   notifica non la mostra, si propone a Francesco un emendamento allo spec.
+>   Nessun campo si aggiunge prima.
+
 **Files:**
 - Modify: `lighthouserc.json` (esiste dal Task 2)
 - Create: `netlify.toml`
@@ -1947,6 +1972,9 @@ Ognuno richiede un piano proprio, e due sono bloccati.
   da accertare prima di scegliere il prodotto. Non deve esporre il corpo del
   portfolio: la pagina non lo rende, perché 05-content non assegna testi al
   portfolio e la sua Pagina esiste per `title` e `description` (Task 7).
+  Nemmeno `titolo_*` di Contatti e Conferma: il loro h1 viene da `ui.ts`, per
+  decisione di Francesco (Task 8), e nel pannello sarebbe un campo che non
+  cambia nulla.
 - **Dati strutturati, sitemap.xml, redirect dal vecchio sito.** Lo spec li
   richiede; i redirect dipendono dall'elenco degli URL vivi, che è una domanda
   aperta con Leo.
