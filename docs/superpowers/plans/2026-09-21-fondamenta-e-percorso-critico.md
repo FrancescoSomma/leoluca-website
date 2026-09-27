@@ -1418,7 +1418,7 @@ validazione, accessibilità e navigabilità da tastiera. Che l'invio raggiunga
 davvero l'email va verificato una volta sola su una deploy preview, ed è il
 Task 10.
 
-- [ ] **Step 1: Scrivere il test che fallisce**
+- [x] **Step 1: Scrivere il test che fallisce**
 
 ```ts
 // tests/e2e/form.spec.ts
@@ -1478,12 +1478,12 @@ test('è configurato per il recapito Netlify senza CAPTCHA visibile', async ({ p
 });
 ```
 
-- [ ] **Step 2: Eseguire il test e verificare che fallisca**
+- [x] **Step 2: Eseguire il test e verificare che fallisca**
 
 Run: `npm run build && npx playwright test tests/e2e/form.spec.ts`
 Expected: FAIL, la pagina contatti non ha form.
 
-- [ ] **Step 3: Implementare il form**
+- [x] **Step 3: Implementare il form**
 
 Dieci campi, `action` verso la conferma nella lingua corrente, honeypot
 `bot-field` nascosto al posto del CAPTCHA, `novalidate` sul form perché la
@@ -1547,24 +1547,24 @@ localizza da sé secondo `<html lang>`. Il test cerca `/obbligatorio/i`: se il
 messaggio nativo non contiene quella parola, sostituirlo con
 `t(locale, 'form.error.required')` passato al client via `data-` attribute.
 
-- [ ] **Step 4: Implementare le pagine contatti e conferma**
+- [x] **Step 4: Implementare le pagine contatti e conferma**
 
 Le due pagine contatti includono `<FormContatto locale={...} />`. Le due pagine
 di conferma sono statiche: titolo, messaggio, tempi di risposta, e un
 collegamento di ritorno al portfolio.
 
-- [ ] **Step 5: Eseguire i test**
+- [x] **Step 5: Eseguire i test**
 
 Run: `npm run build && npx playwright test tests/e2e/form.spec.ts`
 Expected: PASS, sei test verdi.
 
-- [ ] **Step 6: Chiudere il task**
+- [x] **Step 6: Chiudere il task**
 
 Vedi [§ Chiusura di ogni task](#chiusura-di-ogni-task): gate, screenshot se il
 task produce una pagina che si vede, e i tre agenti di review sul diff. Le
 segnalazioni si risolvono prima del commit, non dopo.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/components/FormContatto.astro src/pages tests/e2e/form.spec.ts

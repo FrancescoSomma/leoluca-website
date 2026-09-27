@@ -50,3 +50,11 @@ export function caricaImpostazioni(): Impostazioni {
 export function altPer(foto: Foto, locale: Locale): string {
   return locale === "it" ? foto.alt_it : foto.alt_en;
 }
+
+// Stringa vuota se la traduzione manca: nessun ripiego sull'italiano (US-8).
+// La pagina chiamante decide se non rendere il paragrafo.
+export function corpoPer(slug: string, locale: Locale): string {
+  const pagina = caricaPagine().find((p) => p.slug === slug);
+  if (!pagina) throw new Error(`pagine.json: manca la pagina "${slug}"`);
+  return locale === "it" ? pagina.corpo_it : pagina.corpo_en;
+}

@@ -1,0 +1,230 @@
+---
+// Il form dei campi di US-5. La validazione è nostra, non quella nativa del
+// browser: solo così possiamo spostare il focus sul primo campo non valido
+// e collegare l'errore con aria-describedby (WCAG 2.2 AA).
+import { pathFor, type Locale } from "../i18n/routes";
+import { t } from "../i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const azione = pathFor("thanks", locale);
+---
+
+<form
+  name="contatto"
+  method="POST"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  action={azione}
+  data-errore-obbligatorio={t(locale, "form.error.required")}
+  data-errore-email={t(locale, "form.error.email")}
+  data-errore-data={t(locale, "form.error.date")}
+>
+  <input type="hidden" name="form-name" value="contatto" />
+  <p hidden>
+    <label
+      >{t(locale, "form.honeypot.label")}{" "}<input name="bot-field" /></label
+    >
+  </p>
+
+  <p>{t(locale, "form.requiredNote")}</p>
+
+  <p>
+    <label for="nome">{t(locale, "form.field.nome")} *</label>{" "}
+    <input
+      id="nome"
+      name="nome"
+      type="text"
+      autocomplete="name"
+      required
+      aria-describedby="errore-nome"
+    />{" "}
+    <span id="errore-nome" role="alert"></span>
+  </p>
+
+  <p>
+    <label for="email">{t(locale, "form.field.email")} *</label>{" "}
+    <input
+      id="email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+      aria-describedby="errore-email"
+    />{" "}
+    <span id="errore-email" role="alert"></span>
+  </p>
+
+  <p>
+    <label for="telefono">{t(locale, "form.field.telefono")}</label>{" "}
+    <input id="telefono" name="telefono" type="tel" autocomplete="tel" />
+  </p>
+
+  <p>
+    <label for="data_evento">{t(locale, "form.field.dataEvento")} *</label>{
+      " "
+    }
+    <input
+      id="data_evento"
+      name="data_evento"
+      type="date"
+      required
+      aria-describedby="errore-data_evento"
+    />{" "}
+    <span id="errore-data_evento" role="alert"></span>
+  </p>
+
+  <p>
+    <label for="tipo_cerimonia">{t(locale, "form.field.tipoCerimonia")}</label
+    >{" "}
+    <select id="tipo_cerimonia" name="tipo_cerimonia">
+      <option value="">{t(locale, "form.option.scegli")}</option>
+      <option value="civile">{t(locale, "form.tipoCerimonia.civile")}</option>
+      <option value="religiosa"
+        >{t(locale, "form.tipoCerimonia.religiosa")}</option
+      >
+    </select>
+  </p>
+
+  <p>
+    <label for="momento">{t(locale, "form.field.momento")}</label>{" "}
+    <select id="momento" name="momento">
+      <option value="">{t(locale, "form.option.scegli")}</option>
+      <option value="diurno">{t(locale, "form.momento.diurno")}</option>
+      <option value="serale">{t(locale, "form.momento.serale")}</option>
+    </select>
+  </p>
+
+  <p>
+    <label for="location">{t(locale, "form.field.location")} *</label>{" "}
+    <input
+      id="location"
+      name="location"
+      type="text"
+      required
+      aria-describedby="errore-location"
+    />{" "}
+    <span id="errore-location" role="alert"></span>
+  </p>
+
+  <p>
+    <input id="wedding_planner" name="wedding_planner" type="checkbox" value="sì" />{
+      " "
+    }
+    <label for="wedding_planner">{t(locale, "form.field.weddingPlanner")}</label
+    >
+  </p>
+
+  <p hidden>
+    <label for="wedding_planner_nome"
+      >{t(locale, "form.field.weddingPlannerNome")}</label
+    >{" "}
+    <input id="wedding_planner_nome" name="wedding_planner_nome" type="text" />
+  </p>
+
+  <p>
+    <label for="fascia_budget">{t(locale, "form.field.fasciaBudget")} *</label
+    >{" "}
+    <select
+      id="fascia_budget"
+      name="fascia_budget"
+      required
+      aria-describedby="errore-fascia_budget"
+    >
+      <option value="">{t(locale, "form.option.scegli")}</option>
+      <option value="fino a 1.500 €">{t(locale, "form.fascia.0")}</option>
+      <option value="1.500-3.000 €">{t(locale, "form.fascia.1")}</option>
+      <option value="3.000-5.000 €">{t(locale, "form.fascia.2")}</option>
+      <option value="oltre 5.000 €">{t(locale, "form.fascia.3")}</option>
+    </select>{" "}
+    <span id="errore-fascia_budget" role="alert"></span>
+  </p>
+
+  <p>
+    <label for="messaggio">{t(locale, "form.field.messaggio")}</label>{" "}
+    <textarea id="messaggio" name="messaggio"></textarea>
+  </p>
+
+  <button type="submit">{t(locale, "form.send")}</button>
+</form>
+
+<script>
+  const form = document.querySelector(
+    'form[name="contatto"]',
+  ) as HTMLFormElement;
+
+  const planner = form.querySelector(
+    '[name="wedding_planner"]',
+  ) as HTMLInputElement;
+  const nomePlanner = form.querySelector(
+    '[name="wedding_planner_nome"]',
+  ) as HTMLInputElement;
+  const contenitorePlanner = nomePlanner.closest("p");
+  if (!contenitorePlanner) {
+    throw new Error("contenitore di wedding_planner_nome non trovato");
+  }
+
+  // Solo qui, dopo che la preparazione sopra è andata a buon fine: se il
+  // throw fosse scattato, senza questa riga resterebbe almeno la
+  // validazione nativa del browser invece di nessuna validazione affatto.
+  form.noValidate = true;
+
+  const sincronizzaPlanner = () => {
+    const visibile = planner.checked;
+    contenitorePlanner.hidden = !visibile;
+    // hidden non esclude un controllo dall'invio: senza anche disabled, chi
+    // spunta, scrive un nome e poi toglie la spunta manderebbe comunque
+    // wedding_planner_nome, incoerente con wedding_planner assente. Solo
+    // qui, nello script: nel markup statico il campo resta normale, così
+    // Netlify lo rileva in fase di build.
+    nomePlanner.disabled = !visibile;
+  };
+  sincronizzaPlanner();
+  planner.addEventListener("change", sincronizzaPlanner);
+
+  // validationMessage segue la lingua del browser, non quella della pagina:
+  // i testi vengono da ui.ts via data-attribute.
+  const messaggioObbligatorio = form.dataset.erroreObbligatorio ?? "";
+  const messaggioEmail = form.dataset.erroreEmail ?? "";
+  const messaggioData = form.dataset.erroreData ?? "";
+
+  form.addEventListener("submit", (evento) => {
+    let primoNonValido: HTMLElement | null = null;
+
+    for (const campo of form.querySelectorAll<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >("[required]")) {
+      const erroreEl = document.getElementById(`errore-${campo.name}`);
+      // La validità viene da checkValidity(), non dal testo del messaggio:
+      // se un attributo data- mancasse, il campo risulterebbe comunque non
+      // valido invece di passare in silenzio.
+      const valido = campo.checkValidity();
+      // Ogni causa di invalidità ha il suo messaggio: un campo vuoto non è
+      // lo stesso errore di un'email scritta male o di una data incompleta.
+      // badInput va controllato prima di valueMissing: un input[type=date]
+      // con un solo segmento digitato (per esempio il giorno) ha .value
+      // vuoto, quindi valueMissing è vero insieme a badInput, e senza
+      // questa precedenza l'utente vedrebbe "campo obbligatorio" invece
+      // dell'errore sulla data che ha effettivamente digitato.
+      const messaggio = valido
+        ? ""
+        : campo.validity.badInput
+          ? messaggioData
+          : campo.validity.valueMissing
+            ? messaggioObbligatorio
+            : campo.validity.typeMismatch
+              ? messaggioEmail
+              : messaggioObbligatorio;
+      campo.setAttribute("aria-invalid", String(!valido));
+      if (erroreEl) erroreEl.textContent = messaggio;
+      if (!valido && !primoNonValido) primoNonValido = campo;
+    }
+
+    if (primoNonValido) {
+      evento.preventDefault();
+      primoNonValido.focus();
+    }
+  });
+</script>
