@@ -1986,7 +1986,7 @@ Expected: nessuna asserzione violata.
   status = 302
 ```
 
-- [ ] **Step 4: Verificare il recapito reale del form, una volta**
+- [x] **Step 4: Verificare il recapito reale del form, una volta**
 
 Questo passo non è automatizzabile in locale. Su una deploy preview: inviare il
 form compilato, confermare che la conferma appaia, e che la richiesta arrivi
